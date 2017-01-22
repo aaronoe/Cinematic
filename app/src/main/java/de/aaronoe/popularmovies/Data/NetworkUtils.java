@@ -49,19 +49,6 @@ public class NetworkUtils {
                     .build();
         }
 
-        /*
-        switch (filter) {
-            case "popular":
-                builtUri = Uri.parse(MOVIES_POPULAR_BASE_URL).buildUpon()
-                        .appendQueryParameter(KEY_PARAM, API_KEY)
-                        .build();
-            case "top":
-                builtUri = Uri.parse(MOVIES_TOP_RATED_BASE_URL).buildUpon()
-                        .appendQueryParameter(KEY_PARAM, API_KEY)
-                        .build();
-        }
-        */
-
 
         URL url = null;
         try {

@@ -30,16 +30,20 @@ public class DetailActivity extends AppCompatActivity {
         mDetailDescriptionTextView = (TextView) findViewById(R.id.tv_detail_description);
         mRatingTextView = (TextView) findViewById(R.id.tv_rating_detail);
 
+
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("MovieItem")) {
-                mMovieItem = (MovieItem) intentThatStartedThisActivity.getSerializableExtra("MovieItem");
+
+                mMovieItem = intentThatStartedThisActivity.getParcelableExtra("MovieItem");
 
                 populateViewsWithData(mMovieItem);
 
             }
+
         }
+
     }
 
     private void populateViewsWithData(MovieItem movieItem) {

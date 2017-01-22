@@ -1,13 +1,14 @@
 package de.aaronoe.popularmovies;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Class to hold information on an individual movie
  * Created by aaron on 21.01.17.
  */
 
-public class MovieItem implements Serializable {
+public class MovieItem implements Parcelable {
 
     private String mPosterPath;
     private String mMovieDescription;
@@ -45,4 +46,46 @@ public class MovieItem implements Serializable {
     public Double getmVoteAverage() {
         return mVoteAverage;
     }
+
+    protected MovieItem(Parcel in) {
+        mPosterPath = in.readString();
+        mMovieDescription = in.readString();
+        mTitle = in.readString();
+        mMovieId = in.readInt();
+        mReleaseDate = in.readString();
+        mVoteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mPosterPath);
+        dest.writeString(mMovieDescription);
+        dest.writeString(mTitle);
+        dest.writeInt(mMovieId);
+        dest.writeString(mReleaseDate);
+        if (mVoteAverage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeDouble(mVoteAverage);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<MovieItem> CREATOR = new Parcelable.Creator<MovieItem>() {
+        @Override
+        public MovieItem createFromParcel(Parcel in) {
+            return new MovieItem(in);
+        }
+
+        @Override
+        public MovieItem[] newArray(int size) {
+            return new MovieItem[size];
+        }
+    };
 }
