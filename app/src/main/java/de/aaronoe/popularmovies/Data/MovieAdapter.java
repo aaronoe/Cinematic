@@ -101,5 +101,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovieList.size();
     }
 
+    /**
+     * This method is used to set the movie data on a MovieAdapter if we've already
+     * created one. This is handy when we get new data from the web but don't want to create a
+     * new MovieAdapter to display it.
+     *
+     * @param movieData The new movie data to be displayed.
+     */
+    public void setMovieData(List<MovieItem> movieData) {
+        mMovieList = movieData;
+        notifyDataSetChanged();
+    }
 
 }

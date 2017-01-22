@@ -3,6 +3,8 @@ package de.aaronoe.popularmovies;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import java.net.URL;
 import java.util.List;
 
+import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Data.MovieJsonParser;
 import de.aaronoe.popularmovies.Data.NetworkUtils;
 
@@ -22,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    public MovieAdapter mMovieAdapter;
 
 
 
@@ -34,6 +38,19 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_main_movie_list);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+
+        GridLayoutManager gridLayout =
+                new GridLayoutManager(MainActivity.this, 2);
+
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        mRecyclerView.setLayoutManager(gridLayout);
+        //mRecyclerView.hasFixedSize(true);
+        mMovieAdapter = new MovieAdapter();
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+        showMovieData("popular");
 
     }
 
@@ -83,8 +100,7 @@ public class MainActivity extends AppCompatActivity {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
             if (movieItems != null) {
                 showMovieView();
-                // TODO: Implement Adapter
-                //mForecastAdapter.setWeatherData(weatherData);
+                mMovieAdapter.setMovieData(movieItems);
             } else {
                 showErrorMessage();
             }
