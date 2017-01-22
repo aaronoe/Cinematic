@@ -37,8 +37,19 @@ public class NetworkUtils {
      * @return The URL to use to query the weather server.
      */
     public static URL buildUrl(String filter) {
-        Uri builtUri;
+        Uri builtUri = null;
 
+        if (filter == "popular") {
+            builtUri = Uri.parse(MOVIES_POPULAR_BASE_URL).buildUpon()
+                    .appendQueryParameter(KEY_PARAM, API_KEY)
+                    .build();
+        } else {
+            builtUri = Uri.parse(MOVIES_TOP_RATED_BASE_URL).buildUpon()
+                    .appendQueryParameter(KEY_PARAM, API_KEY)
+                    .build();
+        }
+
+        /*
         switch (filter) {
             case "popular":
                 builtUri = Uri.parse(MOVIES_POPULAR_BASE_URL).buildUpon()
@@ -48,11 +59,8 @@ public class NetworkUtils {
                 builtUri = Uri.parse(MOVIES_TOP_RATED_BASE_URL).buildUpon()
                         .appendQueryParameter(KEY_PARAM, API_KEY)
                         .build();
-            default:
-                builtUri = Uri.parse(MOVIES_POPULAR_BASE_URL).buildUpon()
-                        .appendQueryParameter(KEY_PARAM, API_KEY)
-                        .build();
         }
+        */
 
 
         URL url = null;

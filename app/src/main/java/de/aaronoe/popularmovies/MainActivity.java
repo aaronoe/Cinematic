@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
     public MovieAdapter mMovieAdapter;
+    String mCurrentSelection;
 
 
 
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // popular or top
+        mCurrentSelection = "popular";
 
         // instantiate member variables:
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_main_movie_list);
@@ -45,15 +51,12 @@ public class MainActivity extends AppCompatActivity
         GridLayoutManager gridLayout =
                 new GridLayoutManager(MainActivity.this, 2);
 
-        LinearLayoutManager layoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        showMovieData("popular");
+        showMovieData(mCurrentSelection);
 
     }
 
@@ -66,9 +69,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-
-        String movieTitle = movieItem.getmTitle();
-        //Toast.makeText(this, movieTitle, Toast.LENGTH_SHORT).show();
 
         Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieItem", movieItem);
@@ -153,12 +153,37 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
+        MenuInflater inflater = getMenuInflater();
+        /* Use the inflater's inflate method to inflate our menu layout to this menu */
+        inflater.inflate(R.menu.movie_filter, menu);
+        /* Return true so that the menu is displayed in the Toolbar */
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
+        if (id == R.id.action_popular) {
+            mMovieAdapter.setMovieData(null);
+            mCurrentSelection = "popular";
+            showMovieData(mCurrentSelection);
+            return true;
+        }
 
+        if (id == R.id.action_top_rated) {
+            mMovieAdapter.setMovieData(null);
+            mCurrentSelection = "top";
+            showMovieData(mCurrentSelection);
+            return true;
+        }
 
-
+        return super.onOptionsItemSelected(item);
     }
 
 

@@ -2,4 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="error_message">Error loading the movie data. Please try again</string>
     <string name="movie_poster">Poster of the movie</string>
+    <string name="action_top_rated">Top Rated</string>
+    <string name="action_popular">Popular</string>
 </resources>
