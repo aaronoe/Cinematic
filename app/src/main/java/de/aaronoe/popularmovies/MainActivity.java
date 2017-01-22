@@ -38,6 +38,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void showMovieData(String setting) {
+        showMovieView();
+        new FetchMovieDataTask().execute(setting);
+    }
+
+
     /**
      * This method will make the View for the weather data visible and
      * hide the error message.
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public class FetchMovieData extends AsyncTask<String, Void, List<MovieItem>> {
+    public class FetchMovieDataTask extends AsyncTask<String, Void, List<MovieItem>> {
 
 
         @Override

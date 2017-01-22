@@ -19,4 +19,7 @@ public class MovieItem {
         mMovieId = MovieId;
     }
 
+    public String getmPosterPath() {
+        return mPosterPath;
+    }
 }
