@@ -103,7 +103,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // retrieve the poster picture path
         String picturePath = thisMovieItem.getmPosterPath();
         // put the picture URL together
-        String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
+        String pictureUrl = "http://image.tmdb.org/t/p/w342/" + picturePath;
         // get a reference to this item's ImageView
         ImageView currentImageView = holder.mImageView;
         // use picasso to load the image into the view

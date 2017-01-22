@@ -1,6 +1,6 @@
 package de.aaronoe.popularmovies;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.net.URL;
 import java.util.List;
@@ -18,8 +17,6 @@ import java.util.List;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Data.MovieJsonParser;
 import de.aaronoe.popularmovies.Data.NetworkUtils;
-
-
 
 
 public class MainActivity extends AppCompatActivity
@@ -69,10 +66,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-        Context context = this;
-        //Class destinationClass = DetailActivity.class;
+
         String movieTitle = movieItem.getmTitle();
-        Toast.makeText(this, movieTitle, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, movieTitle, Toast.LENGTH_SHORT).show();
+
+        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
+        startActivity(intentToStartDetailActivity);
     }
 
     /**

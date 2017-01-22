@@ -57,6 +57,8 @@ public final class MovieJsonParser {
                 String PosterPath;
                 String MovieDescription;
                 String Title;
+                String releaseDate;
+                Double voteAverage;
                 int MovieId;
 
                 // get the URL-Path for the movie poster, e.g.:
@@ -70,15 +72,24 @@ public final class MovieJsonParser {
 
                 // get the movie's title, e.g.:
                 // "The Secret Life of Pets"
-                Title = currentMovie.getString("title");
+                Title = currentMovie.getString("original_title");
 
                 // get a movie's unique identifier, e.g.:
                 // 328111
                 MovieId = currentMovie.getInt("id");
 
+                // get a movie's release date, e.g.:
+                // "2016-06-18"
+                releaseDate = currentMovie.getString("release_date");
+
+                // get a movie's average user rating, e.g.:
+                // 5.8
+                voteAverage = currentMovie.getDouble("vote_average");
+
                 // Create a new movie object with the data, we just parsed
                 MovieItem thisMovie =
-                        new MovieItem(PosterPath, MovieDescription, Title, MovieId);
+                        new MovieItem(PosterPath, MovieDescription, Title,
+                                MovieId, releaseDate, voteAverage);
 
                 movieItemList.add(thisMovie);
 

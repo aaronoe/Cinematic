@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/activity_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.aaronoe.popularmovies.DetailActivity"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#0097A7"
+        android:layout_height="96dp" >
+
+        <TextView
+            tools:text="The Secret Life of Pets"
+            android:layout_centerVertical="true"
+            android:textSize="32sp"
+            android:textColor="#FFFFFF"
+            android:paddingRight="24dp"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:paddingLeft="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_detail_title" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:contentDescription="@string/movie_poster"
+                android:id="@+id/iv_detail_thumbnail"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true" />
+
+            <LinearLayout
+                android:layout_weight="1.5"
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:layout_width="0dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_release_detail"
+                    tools:text="2015-09-12"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <TextView
+                    tools:text="8.2/10"
+                    android:textSize="20sp"
+                    android:id="@+id/tv_rating_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#dadada"
+            android:layout_marginTop="24dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textSize="20sp"
+                android:id="@+id/tv_detail_description"
+                tools:text="The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
