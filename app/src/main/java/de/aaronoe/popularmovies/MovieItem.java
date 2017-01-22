@@ -22,4 +22,8 @@ public class MovieItem {
     public String getmPosterPath() {
         return mPosterPath;
     }
+
+    public String getmTitle() {
+        return mTitle;
+    }
 }

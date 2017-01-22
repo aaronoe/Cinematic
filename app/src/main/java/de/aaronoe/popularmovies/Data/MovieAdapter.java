@@ -16,6 +16,7 @@ import de.aaronoe.popularmovies.MovieItem;
 import de.aaronoe.popularmovies.R;
 
 /**
+ *
  * Created by aaron on 22.01.17.
  */
 
@@ -24,25 +25,40 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     // member variable for the list of movie data
     private List<MovieItem> mMovieList;
 
+    private MovieAdapterOnClickHandler mClickHandler;
+
     /**
      * Creates a MovieAdapter
      *
      *
      */
-    public MovieAdapter() {
+    public MovieAdapter(MovieAdapterOnClickHandler onClickHandler) {
+        mClickHandler = onClickHandler;
+    }
 
+    public interface MovieAdapterOnClickHandler {
+        void onClick(MovieItem movieItem);
     }
 
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener{
 
         public final ImageView mImageView;
+
 
         public MovieAdapterViewHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.iv_movie_thumbnail);
+            view.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            MovieItem thisMovie = mMovieList.get(adapterPosition);
+            mClickHandler.onClick(thisMovie);
+        }
     }
 
 

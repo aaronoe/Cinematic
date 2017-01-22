@@ -1,5 +1,6 @@
 package de.aaronoe.popularmovies;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.List;
@@ -17,7 +19,11 @@ import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Data.MovieJsonParser;
 import de.aaronoe.popularmovies.Data.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity {
+
+
+
+public class MainActivity extends AppCompatActivity
+        implements MovieAdapter.MovieAdapterOnClickHandler {
 
     // for debugging purposes
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -47,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         showMovieData("popular");
@@ -60,6 +66,14 @@ public class MainActivity extends AppCompatActivity {
         new FetchMovieDataTask().execute(setting);
     }
 
+
+    @Override
+    public void onClick(MovieItem movieItem) {
+        Context context = this;
+        //Class destinationClass = DetailActivity.class;
+        String movieTitle = movieItem.getmTitle();
+        Toast.makeText(this, movieTitle, Toast.LENGTH_SHORT).show();
+    }
 
     /**
      * This method will make the View for the weather data visible and
