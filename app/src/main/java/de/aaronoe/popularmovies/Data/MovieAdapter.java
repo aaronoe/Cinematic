@@ -60,6 +60,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
     /**
+     * This doc was adopted from the Sunshine App
+     *
      * This gets called when each new ViewHolder is created. This happens when the RecyclerView
      * is laid out. Enough ViewHolders will be created to fill the screen and allow for scrolling.
      *
@@ -84,6 +86,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
     /**
+     * This doc was adopted from the Sunshine App
+     *
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
      * position. In this method, we update the contents of the ViewHolder to display the weather
      * details for this particular position, using the "position" argument that is conveniently
@@ -115,6 +119,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     /**
+     * This doc was adopted from the Sunshine App
+     *
      * This method is used to set the movie data on a MovieAdapter if we've already
      * created one. This is handy when we get new data from the web but don't want to create a
      * new MovieAdapter to display it.

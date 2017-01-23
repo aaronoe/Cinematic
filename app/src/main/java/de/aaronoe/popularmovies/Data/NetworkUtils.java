@@ -64,6 +64,7 @@ public class NetworkUtils {
 
 
     /**
+     * This method was adopted from the Sunshine App
      * This method returns the entire result from the HTTP response.
      *
      * @param url The URL to fetch the HTTP response from.

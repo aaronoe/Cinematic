@@ -44,7 +44,7 @@ public final class MovieJsonParser {
             JSONObject baseJsonResponse = new JSONObject(JsonResponse);
 
             // Extract the JSONArray associated with the key called "movies",
-            // which represents a list of launches
+            // which represents a list of movies
             JSONArray baseMovieList = baseJsonResponse.getJSONArray("results");
 
             // iterate through the list of movies and create a new {@link MovieItem} object
@@ -99,7 +99,7 @@ public final class MovieJsonParser {
             // If an error is thrown when executing any of the above statements in the "try" block,
             // catch the exception here, so the app doesn't crash. Print a log message
             // with the message from the exception.
-            Log.e(TAG, "Problem parsing the launches JSON results", e);
+            Log.e(TAG, "Problem parsing the movies JSON results", e);
         }
 
         return movieItemList;

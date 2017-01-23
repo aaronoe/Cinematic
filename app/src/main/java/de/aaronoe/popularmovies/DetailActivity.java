@@ -55,6 +55,10 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * This method populates the views with data
+     * @param movieItem data to be used to populate the views
+     */
     private void populateViewsWithData(MovieItem movieItem) {
 
         // Set Title
