@@ -4,4 +4,6 @@
     <string name="movie_poster">Poster of the movie</string>
     <string name="action_top_rated">Top Rated</string>
     <string name="action_popular">Popular</string>
+    <string name="release_date">Release Date:</string>
+    <string name="avg_rating">Average Rating:</string>
 </resources>

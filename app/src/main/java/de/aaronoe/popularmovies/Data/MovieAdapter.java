@@ -16,10 +16,9 @@ import de.aaronoe.popularmovies.MovieItem;
 import de.aaronoe.popularmovies.R;
 
 /**
- *
+ * Adapter to populate the recyclerview with movie-data
  * Created by aaron on 22.01.17.
  */
-
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     // member variable for the list of movie data
@@ -28,9 +27,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private MovieAdapterOnClickHandler mClickHandler;
 
     /**
-     * Creates a MovieAdapter
-     *
-     *
+     * Creates a MovieAdapter with a click handler
      */
     public MovieAdapter(MovieAdapterOnClickHandler onClickHandler) {
         mClickHandler = onClickHandler;

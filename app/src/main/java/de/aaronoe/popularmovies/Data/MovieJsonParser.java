@@ -72,7 +72,7 @@ public final class MovieJsonParser {
 
                 // get the movie's title, e.g.:
                 // "The Secret Life of Pets"
-                Title = currentMovie.getString("original_title");
+                Title = currentMovie.getString("title");
 
                 // get a movie's unique identifier, e.g.:
                 // 328111

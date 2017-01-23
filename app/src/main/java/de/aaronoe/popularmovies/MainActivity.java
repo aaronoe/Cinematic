@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.List;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mLoadingIndicator;
     public MovieAdapter mMovieAdapter;
     String mCurrentSelection;
+    final String SELECTION_POPULAR = "popular";
+    final String SELECTION_TOP_RATED = "top";
 
 
 
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // popular or top
-        mCurrentSelection = "popular";
+        mCurrentSelection = SELECTION_POPULAR;
 
         // instantiate member variables:
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_main_movie_list);
@@ -61,6 +65,11 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Start the asynchronous download task with the passed in setting
+     * @param setting single String setting which represents the filter option for the download,
+     *                can be either "top" or "popular"
+     */
     private void showMovieData(String setting) {
         showMovieView();
         new FetchMovieDataTask().execute(setting);
@@ -69,7 +78,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-
         Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieItem", movieItem);
         startActivity(intentToStartDetailActivity);
@@ -105,10 +113,13 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     public class FetchMovieDataTask extends AsyncTask<String, Void, List<MovieItem>> {
 
 
+        /**
+         * Feed the downloaded movie data to the adapter to populate the RecyclerView
+         * @param movieItems List of movie items, which was downlaoded in doInBackground
+         */
         @Override
         protected void onPostExecute(List<MovieItem> movieItems) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);
@@ -120,6 +131,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        /**
+         * Set the UI to show the loading indicator
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -127,10 +141,15 @@ public class MainActivity extends AppCompatActivity
         }
 
 
+        /**
+         * Downloads the movie data asynchronously from the web service
+         * @param params single String filter, either "top" or "popular"
+         * @return list of downloaded movie items
+         */
         @Override
         protected List<MovieItem> doInBackground(String... params) {
 
-            /* If there's no zip code, there's nothing to look up. */
+            /* If there's no setting, there's nothing to look up. */
             if (params.length == 0) {
                 return null;
             }
@@ -144,10 +163,10 @@ public class MainActivity extends AppCompatActivity
                 String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
                 // Parse the JSON-Response
-                List<MovieItem> movieList = MovieJsonParser.extractMoviesFromJson(jsonMovieResponse);
+                return MovieJsonParser.extractMoviesFromJson(jsonMovieResponse);
 
-                return movieList;
             } catch (Exception e) {
+                Log.e(TAG, "Error parsing the URL or downloading the movie data");
                 e.printStackTrace();
                 return null;
             }
@@ -170,15 +189,29 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_popular) {
+
+            // return if the option is already selected
+            if (mCurrentSelection.equals(SELECTION_POPULAR)) {
+                Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
             mMovieAdapter.setMovieData(null);
-            mCurrentSelection = "popular";
+            mCurrentSelection = SELECTION_POPULAR;
             showMovieData(mCurrentSelection);
             return true;
         }
 
         if (id == R.id.action_top_rated) {
+
+            // return if the option is already selected
+            if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
+                Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+
             mMovieAdapter.setMovieData(null);
-            mCurrentSelection = "top";
+            mCurrentSelection = SELECTION_TOP_RATED;
             showMovieData(mCurrentSelection);
             return true;
         }
