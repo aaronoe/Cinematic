@@ -12,7 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import de.aaronoe.popularmovies.MovieItem;
+import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.R;
 
 /**

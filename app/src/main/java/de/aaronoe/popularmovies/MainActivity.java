@@ -1,12 +1,10 @@
 package de.aaronoe.popularmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,12 +13,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.URL;
 import java.util.List;
 
+import de.aaronoe.popularmovies.Data.ApiClient;
+import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
-import de.aaronoe.popularmovies.Data.MovieJsonParser;
-import de.aaronoe.popularmovies.Data.NetworkUtils;
+import de.aaronoe.popularmovies.Movies.MovieItem;
+import de.aaronoe.popularmovies.Movies.MovieResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity
     public MovieAdapter mMovieAdapter;
     String mCurrentSelection;
     final String SELECTION_POPULAR = "popular";
-    final String SELECTION_TOP_RATED = "top";
+    final String SELECTION_TOP_RATED = "top_rated";
+    private final static String API_KEY = "de2c61fd451b50de11cee234a5d8346b";
+    ApiInterface apiService;
 
 
 
@@ -60,19 +64,40 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        showMovieData(mCurrentSelection);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        downloadMovieData();
 
     }
 
+    private void downloadMovieData() {
 
-    /**
-     * Start the asynchronous download task with the passed in setting
-     * @param setting single String setting which represents the filter option for the download,
-     *                can be either "top" or "popular"
-     */
-    private void showMovieData(String setting) {
-        showMovieView();
-        new FetchMovieDataTask().execute(setting);
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+
+        Call<MovieResponse> call = apiService.getMovies(mCurrentSelection, API_KEY);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieItem> movieItemList = response.body().getResults();
+
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                if (movieItemList != null) {
+                    showMovieView();
+                    mMovieAdapter.setMovieData(movieItemList);
+                } else {
+                    showErrorMessage();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                mLoadingIndicator.setVisibility(View.INVISIBLE);
+                showErrorMessage();
+            }
+        });
+
     }
 
 
@@ -113,67 +138,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public class FetchMovieDataTask extends AsyncTask<String, Void, List<MovieItem>> {
-
-
-        /**
-         * Feed the downloaded movie data to the adapter to populate the RecyclerView
-         * @param movieItems List of movie items, which was downlaoded in doInBackground
-         */
-        @Override
-        protected void onPostExecute(List<MovieItem> movieItems) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (movieItems != null) {
-                showMovieView();
-                mMovieAdapter.setMovieData(movieItems);
-            } else {
-                showErrorMessage();
-            }
-        }
-
-        /**
-         * Set the UI to show the loading indicator
-         */
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-
-        /**
-         * Downloads the movie data asynchronously from the web service
-         * @param params single String filter, either "top" or "popular"
-         * @return list of downloaded movie items
-         */
-        @Override
-        protected List<MovieItem> doInBackground(String... params) {
-
-            /* If there's no setting, there's nothing to look up. */
-            if (params.length == 0) {
-                return null;
-            }
-            // parse the URL
-            String filter = params[0];
-            URL movieRequestUrl = NetworkUtils.buildUrl(filter);
-
-            // try to download the data and turn it into a list of MovieItems
-            try {
-                // Download the JSON-Response
-                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
-
-                // Parse the JSON-Response
-                return MovieJsonParser.extractMoviesFromJson(jsonMovieResponse);
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error parsing the URL or downloading the movie data");
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
@@ -198,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
             mMovieAdapter.setMovieData(null);
             mCurrentSelection = SELECTION_POPULAR;
-            showMovieData(mCurrentSelection);
+            downloadMovieData();
             return true;
         }
 
@@ -212,7 +176,7 @@ public class MainActivity extends AppCompatActivity
 
             mMovieAdapter.setMovieData(null);
             mCurrentSelection = SELECTION_TOP_RATED;
-            showMovieData(mCurrentSelection);
+            downloadMovieData();
             return true;
         }
 
