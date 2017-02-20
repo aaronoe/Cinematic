@@ -1,0 +1,208 @@
+package de.aaronoe.popularmovies.Database;
+
+import android.content.ContentProvider;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
+import de.aaronoe.popularmovies.DetailActivity;
+import de.aaronoe.popularmovies.MainActivity;
+
+import static de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry.TABLE_NAME;
+
+/**
+ *
+ * Created by aaron on 20.02.17.
+ */
+
+public class MoviesContentProvider extends ContentProvider {
+
+    public static final int MOVIES = 100;
+    public static final int MOVIES_WITH_ID = 101;
+
+    private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+
+    /**
+     * This function builds the URI matcher
+     * @return {@link UriMatcher} which matches Content Uri's to the corresponding tasks
+     */
+    public static UriMatcher buildUriMatcher() {
+
+        // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+        /*
+          All paths added to the UriMatcher have a corresponding int.
+          For each kind of uri you may want to access, add the corresponding match with addURI.
+          The two calls below add matches for the task directory and a single item by ID.
+         */
+        uriMatcher.addURI
+                (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE, MOVIES);
+        uriMatcher.addURI
+                (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE + "/#", MOVIES_WITH_ID);
+
+        return uriMatcher;
+    }
+
+
+
+    private MoviesDbHelper mMoviesDbHelper;
+
+
+    @Override
+    public boolean onCreate() {
+        mMoviesDbHelper = new MoviesDbHelper(getContext());
+        return true;
+    }
+
+    /**
+     * Query the items in the favorite movies database. This operation will be used in the
+     * {@link MainActivity} to display a list of the user's favorite movies. Hence, for now, we just
+     * need to return all the items in the table
+     * @param uri to specify action
+     * @param projection columns to be returned
+     * @param selection filter
+     * @param selectionArgs filter arguments
+     * @param sortOrder not necessary
+     * @return Cursor, pointing to the queried result
+     */
+    @Override
+    public Cursor query(@NonNull  Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+
+        final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
+        Cursor result;
+
+        switch (sUriMatcher.match(uri)) {
+
+            case MOVIES:
+
+                result = db.query(
+                        TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Operation for: "+ uri);
+
+        }
+
+        result.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return result;
+
+    }
+
+
+    /**
+     * Used to insert a movie into the database of favorite movies. Since this operation can only
+     * be performed on a single movie by clicking the button in
+     * {@link DetailActivity} we only need to implement functionality to insert
+     * one item at a time
+     *
+     * @param uri to specify action
+     * @param values key-value pairs for the data to be inserted
+     * @return Uri of item inserted
+     */
+    @Override
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
+
+        final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
+        Uri returnUri;
+
+        switch (sUriMatcher.match(uri)) {
+
+            // We use this as a default case, since we will only be adding one movie at a time
+            case MOVIES:
+
+                long id = db.insert(
+                        TABLE_NAME,
+                        null,
+                        values);
+
+                if (id > 0 ) {
+                    returnUri = ContentUris.withAppendedId(MovieEntry.CONTENT_URI, id);
+                } else {
+                    throw new SQLiteException("Failed to insert row into " + uri);
+                }
+
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unsupported Operation for: " + uri);
+
+        }
+
+        return returnUri;
+
+    }
+
+
+    /**
+     * Used to delete a movie from the favorites when the corresponding button is clicked in
+     * {@link DetailActivity}. Since we will only be deleting one movie
+     * at a time
+     * @param uri to specify operation
+     * @param selection filter
+     * @param selectionArgs filter selection
+     * @return number of rows deleted
+     */
+    @Override
+    public int delete(@NonNull  Uri uri, String selection, String[] selectionArgs) {
+
+        int numberOfRowsDeleted;
+
+        SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
+
+        switch (sUriMatcher.match(uri)) {
+
+            case MOVIES_WITH_ID:
+
+                String id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+                numberOfRowsDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+
+                break;
+
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+
+        }
+
+        // Notify the resolver of a change and return the number of items deleted
+        if (numberOfRowsDeleted != 0) {
+            // A task was deleted, set notification
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return numberOfRowsDeleted;
+
+
+    }
+
+    @Override
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        return 0;
+    }
+
+    @Nullable
+    @Override
+    public String getType(Uri uri) {
+        return null;
+    }
+
+
+}

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity
     String mCurrentSelection;
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
-    private final static String API_KEY = "de2c61fd451b50de11cee234a5d8346b";
+    private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
 
 
@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity
         //mRecyclerView.hasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
-
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 

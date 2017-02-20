@@ -30,6 +30,7 @@ public class MovieItem implements Parcelable {
     @SerializedName("vote_average")
     private Double mVoteAverage;
 
+
     public MovieItem(String PosterPath, String MovieDescription, String Title,
                      int MovieId, String releaseDate, Double voteAverage) {
         mPosterPath = PosterPath;
