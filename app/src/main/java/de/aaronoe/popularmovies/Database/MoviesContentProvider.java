@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.DetailActivity;
@@ -120,6 +121,7 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
 
+
         final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
         Uri returnUri;
 
@@ -128,10 +130,16 @@ public class MoviesContentProvider extends ContentProvider {
             // We use this as a default case, since we will only be adding one movie at a time
             case MOVIES:
 
+                Log.e(MoviesContentProvider.class.getSimpleName(), "Insert called with Uri: " + uri);
+
+
                 long id = db.insert(
                         TABLE_NAME,
                         null,
                         values);
+
+                Log.e(MoviesContentProvider.class.getSimpleName(), "Insert called with ID: " + id);
+
 
                 if (id > 0 ) {
                     returnUri = ContentUris.withAppendedId(MovieEntry.CONTENT_URI, id);
@@ -173,7 +181,10 @@ public class MoviesContentProvider extends ContentProvider {
 
                 String id = uri.getPathSegments().get(1);
                 // Use selections/selectionArgs to filter for this ID
-                numberOfRowsDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                numberOfRowsDeleted = db.delete(
+                        TABLE_NAME,
+                        MovieEntry.COLUMN_MOVIE_ID + "=?",
+                        new String[]{id});
 
                 break;
 

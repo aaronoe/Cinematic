@@ -25,6 +25,9 @@ public class MoviesContract {
         public static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITE).build();
 
+        public static final Uri CONTENT_URI_SINGLE =
+                Uri.parse(CONTENT_URI + "/#");
+
 
         public static final String TABLE_NAME = "fave_movies";
 
@@ -41,7 +44,7 @@ public class MoviesContract {
 
          */
 
-        public static final String COLUMN_POSTERPATH = "posterpath";
+        public static final String COLUMN_POSTER_PATH = "posterpath";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MOVIE_ID = "movieid";

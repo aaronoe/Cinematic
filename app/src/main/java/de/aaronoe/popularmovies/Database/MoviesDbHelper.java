@@ -29,7 +29,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
                         MovieEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, " +
                         MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                         MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
-                        MovieEntry.COLUMN_POSTERPATH + " TEXT NOT NULL, " +
+                        MovieEntry.COLUMN_POSTER_PATH + " TEXT NOT NULL, " +
                         MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
                         MovieEntry.COLUMN_VOTE_AVERAGE + " REAL NOT NULL);";
         db.execSQL(CREATE_TABLE);

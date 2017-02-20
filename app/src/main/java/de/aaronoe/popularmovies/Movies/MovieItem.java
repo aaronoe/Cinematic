@@ -61,6 +61,10 @@ public class MovieItem implements Parcelable {
         return mVoteAverage;
     }
 
+    public int getmMovieId() {
+        return mMovieId;
+    }
+
     protected MovieItem(Parcel in) {
         mPosterPath = in.readString();
         mMovieDescription = in.readString();

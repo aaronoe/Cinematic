@@ -95,11 +95,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
+                    <ToggleButton
+                        android:text="ToggleButton"
+                        android:textOff="Favorite"
+                        android:textOn="Favorited"
+                        android:layout_width="96dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/toggleButton" />
+
                 </LinearLayout>
 
 
             </LinearLayout>
-
 
 
             <View
@@ -110,7 +117,7 @@
                 android:layout_marginTop="16dp" />
 
 
-                <TextView
+            <TextView
                     android:textSize="20sp"
                     android:id="@+id/tv_detail_description"
                     tools:text="The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes."
