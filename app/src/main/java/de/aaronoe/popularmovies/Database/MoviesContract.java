@@ -50,6 +50,7 @@ public class MoviesContract {
         public static final String COLUMN_MOVIE_ID = "movieid";
         public static final String COLUMN_RELEASE_DATE = "releasedate";
         public static final String COLUMN_VOTE_AVERAGE = "voteaverage";
+        public static final String COLUMN_BACKDROP_PATH = "backdroppath";
 
 
     }

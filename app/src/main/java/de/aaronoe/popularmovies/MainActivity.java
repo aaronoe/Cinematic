@@ -1,10 +1,15 @@
 package de.aaronoe.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +23,8 @@ import java.util.List;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
+import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
+import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import retrofit2.Call;
@@ -26,7 +33,7 @@ import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickHandler {
+        implements LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.MovieAdapterOnClickHandler {
 
     // for debugging purposes
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -38,8 +45,10 @@ public class MainActivity extends AppCompatActivity
     String mCurrentSelection;
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
+    final String SELECTION_FAVORITES = "favorites";
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
+    private static final int FAVORITE_LOADER_ID = 26;
 
 
 
@@ -64,11 +73,15 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
+        getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
+
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         downloadMovieData();
 
     }
+
+
 
     private void downloadMovieData() {
 
@@ -99,6 +112,14 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+        }
+    }
 
     @Override
     public void onClick(MovieItem movieItem) {
@@ -179,8 +200,54 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        if (id == R.id.action_favorite) {
+
+
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+            mCurrentSelection = SELECTION_FAVORITES;
+            mMovieAdapter.setMovieData(null);
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        return new CursorLoader(
+                this,
+                MovieEntry.CONTENT_URI,
+                null, null, null, null);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        Log.d(TAG, "onLoadFinished start");
+        Log.d(TAG, "Length:" + data.getCount());
+
+        List<MovieItem> movieItemList = Utilities.extractMovieItemFromCursor(data);
+
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+        if (movieItemList != null) {
+            showMovieView();
+            mMovieAdapter.setMovieData(movieItemList);
+            mMovieAdapter.notifyDataSetChanged();
+        } else {
+            showErrorMessage();
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d(TAG, "Loader Reset");
+        mMovieAdapter.setMovieData(null);
+        getSupportLoaderManager().restartLoader(0, null, this);
+    }
 
 }

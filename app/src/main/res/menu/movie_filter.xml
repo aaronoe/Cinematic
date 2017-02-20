@@ -9,9 +9,12 @@
         android:title="@string/action_popular"
         android:id="@+id/action_popular" />
 
-
     <item
         android:title="@string/action_top_rated"
         android:id="@+id/action_top_rated" />
+
+    <item
+        android:title="@string/action_favorite"
+        android:id="@+id/action_favorite" />
 
 </menu>

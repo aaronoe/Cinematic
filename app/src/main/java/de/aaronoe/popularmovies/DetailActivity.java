@@ -22,7 +22,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.aaronoe.popularmovies.Database.MoviesContract;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
@@ -79,6 +78,7 @@ public class DetailActivity extends AppCompatActivity {
             mToggleButton.setChecked(false);
         }
 
+        Log.e(TAG, "Backdrop-Path: " + movieItem.getmBackdropPath());
 
         // Set Title
         mTitleTextView.setText(movieItem.getmTitle());

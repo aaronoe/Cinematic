@@ -30,15 +30,19 @@ public class MovieItem implements Parcelable {
     @SerializedName("vote_average")
     private Double mVoteAverage;
 
+    @SerializedName("backdrop_path")
+    private String mBackdropPath;
+
 
     public MovieItem(String PosterPath, String MovieDescription, String Title,
-                     int MovieId, String releaseDate, Double voteAverage) {
+                     int MovieId, String releaseDate, Double voteAverage, String backDropPath) {
         mPosterPath = PosterPath;
         mMovieDescription = MovieDescription;
         mTitle = Title;
         mMovieId = MovieId;
         mReleaseDate = releaseDate;
         mVoteAverage = voteAverage;
+        mBackdropPath = backDropPath;
     }
 
     public String getmPosterPath() {
@@ -65,6 +69,10 @@ public class MovieItem implements Parcelable {
         return mMovieId;
     }
 
+    public String getmBackdropPath() {
+        return mBackdropPath;
+    }
+
     protected MovieItem(Parcel in) {
         mPosterPath = in.readString();
         mMovieDescription = in.readString();
@@ -72,6 +80,7 @@ public class MovieItem implements Parcelable {
         mMovieId = in.readInt();
         mReleaseDate = in.readString();
         mVoteAverage = in.readByte() == 0x00 ? null : in.readDouble();
+        mBackdropPath = in.readString();
     }
 
     @Override
@@ -92,6 +101,7 @@ public class MovieItem implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeDouble(mVoteAverage);
         }
+        dest.writeString(mBackdropPath);
     }
 
     @SuppressWarnings("unused")
