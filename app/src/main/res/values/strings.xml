@@ -5,6 +5,13 @@
     <string name="action_top_rated">Top Rated</string>
     <string name="action_popular">Popular</string>
     <string name="action_favorite">Favorite</string>
+    <string name="action_upcoming">Upcoming</string>
     <string name="release_date">Release Date:</string>
     <string name="avg_rating">Average Rating:</string>
+
+    <string name="detail_video_thumbnail">Video Thumbnail</string>
+
+    <string name="button_on">Favorited</string>
+    <string name="button_off">Favorite</string>
+
 </resources>

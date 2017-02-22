@@ -34,17 +34,15 @@ public class VideoItem {
     private String type;
 
 
-    /**
-     *
-     * @param site
-     * @param iso6391
-     * @param id
-     * @param iso31661
-     * @param name
-     * @param type
-     * @param key
-     * @param size
-     */
+    public String getKey() {
+        return key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+
     public VideoItem(String id, String iso6391, String iso31661, String key, String name, String site, Integer size, String type) {
         super();
         this.id = id;

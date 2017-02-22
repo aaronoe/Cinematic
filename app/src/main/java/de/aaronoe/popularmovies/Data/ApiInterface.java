@@ -2,6 +2,7 @@ package de.aaronoe.popularmovies.Data;
 
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.Movies.ReviewResponse;
+import de.aaronoe.popularmovies.Movies.VideoResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -20,6 +21,6 @@ public interface ApiInterface {
     Call<ReviewResponse> getReviews(@Path("id") int id, @Query("api_key") String apiKey);
 
     @GET("movie/{id}/videos")
-    Call<ReviewResponse> getVideos(@Path("id") int id, @Query("api_key") String apiKey);
+    Call<VideoResponse> getVideos(@Path("id") int id, @Query("api_key") String apiKey);
 
 }

@@ -17,4 +17,9 @@
         android:title="@string/action_favorite"
         android:id="@+id/action_favorite" />
 
+    <item
+        android:title="@string/action_upcoming"
+        android:id="@+id/action_upcoming" />
+
+
 </menu>

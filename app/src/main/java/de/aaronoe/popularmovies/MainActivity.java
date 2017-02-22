@@ -25,6 +25,7 @@ import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
+import de.aaronoe.popularmovies.DetailPage.DetailActivityNew;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import retrofit2.Call;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
     final String SELECTION_FAVORITES = "favorites";
+    final String SELECTION_UPCOMING = "upcoming";
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivityNew.class);
         intentToStartDetailActivity.putExtra("MovieItem", movieItem);
         startActivity(intentToStartDetailActivity);
     }
@@ -172,40 +174,53 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_popular) {
+        switch (id) {
+            case R.id.action_popular:
+                // return if the option is already selected
+                if (mCurrentSelection.equals(SELECTION_POPULAR)) {
+                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
 
-            // return if the option is already selected
-            if (mCurrentSelection.equals(SELECTION_POPULAR)) {
-                Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                mMovieAdapter.setMovieData(null);
+                mCurrentSelection = SELECTION_POPULAR;
+                downloadMovieData();
                 return true;
-            }
 
-            mMovieAdapter.setMovieData(null);
-            mCurrentSelection = SELECTION_POPULAR;
-            downloadMovieData();
-            return true;
-        }
 
-        if (id == R.id.action_top_rated) {
+            case R.id.action_top_rated:
 
-            // return if the option is already selected
-            if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
-                Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                // return if the option is already selected
+                if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
+                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                mMovieAdapter.setMovieData(null);
+                mCurrentSelection = SELECTION_TOP_RATED;
+                downloadMovieData();
                 return true;
-            }
-
-            mMovieAdapter.setMovieData(null);
-            mCurrentSelection = SELECTION_TOP_RATED;
-            downloadMovieData();
-            return true;
-        }
-
-        if (id == R.id.action_favorite) {
 
 
-            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-            mCurrentSelection = SELECTION_FAVORITES;
-            mMovieAdapter.setMovieData(null);
+            case R.id.action_favorite:
+
+                getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+                mCurrentSelection = SELECTION_FAVORITES;
+                mMovieAdapter.setMovieData(null);
+                return true;
+
+
+            case R.id.action_upcoming:
+
+                if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
+                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                mMovieAdapter.setMovieData(null);
+                mCurrentSelection = SELECTION_UPCOMING;
+                downloadMovieData();
+                return true;
+
 
         }
 

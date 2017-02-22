@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detail_video_card"
+    card_view:cardCornerRadius="4dp"
+    android:elevation="16dp"
+    android:layout_margin="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/full_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_margin="8dp"
+            tools:text="Secret Life of Pets" />
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:id="@+id/thumbnail_picture_detail"
+            android:contentDescription="@string/detail_video_thumbnail"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
+
+    </LinearLayout>
+
+
+
+</android.support.v7.widget.CardView>

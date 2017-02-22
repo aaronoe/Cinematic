@@ -1,0 +1,28 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.aaronoe.popularmovies.DetailPage.DetailPageVideosFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_videos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/video_tv_error_message_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/error_message"
+        android:textSize="20sp"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/video_pb_loading_indicator"
+        android:layout_height="42dp"
+        android:layout_width="42dp"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+</FrameLayout>

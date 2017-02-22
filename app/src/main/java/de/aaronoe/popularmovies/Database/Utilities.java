@@ -4,8 +4,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
@@ -82,7 +87,7 @@ public class Utilities {
                 int movieId = movieCursor.getInt(movieIdIndex);
                 String releaseDate = movieCursor.getString(movieReleaseDateIndex);
                 Double voteAverage = movieCursor.getDouble(movieVoteAverageIndex);
-                String backdropPath = movieCursor.getColumnName(movieBackdropIndex);
+                String backdropPath = movieCursor.getString(movieBackdropIndex);
 
                 MovieItem currentMovie =
                         new MovieItem(posterPath, movieDescription, movieTitle,
@@ -99,6 +104,28 @@ public class Utilities {
         }
 
         return resultList;
+    }
+
+    /**
+     * Converts a date returned by the API into a different format.
+     *
+     * @param sourceDate a string representing a date in this format: 2015-12-15
+     * @return a string representing a date in this format: December 15, 2015
+     */
+    public static String convertDate(String sourceDate) {
+
+        DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        DateFormat targetFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+
+        Date date = null;
+        try {
+            date = sourceFormat.parse(sourceDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error formatting the date");
+        }
+        return targetFormat.format(date);
+
     }
 
 }

@@ -27,6 +27,15 @@
 
         </activity>
 
+        <activity
+            android:parentActivityName=".MainActivity"
+            android:name=".DetailPage.DetailActivityNew">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+        </activity>
+
         <provider
             android:authorities="de.aaronoe.popularmovies"
             android:name="de.aaronoe.popularmovies.Database.MoviesContentProvider"
