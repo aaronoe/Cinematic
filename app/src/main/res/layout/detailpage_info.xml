@@ -29,10 +29,6 @@
                 android:orientation="vertical">
 
 
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
 
                     <LinearLayout
@@ -103,27 +99,6 @@
 
                     </LinearLayout>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-
-                    <ToggleButton
-                        android:textOff="@string/button_off"
-                        android:textOn="@string/button_on"
-                        style="@style/Widget.AppCompat.Button.Colored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:id="@+id/toggleFavoriteButton" />
-
-                    </RelativeLayout>
-
-                </LinearLayout>
 
 
                 <TextView
@@ -137,6 +112,26 @@
                     android:id="@+id/tv_movie_description"
                     android:layout_gravity="center_horizontal"
                     tools:text="The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes."/>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ToggleButton
+                        android:textOff="@string/button_off"
+                        android:textOn="@string/button_on"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:id="@+id/toggleFavoriteButton" />
+
+                </RelativeLayout>
+
 
 
             </LinearLayout>

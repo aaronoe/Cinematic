@@ -25,13 +25,13 @@ import de.aaronoe.popularmovies.R;
  * Created by aaron on 21.02.17.
  */
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapterViewHolder> {
+class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapterViewHolder> {
 
 
     private List<VideoItem> videoItemList;
     private Context mContext;
 
-    public VideoAdapter(Context callerContext){
+    VideoAdapter(Context callerContext){
         mContext = callerContext;
     }
 
@@ -78,7 +78,7 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapter
     }
 
 
-    public void setVideoData(List<VideoItem> videoData) {
+    void setVideoData(List<VideoItem> videoData) {
         videoItemList = videoData;
         notifyDataSetChanged();
     }

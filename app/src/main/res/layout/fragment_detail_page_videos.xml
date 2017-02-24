@@ -18,6 +18,15 @@
         android:textSize="20sp"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/tv_no_items_available"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/not_available_resource"
+        android:textSize="20sp"
+        android:visibility="invisible" />
+
     <ProgressBar
         android:id="@+id/video_pb_loading_indicator"
         android:layout_height="42dp"

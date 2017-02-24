@@ -18,8 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
@@ -39,9 +44,6 @@ public class MainActivity extends AppCompatActivity
     // for debugging purposes
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
     public MovieAdapter mMovieAdapter;
     String mCurrentSelection;
     final String SELECTION_POPULAR = "popular";
@@ -51,6 +53,16 @@ public class MainActivity extends AppCompatActivity
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
+    private boolean loaderStarted = false;
+
+    @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
+    @BindView(R.id.fab_action_favorite) FloatingActionButton fabButtonFavorite;
+    @BindView(R.id.fab_action_top_rated) FloatingActionButton fabButtonTopRated;
+    @BindView(R.id.fab_action_popular) FloatingActionButton fabButtonPopular;
+    @BindView(R.id.fab_action_upcoming) FloatingActionButton fabButtonUpcoming;
+    @BindView(R.id.rv_main_movie_list) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
 
 
@@ -62,10 +74,7 @@ public class MainActivity extends AppCompatActivity
         // popular or top
         mCurrentSelection = SELECTION_POPULAR;
 
-        // instantiate member variables:
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_main_movie_list);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
+        ButterKnife.bind(this);
 
         GridLayoutManager gridLayout =
                 new GridLayoutManager(MainActivity.this, 2);
@@ -75,13 +84,52 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        getSupportLoaderManager().initLoader(FAVORITE_LOADER_ID, null, this);
+        initializeFabMenu();
+
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         downloadMovieData();
 
     }
+
+
+    public void initializeFabMenu() {
+
+        fabButtonFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectFavorite();
+                fabMenu.close(true);
+            }
+        });
+
+        fabButtonPopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPopular();
+                fabMenu.close(true);
+            }
+        });
+
+        fabButtonTopRated.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTopRated();
+                fabMenu.close(true);
+            }
+        });
+
+        fabButtonUpcoming.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectUpcoming();
+                fabMenu.close(true);
+            }
+        });
+
+    }
+
 
 
 
@@ -170,6 +218,57 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
+
+
+    private boolean selectPopular() {
+        if (mCurrentSelection.equals(SELECTION_POPULAR)) {
+            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        mMovieAdapter.setMovieData(null);
+        mCurrentSelection = SELECTION_POPULAR;
+        downloadMovieData();
+        return true;
+    }
+
+
+    private boolean selectTopRated() {
+        // return if the option is already selected
+        if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
+            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        mMovieAdapter.setMovieData(null);
+        mCurrentSelection = SELECTION_TOP_RATED;
+        downloadMovieData();
+        return true;
+    }
+
+
+    private boolean selectFavorite() {
+        getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+
+        mCurrentSelection = SELECTION_FAVORITES;
+        mMovieAdapter.setMovieData(null);
+        return true;
+    }
+
+
+    private boolean selectUpcoming() {
+        if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
+            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        mMovieAdapter.setMovieData(null);
+        mCurrentSelection = SELECTION_UPCOMING;
+        downloadMovieData();
+        return true;
+    }
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -177,50 +276,20 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.action_popular:
                 // return if the option is already selected
-                if (mCurrentSelection.equals(SELECTION_POPULAR)) {
-                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                mMovieAdapter.setMovieData(null);
-                mCurrentSelection = SELECTION_POPULAR;
-                downloadMovieData();
-                return true;
-
+                return selectPopular();
 
             case R.id.action_top_rated:
 
-                // return if the option is already selected
-                if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
-                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-
-                mMovieAdapter.setMovieData(null);
-                mCurrentSelection = SELECTION_TOP_RATED;
-                downloadMovieData();
-                return true;
+                return selectTopRated();
 
 
             case R.id.action_favorite:
 
-                getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-                mCurrentSelection = SELECTION_FAVORITES;
-                mMovieAdapter.setMovieData(null);
-                return true;
-
+                return selectFavorite();
 
             case R.id.action_upcoming:
 
-                if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
-                    Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-                mMovieAdapter.setMovieData(null);
-                mCurrentSelection = SELECTION_UPCOMING;
-                downloadMovieData();
-                return true;
-
+                return selectUpcoming();
 
         }
 

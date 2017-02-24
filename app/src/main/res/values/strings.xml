@@ -14,4 +14,11 @@
     <string name="button_on">Favorited</string>
     <string name="button_off">Favorite</string>
 
+    <string name="filter_menu">Menu</string>
+
+    <string name="review_author">Author: </string>
+    <string name="open_review">Open Review</string>
+    <string name="not_available_resource">There\'s no info available for this movie yet.</string>
+    <string name="click_to_expand">Click text to expand review</string>
+
 </resources>
