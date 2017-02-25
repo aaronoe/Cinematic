@@ -114,6 +114,16 @@
                 fab:fab_label="@string/action_favorite"
                 fab:fab_size="mini" />
 
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fab_action_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/colorPrimaryDark"
+                fab:fab_colorPressed="@color/colorPrimary"
+                android:src="@drawable/ic_search_white_24dp"
+                fab:fab_label="@string/action_search"
+                fab:fab_size="mini" />
+
 
         </com.github.clans.fab.FloatingActionMenu>
 

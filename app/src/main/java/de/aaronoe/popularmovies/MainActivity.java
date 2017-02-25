@@ -10,9 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +27,7 @@ import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
-import de.aaronoe.popularmovies.DetailPage.DetailActivityNew;
+import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import retrofit2.Call;
@@ -53,13 +50,14 @@ public class MainActivity extends AppCompatActivity
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
-    private boolean loaderStarted = false;
+    List<MovieItem> movieItemList;
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
     @BindView(R.id.fab_action_favorite) FloatingActionButton fabButtonFavorite;
     @BindView(R.id.fab_action_top_rated) FloatingActionButton fabButtonTopRated;
     @BindView(R.id.fab_action_popular) FloatingActionButton fabButtonPopular;
     @BindView(R.id.fab_action_upcoming) FloatingActionButton fabButtonUpcoming;
+    @BindView(R.id.fab_action_search) FloatingActionButton fabButtonSearch;
     @BindView(R.id.rv_main_movie_list) RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
@@ -128,9 +126,15 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        fabButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectSearch();
+                fabMenu.close(true);
+            }
+        });
+
     }
-
-
 
 
     private void downloadMovieData() {
@@ -142,7 +146,7 @@ public class MainActivity extends AppCompatActivity
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<MovieItem> movieItemList = response.body().getResults();
+                movieItemList = response.body().getResults();
 
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 if (movieItemList != null) {
@@ -173,7 +177,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivityNew.class);
+        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieItem", movieItem);
         startActivity(intentToStartDetailActivity);
     }
@@ -208,19 +212,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /* Use AppCompatActivity's method getMenuInflater to get a handle on the menu inflater */
-        MenuInflater inflater = getMenuInflater();
-        /* Use the inflater's inflate method to inflate our menu layout to this menu */
-        inflater.inflate(R.menu.movie_filter, menu);
-        /* Return true so that the menu is displayed in the Toolbar */
-        return true;
-    }
-
-
-
-
     private boolean selectPopular() {
         if (mCurrentSelection.equals(SELECTION_POPULAR)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
@@ -231,6 +222,11 @@ public class MainActivity extends AppCompatActivity
         mCurrentSelection = SELECTION_POPULAR;
         downloadMovieData();
         return true;
+    }
+
+    private void selectSearch() {
+        Intent intentToStartSearchActivity = new Intent(MainActivity.this, SearchActivity.class);
+        startActivity(intentToStartSearchActivity);
     }
 
 
@@ -270,35 +266,6 @@ public class MainActivity extends AppCompatActivity
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_popular:
-                // return if the option is already selected
-                return selectPopular();
-
-            case R.id.action_top_rated:
-
-                return selectTopRated();
-
-
-            case R.id.action_favorite:
-
-                return selectFavorite();
-
-            case R.id.action_upcoming:
-
-                return selectUpcoming();
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         return new CursorLoader(
@@ -314,7 +281,7 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "onLoadFinished start");
         Log.d(TAG, "Length:" + data.getCount());
 
-        List<MovieItem> movieItemList = Utilities.extractMovieItemFromCursor(data);
+        movieItemList = Utilities.extractMovieItemFromCursor(data);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (movieItemList != null) {

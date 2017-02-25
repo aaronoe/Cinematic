@@ -38,13 +38,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
 
-        public final ImageView mImageView;
+        final ImageView mImageView;
 
 
-        public MovieAdapterViewHolder(View view) {
+        MovieAdapterViewHolder(View view) {
             super(view);
             mImageView = (ImageView) view.findViewById(R.id.iv_movie_thumbnail);
             view.setOnClickListener(this);
@@ -78,9 +78,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
         return new MovieAdapterViewHolder(view);
     }
 
@@ -108,7 +107,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // get a reference to this item's ImageView
         ImageView currentImageView = holder.mImageView;
         // use picasso to load the image into the view
-        Picasso.with(holder.itemView.getContext()).load(pictureUrl).into(currentImageView);
+        Picasso.with(holder.itemView.getContext())
+                .load(pictureUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(currentImageView);
     }
 
 

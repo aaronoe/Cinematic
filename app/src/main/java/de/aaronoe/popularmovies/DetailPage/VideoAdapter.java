@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,12 +52,15 @@ class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.VideoAdapterViewHol
         VideoItem thisItem = videoItemList.get(position);
         String videoTitle = thisItem.getName();
         holder.mMovieTitleTextView.setText(videoTitle);
-        Log.e("VideoAdapter: ", videoTitle);
 
         // Set thumbnail video
         final String videoKey = thisItem.getKey();
         String thumbnailUrl = "http://img.youtube.com/vi/"+ videoKey +"/0.jpg";
-        Picasso.with(holder.itemView.getContext()).load(thumbnailUrl).into(holder.mThumbnailImageView);
+        Picasso.with(holder.itemView.getContext())
+                .load(thumbnailUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(holder.mThumbnailImageView);
 
         holder.mThumbnailImageView.setOnClickListener(new View.OnClickListener() {
             @Override

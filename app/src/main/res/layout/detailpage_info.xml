@@ -29,8 +29,6 @@
                 android:orientation="vertical">
 
 
-
-
                     <LinearLayout
                         android:orientation="vertical"
                         android:layout_width="wrap_content"
@@ -112,6 +110,7 @@
                     android:id="@+id/tv_movie_description"
                     android:layout_gravity="center_horizontal"
                     tools:text="The quiet life of a terrier named Max is upended when his owner takes in Duke, a stray whom Max instantly dislikes."/>
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"

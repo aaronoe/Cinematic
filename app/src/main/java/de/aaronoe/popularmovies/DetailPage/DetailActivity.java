@@ -1,6 +1,5 @@
 package de.aaronoe.popularmovies.DetailPage;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -8,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,14 +22,12 @@ import de.aaronoe.popularmovies.R;
  * Created by aaron on 21.02.17.
  */
 
-public class DetailActivityNew extends AppCompatActivity
+public class DetailActivity extends AppCompatActivity
         implements AppBarLayout.OnOffsetChangedListener{
 
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
     private boolean mIsAvatarShown = true;
     private int mMaxScrollSize;
-    private boolean activityClosed = false;
-    private Context mContext = this;
 
 
     @BindView(R.id.detailpage_profile_backdrop) ImageView mBackDropImageView;
@@ -54,14 +50,12 @@ public class DetailActivityNew extends AppCompatActivity
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         mMaxScrollSize = mAppBarLayout.getTotalScrollRange();
-        Log.e(DetailActivityNew.class.getSimpleName(), "Opened detailacitivity");
 
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("MovieItem")) {
                 mMovieItem = intentThatStartedThisActivity.getParcelableExtra("MovieItem");
-                Log.e(DetailActivityNew.class.getSimpleName(), mMovieItem.getmBackdropPath());
 
                 populateViewsWithData();
             }
@@ -81,14 +75,21 @@ public class DetailActivityNew extends AppCompatActivity
         String picturePath = mMovieItem.getmPosterPath();
         // put the picture URL together
         String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
-        Picasso.with(this).load(pictureUrl).into(mProfileImageView);
+        Picasso.with(this)
+                .load(pictureUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(mProfileImageView);
 
         // Set Movie Backdrop
         String backdropPath = mMovieItem.getmBackdropPath();
         // put the picture URL together
         String backdropUrl = "http://image.tmdb.org/t/p/w500/" + backdropPath;
-        Log.e("backdrop: ", backdropPath);
-        Picasso.with(this).load(backdropUrl).into(mBackDropImageView);
+        Picasso.with(this)
+                .load(backdropUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(mBackDropImageView);
 
     }
 

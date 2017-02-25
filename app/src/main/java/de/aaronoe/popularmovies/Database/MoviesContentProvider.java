@@ -12,7 +12,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
-import de.aaronoe.popularmovies.DetailActivity;
+import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.MainActivity;
 
 import static de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry.TABLE_NAME;
@@ -195,7 +195,11 @@ public class MoviesContentProvider extends ContentProvider {
         // Notify the resolver of a change and return the number of items deleted
         if (numberOfRowsDeleted != 0) {
             // A task was deleted, set notification
-            getContext().getContentResolver().notifyChange(uri, null);
+            try {
+                getContext().getContentResolver().notifyChange(uri, null);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
 
         return numberOfRowsDeleted;

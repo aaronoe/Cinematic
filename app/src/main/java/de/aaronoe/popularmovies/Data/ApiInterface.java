@@ -14,6 +14,7 @@ import retrofit2.http.Query;
  */
 
 public interface ApiInterface {
+
     @GET("movie/{filter}")
     Call<MovieResponse> getMovies(@Path("filter") String filter, @Query("api_key") String apiKey);
 
@@ -22,5 +23,8 @@ public interface ApiInterface {
 
     @GET("movie/{id}/videos")
     Call<VideoResponse> getVideos(@Path("id") int id, @Query("api_key") String apiKey);
+
+    @GET("search/movie")
+    Call<MovieResponse> searchForMovies(@Query("query") String searchQuery, @Query("api_key") String apiKey);
 
 }

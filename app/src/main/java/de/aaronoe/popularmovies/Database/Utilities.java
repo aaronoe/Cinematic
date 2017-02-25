@@ -59,11 +59,7 @@ public class Utilities {
      */
     public static List<MovieItem> extractMovieItemFromCursor(Cursor movieCursor) {
 
-        Log.d(TAG, "extract movies called");
-
         if (movieCursor == null || movieCursor.getCount() == 0) return null;
-
-        Log.d(TAG, "starts extracting");
 
         List<MovieItem> resultList = new ArrayList<>();
 

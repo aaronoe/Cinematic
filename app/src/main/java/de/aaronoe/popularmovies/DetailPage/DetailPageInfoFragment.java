@@ -123,7 +123,7 @@ public class DetailPageInfoFragment extends Fragment {
                         MoviesContract.MovieEntry.CONTENT_URI,
                         Utilities.getContentValuesForMovie(mMovieItem));
 
-                Toast.makeText(getActivity(), "Item inserted for: " + uri, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
 
 
             } else {
