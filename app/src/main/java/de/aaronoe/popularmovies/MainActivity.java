@@ -1,15 +1,18 @@
 package de.aaronoe.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,15 +45,20 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
 
     public MovieAdapter mMovieAdapter;
-    String mCurrentSelection;
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
     final String SELECTION_FAVORITES = "favorites";
     final String SELECTION_UPCOMING = "upcoming";
+    final String SELECTION_SEARCH = "search";
+    String mCurrentSelection;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
     List<MovieItem> movieItemList;
+    GridLayoutManager gridLayout;
+    private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+    private Parcelable mLayoutManagerSavedState;
+
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
     @BindView(R.id.fab_action_favorite) FloatingActionButton fabButtonFavorite;
@@ -69,13 +77,13 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // popular or top
-        mCurrentSelection = SELECTION_POPULAR;
+        // Get last state
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
         ButterKnife.bind(this);
 
-        GridLayoutManager gridLayout =
-                new GridLayoutManager(MainActivity.this, 2);
+        gridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
@@ -84,11 +92,38 @@ public class MainActivity extends AppCompatActivity
 
         initializeFabMenu();
 
-
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        downloadMovieData();
+        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+        } else if (mCurrentSelection.equals(SELECTION_SEARCH)) {
+            selectSearch();
+        } else {
+            downloadMovieData();
+        }
+    }
 
+
+    private void restorePosition() {
+        if (mLayoutManagerSavedState != null) {
+            gridLayout.onRestoreInstanceState(mLayoutManagerSavedState);
+            mLayoutManagerSavedState = null;
+        }
+    }
+
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
     }
 
 
@@ -155,6 +190,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     showErrorMessage();
                 }
+                restorePosition();
             }
 
             @Override
@@ -167,13 +203,12 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-        }
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return (int) (dpWidth / 180);
     }
+
 
     @Override
     public void onClick(MovieItem movieItem) {
@@ -194,6 +229,14 @@ public class MainActivity extends AppCompatActivity
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
         mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+
+    private void saveSelection(String selection) {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.SAVE_SELECTION_KEY), selection);
+        editor.apply();
     }
 
 
@@ -221,10 +264,12 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter.setMovieData(null);
         mCurrentSelection = SELECTION_POPULAR;
         downloadMovieData();
+        saveSelection(SELECTION_POPULAR);
         return true;
     }
 
     private void selectSearch() {
+        saveSelection(SELECTION_SEARCH);
         Intent intentToStartSearchActivity = new Intent(MainActivity.this, SearchActivity.class);
         startActivity(intentToStartSearchActivity);
     }
@@ -240,6 +285,7 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter.setMovieData(null);
         mCurrentSelection = SELECTION_TOP_RATED;
         downloadMovieData();
+        saveSelection(SELECTION_TOP_RATED);
         return true;
     }
 
@@ -249,6 +295,7 @@ public class MainActivity extends AppCompatActivity
 
         mCurrentSelection = SELECTION_FAVORITES;
         mMovieAdapter.setMovieData(null);
+        saveSelection(SELECTION_FAVORITES);
         return true;
     }
 
@@ -261,6 +308,7 @@ public class MainActivity extends AppCompatActivity
         mMovieAdapter.setMovieData(null);
         mCurrentSelection = SELECTION_UPCOMING;
         downloadMovieData();
+        saveSelection(SELECTION_UPCOMING);
         return true;
     }
 
@@ -278,9 +326,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        Log.d(TAG, "onLoadFinished start");
-        Log.d(TAG, "Length:" + data.getCount());
-
         movieItemList = Utilities.extractMovieItemFromCursor(data);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
@@ -288,6 +333,7 @@ public class MainActivity extends AppCompatActivity
             showMovieView();
             mMovieAdapter.setMovieData(movieItemList);
             mMovieAdapter.notifyDataSetChanged();
+            restorePosition();
         } else {
             showErrorMessage();
         }
@@ -296,7 +342,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.d(TAG, "Loader Reset");
         mMovieAdapter.setMovieData(null);
         getSupportLoaderManager().restartLoader(0, null, this);
     }

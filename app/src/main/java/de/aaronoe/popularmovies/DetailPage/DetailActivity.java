@@ -41,6 +41,7 @@ public class DetailActivity extends AppCompatActivity
     MovieItem mMovieItem;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -23,5 +23,7 @@
     <string name="action_search">Search</string>
     <string name="added_to_favorites">Added to your favorites</string>
     <string name="search_for_movie">Search for Movies</string>
+    <string name="SAVE_SELECTION_KEY">SAVE_SELECTION_KEY</string>
+    <string name="SAVE_POSITION_KEY">SAVE_POSITION_KEY</string>
 
 </resources>
