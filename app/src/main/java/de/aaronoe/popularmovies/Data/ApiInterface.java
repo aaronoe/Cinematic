@@ -18,6 +18,9 @@ public interface ApiInterface {
     @GET("movie/{filter}")
     Call<MovieResponse> getMovies(@Path("filter") String filter, @Query("api_key") String apiKey);
 
+    @GET("movie/{filter}")
+    Call<MovieResponse> getPageOfMovies(@Path("filter") String filter, @Query("api_key") String apiKey, @Query("page") int pageNumber);
+
     @GET("movie/{id}/reviews")
     Call<ReviewResponse> getReviews(@Path("id") int id, @Query("api_key") String apiKey);
 

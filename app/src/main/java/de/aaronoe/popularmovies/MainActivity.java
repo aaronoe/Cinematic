@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,12 +22,14 @@ import android.widget.Toast;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
+import de.aaronoe.popularmovies.Data.EndlessRecyclerViewScrollListener;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
@@ -56,8 +59,11 @@ public class MainActivity extends AppCompatActivity
     private static final int FAVORITE_LOADER_ID = 26;
     List<MovieItem> movieItemList;
     GridLayoutManager gridLayout;
+    GridLayoutManager favoriteGridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
+    private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
     private Parcelable mLayoutManagerSavedState;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.fab_action_upcoming) FloatingActionButton fabButtonUpcoming;
     @BindView(R.id.fab_action_search) FloatingActionButton fabButtonSearch;
     @BindView(R.id.rv_main_movie_list) RecyclerView mRecyclerView;
+    @BindView(R.id.rv_favorite_movie_list) RecyclerView mFavoritesRecyclerView;
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
@@ -84,22 +91,43 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         gridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
+        favoriteGridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
+
+        scrollListener = new EndlessRecyclerViewScrollListener(gridLayout) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                downloadNextPageOfMovies(page);
+
+            }
+        };
+
+        mRecyclerView.addOnScrollListener(scrollListener);
+
+
         initializeFabMenu();
+        if (savedInstanceState != null) {
+            movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
+            restorePosition();
+        }
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+            selectFavorite();
         } else if (mCurrentSelection.equals(SELECTION_SEARCH)) {
             selectSearch();
         } else {
-            downloadMovieData();
+            if (movieItemList == null || movieItemList.size() == 0) {
+                downloadMovieData();
+                mRecyclerView.addOnScrollListener(scrollListener);
+
+            }
         }
     }
 
@@ -116,6 +144,9 @@ public class MainActivity extends AppCompatActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
+            movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
+            mMovieAdapter.setMovieData(movieItemList);
+            Log.e(TAG, "Movie data size after restore: " + movieItemList.size());
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
         }
     }
@@ -124,6 +155,7 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<MovieItem>) movieItemList);
     }
 
 
@@ -172,7 +204,42 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+    private void downloadNextPageOfMovies(int page) {
+
+        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieItem> newMovies = response.body().getResults();
+
+                if (newMovies != null) {
+                    int size = newMovies.size();
+                    int previousSize = movieItemList.size();
+                    movieItemList.addAll(newMovies);
+                    mMovieAdapter.notifyItemRangeChanged(previousSize, size);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+
     private void downloadMovieData() {
+
+        if (movieItemList != null) {
+            movieItemList.clear();
+            mMovieAdapter.notifyDataSetChanged();
+            scrollListener.resetState();
+        }
 
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
@@ -190,7 +257,9 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     showErrorMessage();
                 }
-                restorePosition();
+                //restorePosition();
+                Log.e(TAG, "after download: " + movieItemList.size());
+
             }
 
             @Override
@@ -228,7 +297,19 @@ public class MainActivity extends AppCompatActivity
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
+        mFavoritesRecyclerView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+
+        scrollListener.resetState();
+        mRecyclerView.addOnScrollListener(scrollListener);
+    }
+
+    private void showFavoriteMovieView() {
+        /* First, make sure the error is invisible */
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        /* Then, make sure the weather data is visible */
+        mFavoritesRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.GONE);
     }
 
 
@@ -291,8 +372,8 @@ public class MainActivity extends AppCompatActivity
 
 
     private boolean selectFavorite() {
+        mRecyclerView.removeOnScrollListener(scrollListener);
         getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-
         mCurrentSelection = SELECTION_FAVORITES;
         mMovieAdapter.setMovieData(null);
         saveSelection(SELECTION_FAVORITES);
@@ -330,7 +411,9 @@ public class MainActivity extends AppCompatActivity
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
         if (movieItemList != null) {
-            showMovieView();
+            mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
+            showFavoriteMovieView();
+            mFavoritesRecyclerView.setAdapter(mMovieAdapter);
             mMovieAdapter.setMovieData(movieItemList);
             mMovieAdapter.notifyDataSetChanged();
             restorePosition();
