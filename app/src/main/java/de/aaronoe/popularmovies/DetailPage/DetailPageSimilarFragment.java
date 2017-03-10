@@ -3,8 +3,8 @@ package de.aaronoe.popularmovies.DetailPage;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +45,7 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
 
     ApiInterface apiService;
     MovieItem mMovieItem;
-    GridLayoutManager gridLayout;
+    StaggeredGridLayoutManager gridLayout;
     public MovieAdapter mMovieAdapter;
     List<MovieItem> movieItemList;
 
@@ -56,7 +56,8 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
         ButterKnife.bind(this, rootView);
         mMovieItem = getArguments().getParcelable("thisMovie");
 
-        gridLayout = new GridLayoutManager(getActivity(), MainActivity.calculateNoOfColumns(getContext()));
+        gridLayout = new StaggeredGridLayoutManager
+                (MainActivity.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
 
 
         mRecyclerView.setLayoutManager(gridLayout);

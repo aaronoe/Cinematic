@@ -10,8 +10,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
     List<MovieItem> movieItemList;
-    GridLayoutManager gridLayout;
-    GridLayoutManager favoriteGridLayout;
+    StaggeredGridLayoutManager gridLayout;
+    StaggeredGridLayoutManager favoriteGridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
     private Parcelable mLayoutManagerSavedState;
@@ -90,8 +90,10 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        gridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
-        favoriteGridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
+        gridLayout = new StaggeredGridLayoutManager
+                (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+        favoriteGridLayout = new StaggeredGridLayoutManager
+                        (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);

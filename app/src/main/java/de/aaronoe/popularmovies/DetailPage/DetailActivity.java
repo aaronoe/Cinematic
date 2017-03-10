@@ -29,7 +29,6 @@ public class DetailActivity extends AppCompatActivity
     private boolean mIsAvatarShown = true;
     private int mMaxScrollSize;
 
-
     @BindView(R.id.detailpage_profile_backdrop) ImageView mBackDropImageView;
     @BindView(R.id.detailpage_profile_image) ImageView mProfileImageView;
     @BindView(R.id.detailpage_movie_title) TextView mMovieTitleTextView;

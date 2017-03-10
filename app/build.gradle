@@ -33,12 +33,10 @@ dependencies {
     })
 
 
-    compile 'com.github.florent37:materialviewpager:1.2.1'
 
-//dependencies
-    compile 'com.flaviofaria:kenburnsview:1.0.7'
-    compile 'com.jpardogo.materialtabstrip:library:1.1.0'
+    compile 'com.makeramen:roundedimageview:2.2.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.ms-square:expandableTextView:0.1.4'
 
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:recyclerview-v7:25.2.0'
@@ -57,4 +55,5 @@ dependencies {
     compile 'com.jpardogo.materialtabstrip:library:1.1.1'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

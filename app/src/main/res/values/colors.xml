@@ -11,4 +11,9 @@
     <color name="divider">#BDBDBD</color>
     <color name="detail_color">#009688</color>
 
+    <color name="colorControlHighlight">@color/fifty_percent_transparency_grey_400</color>
+    <color name="fifty_percent_transparency_grey_400">#80bdbdbd</color>
+    <color name="grey_500">#9e9e9e</color>
+    <color name="grey_700">#616161</color>
+
 </resources>

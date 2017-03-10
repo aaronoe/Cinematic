@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,7 +55,8 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterView
         final String url = thisReview.getUrl();
 
         holder.reviewAuthorTv.setText(author);
-        holder.reviewTextTv.setText(reviewText);
+        //holder.reviewTextTv.setText(reviewText);
+        holder.expandableTextView.setText(reviewText);
 
 
         holder.reviewButton.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +90,12 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewAdapterView
 
         @BindView(R.id.tv_review_author)
         TextView reviewAuthorTv;
-        @BindView(R.id.tv_review_text)
+        @BindView(R.id.expandable_text)
         TextView reviewTextTv;
         @BindView(R.id.button_review_link)
         Button reviewButton;
+        @BindView(R.id.expand_text_view)
+        ExpandableTextView expandableTextView;
 
 
         ReviewAdapterViewHolder(View view){
