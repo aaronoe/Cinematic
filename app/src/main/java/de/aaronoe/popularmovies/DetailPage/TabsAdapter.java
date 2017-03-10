@@ -26,13 +26,14 @@ class TabsAdapter extends FragmentPagerAdapter {
             case 0: return DetailPageInfoFragment.newInstance(movieItem);
             case 1: return DetailPageVideosFragment.newInstance(movieItem);
             case 2: return DetailPageReviewFragment.newInstance(movieItem);
+            case 3: return DetailPageSimilarFragment.newInstance(movieItem);
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
@@ -41,6 +42,7 @@ class TabsAdapter extends FragmentPagerAdapter {
             case 0: return "Info";
             case 1: return "Videos";
             case 2: return "Reviews";
+            case 3: return "Similar";
         }
         return "";
     }

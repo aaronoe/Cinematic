@@ -209,6 +209,8 @@ public class MainActivity extends AppCompatActivity
 
         Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
 
+        Log.v(TAG, "Downloading next page: " + (page + 1));
+
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -220,7 +222,6 @@ public class MainActivity extends AppCompatActivity
                     movieItemList.addAll(newMovies);
                     mMovieAdapter.notifyItemRangeChanged(previousSize, size);
                 }
-
             }
 
             @Override
@@ -230,7 +231,6 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
-
 
 
     private void downloadMovieData() {
@@ -339,6 +339,7 @@ public class MainActivity extends AppCompatActivity
     private boolean selectPopular() {
         if (mCurrentSelection.equals(SELECTION_POPULAR)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
 
@@ -360,6 +361,7 @@ public class MainActivity extends AppCompatActivity
         // return if the option is already selected
         if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
 
@@ -372,6 +374,13 @@ public class MainActivity extends AppCompatActivity
 
 
     private boolean selectFavorite() {
+
+        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
+            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mFavoritesRecyclerView.smoothScrollToPosition(1);
+            return true;
+        }
+
         mRecyclerView.removeOnScrollListener(scrollListener);
         getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         mCurrentSelection = SELECTION_FAVORITES;
@@ -384,6 +393,7 @@ public class MainActivity extends AppCompatActivity
     private boolean selectUpcoming() {
         if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
         mMovieAdapter.setMovieData(null);
