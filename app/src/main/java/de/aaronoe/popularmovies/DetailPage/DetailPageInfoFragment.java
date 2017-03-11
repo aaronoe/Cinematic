@@ -90,6 +90,7 @@ public class DetailPageInfoFragment extends Fragment {
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
 
         mActorRecyclerView.setLayoutManager(linearLayoutManager);
+        mActorRecyclerView.setNestedScrollingEnabled(false);
         crewAdapter = new CrewAdapter(getActivity());
         mActorRecyclerView.setAdapter(crewAdapter);
 

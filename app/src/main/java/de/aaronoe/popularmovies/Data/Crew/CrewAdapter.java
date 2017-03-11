@@ -1,6 +1,7 @@
 package de.aaronoe.popularmovies.Data.Crew;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.DetailPage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.popularmovies.R;
 
 /**
@@ -44,7 +46,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
     @Override
     public void onBindViewHolder(CrewViewHolder holder, int position) {
 
-        Cast castItem = castList.get(position);
+        final Cast castItem = castList.get(position);
 
         String characterName = castItem.getCharacter();
         String actorName = castItem.getName();
@@ -61,6 +63,14 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
                 .error(R.drawable.error)
                 .into(actorIv);
 
+        actorIv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentToStartActorDetailActivity = new Intent(mContext, ActorDetailsActivity.class);
+                intentToStartActorDetailActivity.putExtra("CAST_ITEM", castItem);
+                mContext.startActivity(intentToStartActorDetailActivity);
+            }
+        });
 
     }
 

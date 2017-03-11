@@ -1,5 +1,6 @@
 package de.aaronoe.popularmovies.Data;
 
+import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.Crew.Credits;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
@@ -45,6 +46,10 @@ public interface ApiInterface {
     @GET("movie/{id}/credits")
     Call<Credits> getCredits(@Path("id") int id,
                              @Query("api_key") String apiKey);
+
+    @GET("person/{person_id}")
+    Call<Actor> getActorDetails(@Path("person_id") int id,
+                                @Query("api_key") String apiKey);
 
     @GET("person/{person_id}/combined_credits")
     Call<ActorCredits> getActorCredits(@Path("person_id") int id,
