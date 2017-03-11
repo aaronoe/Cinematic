@@ -18,8 +18,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/detail_card"
             card_view:cardCornerRadius="2dp"
-            android:elevation="16dp"
-            android:layout_margin="12dp">
+            android:elevation="16dp" >
 
 
             <LinearLayout
@@ -131,12 +130,23 @@
 
                 </RelativeLayout>
 
-
-
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
+        <TextView
+            android:text="Cast:"
+            style="@style/DetailHeadline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/actor_rv"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

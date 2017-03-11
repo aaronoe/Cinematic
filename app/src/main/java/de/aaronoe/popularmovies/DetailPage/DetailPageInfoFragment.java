@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +16,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.BuildConfig;
+import de.aaronoe.popularmovies.Data.ApiClient;
+import de.aaronoe.popularmovies.Data.ApiInterface;
+import de.aaronoe.popularmovies.Data.Crew.Cast;
+import de.aaronoe.popularmovies.Data.Crew.Credits;
+import de.aaronoe.popularmovies.Data.Crew.CrewAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  *
@@ -29,11 +42,17 @@ import de.aaronoe.popularmovies.R;
 public class DetailPageInfoFragment extends Fragment {
 
     MovieItem mMovieItem;
+    private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
 
     @BindView(R.id.tv_movie_rating) TextView ratingTextView;
     @BindView(R.id.tv_movie_date) TextView dateTextView;
     @BindView(R.id.tv_movie_description) TextView descriptionTextView;
     @BindView(R.id.toggleFavoriteButton) ToggleButton toggleFavoriteButton;
+    @BindView(R.id.actor_rv) RecyclerView mActorRecyclerView;
+
+    ApiInterface apiService;
+    List<Cast> castList;
+    CrewAdapter crewAdapter;
 
     public DetailPageInfoFragment(){}
 
@@ -66,6 +85,16 @@ public class DetailPageInfoFragment extends Fragment {
         dateTextView.setText(Utilities.convertDate(mMovieItem.getmReleaseDate()));
 
         descriptionTextView.setText(mMovieItem.getmMovieDescription());
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+
+        mActorRecyclerView.setLayoutManager(linearLayoutManager);
+        crewAdapter = new CrewAdapter(getActivity());
+        mActorRecyclerView.setAdapter(crewAdapter);
+
+        apiService = ApiClient.getClient().create(ApiInterface.class);
+        downloadCredits(mMovieItem.getmMovieId());
 
         return rootView;
 
@@ -145,5 +174,37 @@ public class DetailPageInfoFragment extends Fragment {
             }
         }
     };
+
+
+    /**
+     * Download credits for a given movie
+     * @param movieId unique identifier for the given movie, used to query moviedb API
+     */
+    private void downloadCredits(int movieId) {
+
+        Call<Credits> call = apiService.getCredits(movieId, API_KEY);
+
+        call.enqueue(new Callback<Credits>() {
+            @Override
+            public void onResponse(Call<Credits> call, Response<Credits> response) {
+                castList = response.body().getCast();
+                mActorRecyclerView.setVisibility(View.VISIBLE);
+                if (castList != null) {
+                    crewAdapter.setCastData(castList);
+                } else {
+                    mActorRecyclerView.setVisibility(View.INVISIBLE);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<Credits> call, Throwable t) {
+                mActorRecyclerView.setVisibility(View.INVISIBLE);
+            }
+        });
+
+    }
+
+
 
 }
