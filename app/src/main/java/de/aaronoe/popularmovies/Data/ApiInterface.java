@@ -3,6 +3,7 @@ package de.aaronoe.popularmovies.Data;
 import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.Crew.Credits;
+import de.aaronoe.popularmovies.Data.FullMovie.FullMovie;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.Movies.ReviewResponse;
 import de.aaronoe.popularmovies.Movies.VideoResponse;
@@ -54,6 +55,10 @@ public interface ApiInterface {
     @GET("person/{person_id}/combined_credits")
     Call<ActorCredits> getActorCredits(@Path("person_id") int id,
                                        @Query("api_key") String apiKey);
+
+    @GET("movie/{id}")
+    Call<FullMovie> getMovieDetails(@Path("id") int movieId,
+                                    @Query("api_key") String apiKey);
 
 
 }

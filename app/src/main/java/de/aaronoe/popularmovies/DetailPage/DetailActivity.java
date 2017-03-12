@@ -7,15 +7,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.BuildConfig;
+import de.aaronoe.popularmovies.Data.ApiClient;
+import de.aaronoe.popularmovies.Data.ApiInterface;
+import de.aaronoe.popularmovies.Data.FullMovie.FullMovie;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  *
@@ -38,7 +47,10 @@ public class DetailActivity extends AppCompatActivity
     @BindView(R.id.detailpage_toolbar) Toolbar mToolBar;
 
     MovieItem mMovieItem;
-
+    FullMovie mFullMovie;
+    private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
+    ApiInterface apiService;
+    int id;
 
 
     @Override
@@ -47,6 +59,7 @@ public class DetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_coord);
 
         ButterKnife.bind(this);
+        apiService = ApiClient.getClient().create(ApiInterface.class);
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         mMaxScrollSize = mAppBarLayout.getTotalScrollRange();
@@ -56,15 +69,65 @@ public class DetailActivity extends AppCompatActivity
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("MovieItem")) {
                 mMovieItem = intentThatStartedThisActivity.getParcelableExtra("MovieItem");
-
+                id = mMovieItem.getmMovieId();
+                Log.e(DetailActivity.class.getSimpleName(), ""+id);
                 populateViewsWithData();
+                setUpViewPager();
+            }
+            if (intentThatStartedThisActivity.hasExtra("MovieId")) {
+                id = intentThatStartedThisActivity.getIntExtra("MovieId", -1);
             }
         }
 
-        mViewPager.setAdapter(new TabsAdapter(getSupportFragmentManager(), mMovieItem));
-        mTabLayout.setupWithViewPager(mViewPager);
+        if (id != -1) {
+            downloadExtraInfo(id);
+        }
 
     }
+
+    private void setUpViewPager(){
+        mViewPager.setAdapter(new TabsAdapter(getSupportFragmentManager(), mMovieItem));
+        mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    private void downloadExtraInfo(int id){
+
+        Log.e(DetailActivity.class.getSimpleName(), "Download started");
+
+        Call<FullMovie> call = apiService.getMovieDetails(id, API_KEY);
+
+        call.enqueue(new Callback<FullMovie>() {
+            @Override
+            public void onResponse(Call<FullMovie> call, Response<FullMovie> response) {
+                mFullMovie = response.body();
+                Log.e(DetailActivity.class.getSimpleName(), mFullMovie.toString());
+                Log.e(DetailActivity.class.getSimpleName(), "" + mFullMovie.getBudget());
+                Toast.makeText(DetailActivity.this, mFullMovie.getHomepage(), Toast.LENGTH_SHORT).show();
+                if (mMovieItem == null) {
+                    mMovieItem = new MovieItem(
+                            mFullMovie.getPosterPath(),
+                            mFullMovie.getOverview(),
+                            mFullMovie.getTitle(),
+                            mFullMovie.getId(),
+                            mFullMovie.getReleaseDate(),
+                            mFullMovie.getVoteAverage(),
+                            mFullMovie.getBackdropPath());
+                    populateViewsWithData();
+                    setUpViewPager();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FullMovie> call, Throwable t) {
+                Toast.makeText(DetailActivity.this, "Download failed", Toast.LENGTH_SHORT).show();
+
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+
 
     public void populateViewsWithData() {
 

@@ -1,6 +1,7 @@
 package de.aaronoe.popularmovies.DetailPage.ActorDetails;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Data.ActorCredits.Cast;
+import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.R;
 
 /**
@@ -44,7 +46,7 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditVi
     @Override
     public void onBindViewHolder(CreditViewHolder holder, int position) {
 
-        Cast castItem = castList.get(position);
+        final Cast castItem = castList.get(position);
 
         String characterName = castItem.getCharacter();
         String movieName = castItem.getTitle();
@@ -59,6 +61,15 @@ public class CreditsAdapter extends RecyclerView.Adapter<CreditsAdapter.CreditVi
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
                 .into(holder.movieImageView);
+
+        holder.movieImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentToStartActorDetailActivity = new Intent(mContext, DetailActivity.class);
+                intentToStartActorDetailActivity.putExtra("MovieId", castItem.getId());
+                mContext.startActivity(intentToStartActorDetailActivity);
+            }
+        });
 
     }
 
