@@ -19,11 +19,17 @@
     <string name="review_author">Author: </string>
     <string name="open_review">Open Review</string>
     <string name="not_available_resource">There\'s no info available for this movie yet.</string>
+    <string name="not_available">Not available</string>
     <string name="click_to_expand">Click text to expand review</string>
     <string name="action_search">Search</string>
     <string name="added_to_favorites">Added to your favorites</string>
     <string name="search_for_movie">Search for Movies</string>
     <string name="SAVE_SELECTION_KEY">SAVE_SELECTION_KEY</string>
     <string name="SAVE_POSITION_KEY">SAVE_POSITION_KEY</string>
+    <string name="title_activity_actor_details">ActorDetailsActivity</string>
+
+    <string name="birthplace">Birthplace:</string>
+    <string name="actor_name">Name:</string>
+    <string name="birthdate">Birthdate:</string>
 
 </resources>

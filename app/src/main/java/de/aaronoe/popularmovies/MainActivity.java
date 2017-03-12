@@ -10,8 +10,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity
     ApiInterface apiService;
     private static final int FAVORITE_LOADER_ID = 26;
     List<MovieItem> movieItemList;
-    GridLayoutManager gridLayout;
-    GridLayoutManager favoriteGridLayout;
+    StaggeredGridLayoutManager gridLayout;
+    StaggeredGridLayoutManager favoriteGridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
     private Parcelable mLayoutManagerSavedState;
@@ -90,8 +90,12 @@ public class MainActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        gridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
-        favoriteGridLayout = new GridLayoutManager(MainActivity.this, calculateNoOfColumns(this));
+        gridLayout = new StaggeredGridLayoutManager
+                (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+        favoriteGridLayout = new StaggeredGridLayoutManager
+                        (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+
+        mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
@@ -119,14 +123,18 @@ public class MainActivity extends AppCompatActivity
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            selectFavorite();
+            showFavoriteMovieView();
+            mRecyclerView.removeOnScrollListener(scrollListener);
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+            mCurrentSelection = SELECTION_FAVORITES;
+            mMovieAdapter.setMovieData(null);
+            saveSelection(SELECTION_FAVORITES);
         } else if (mCurrentSelection.equals(SELECTION_SEARCH)) {
             selectSearch();
         } else {
             if (movieItemList == null || movieItemList.size() == 0) {
                 downloadMovieData();
                 mRecyclerView.addOnScrollListener(scrollListener);
-
             }
         }
     }
@@ -209,6 +217,8 @@ public class MainActivity extends AppCompatActivity
 
         Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
 
+        Log.v(TAG, "Downloading next page: " + (page + 1));
+
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -220,7 +230,6 @@ public class MainActivity extends AppCompatActivity
                     movieItemList.addAll(newMovies);
                     mMovieAdapter.notifyItemRangeChanged(previousSize, size);
                 }
-
             }
 
             @Override
@@ -230,7 +239,6 @@ public class MainActivity extends AppCompatActivity
         });
 
     }
-
 
 
     private void downloadMovieData() {
@@ -339,6 +347,7 @@ public class MainActivity extends AppCompatActivity
     private boolean selectPopular() {
         if (mCurrentSelection.equals(SELECTION_POPULAR)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
 
@@ -360,6 +369,7 @@ public class MainActivity extends AppCompatActivity
         // return if the option is already selected
         if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
 
@@ -372,6 +382,14 @@ public class MainActivity extends AppCompatActivity
 
 
     private boolean selectFavorite() {
+
+        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
+            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mFavoritesRecyclerView.smoothScrollToPosition(1);
+            return true;
+        }
+
+        showFavoriteMovieView();
         mRecyclerView.removeOnScrollListener(scrollListener);
         getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         mCurrentSelection = SELECTION_FAVORITES;
@@ -384,6 +402,7 @@ public class MainActivity extends AppCompatActivity
     private boolean selectUpcoming() {
         if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
             Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
         mMovieAdapter.setMovieData(null);
@@ -407,6 +426,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        Log.e(MainActivity.class.getSimpleName(), "onLoadFInished favorties");
         movieItemList = Utilities.extractMovieItemFromCursor(data);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);

@@ -19,7 +19,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DetailPage.DetailActivity"
             android:parentActivityName=".MainActivity">
@@ -34,12 +33,20 @@
             android:exported="false" />
 
         <activity
-            android:name=".SearchActivity">
+            android:name=".SearchActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
+        </activity>
+        <activity
+            android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
+            android:label="@string/title_activity_actor_details"
+            android:parentActivityName=".DetailPage.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
         </activity>
     </application>
 

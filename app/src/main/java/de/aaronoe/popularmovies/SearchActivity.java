@@ -3,14 +3,16 @@ package de.aaronoe.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,9 +31,14 @@ public class SearchActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
 
 
+    List<MovieItem> movieItemList;
     public MovieAdapter mMovieAdapter;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
+    StaggeredGridLayoutManager gridLayout;
+
+    private static final String BUNDLE_RECYCLER_LAYOUT = "BUNDLE_RECYCLER_LAYOUT";
+    private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
 
     @BindView(R.id.search_edit_text) EditText searchEditText;
     @BindView(R.id.search_rv_main) RecyclerView mRecyclerView;
@@ -47,8 +54,8 @@ public class SearchActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        GridLayoutManager gridLayout =
-                new GridLayoutManager(SearchActivity.this, 2);
+        gridLayout = new StaggeredGridLayoutManager
+                        (MainActivity.calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
@@ -56,7 +63,6 @@ public class SearchActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMovieAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
-
 
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +77,17 @@ public class SearchActivity extends AppCompatActivity
     }
 
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            Log.e(DetailActivity.class.getSimpleName(), "Restoring state");
+            movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
+            gridLayout.onRestoreInstanceState(savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT));
+            mMovieAdapter.setMovieData(movieItemList);
+        }
+    }
+
     private void downloadMovieData(String query) {
 
         searchProgressBar.setVisibility(View.VISIBLE);
@@ -80,7 +97,7 @@ public class SearchActivity extends AppCompatActivity
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<MovieItem> movieItemList = response.body().getResults();
+                movieItemList = response.body().getResults();
 
                 searchProgressBar.setVisibility(View.INVISIBLE);
                 if (movieItemList != null) {
@@ -100,6 +117,12 @@ public class SearchActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<MovieItem>) movieItemList);
+    }
 
     /**
      * This method will make the View for the weather data visible and

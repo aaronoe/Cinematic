@@ -37,13 +37,31 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_review_text"
+        <!-- sample xml -->
+        <com.ms.square.android.expandabletextview.ExpandableTextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/expand_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            tools:text="Some semi-interesting visuals and a few characters I'd like to get to know, but an absolute mess of a movie. The thing feels like a trailer, or a clipshow, or a music video or some other sort of two-hour long promotional material for the actual _Suicide Squad_ that comes out later.\r\n\r\n_Final rating:★★ - Had some things that appeal to me, but a poor finished product._"/>
-
+            expandableTextView:maxCollapsedLines="4"
+            expandableTextView:animDuration="200">
+            <TextView
+                android:id="@id/expandable_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="16sp"
+                android:textColor="#666666" />
+            <ImageButton
+                android:id="@id/expand_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:layout_gravity="end|bottom"
+                android:background="@android:color/transparent"/>
+        </com.ms.square.android.expandabletextview.ExpandableTextView>
 
         <Button
             android:id="@+id/button_review_link"
