@@ -100,9 +100,7 @@ public class DetailActivity extends AppCompatActivity
             @Override
             public void onResponse(Call<FullMovie> call, Response<FullMovie> response) {
                 mFullMovie = response.body();
-                Log.e(DetailActivity.class.getSimpleName(), mFullMovie.toString());
-                Log.e(DetailActivity.class.getSimpleName(), "" + mFullMovie.getBudget());
-                Toast.makeText(DetailActivity.this, mFullMovie.getHomepage(), Toast.LENGTH_SHORT).show();
+
                 if (mMovieItem == null) {
                     mMovieItem = new MovieItem(
                             mFullMovie.getPosterPath(),
