@@ -95,6 +95,8 @@ public class MainActivity extends AppCompatActivity
         favoriteGridLayout = new StaggeredGridLayoutManager
                         (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
 
+        mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
+
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
         mMovieAdapter = new MovieAdapter(this);
@@ -121,14 +123,18 @@ public class MainActivity extends AppCompatActivity
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
         if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            selectFavorite();
+            showFavoriteMovieView();
+            mRecyclerView.removeOnScrollListener(scrollListener);
+            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+            mCurrentSelection = SELECTION_FAVORITES;
+            mMovieAdapter.setMovieData(null);
+            saveSelection(SELECTION_FAVORITES);
         } else if (mCurrentSelection.equals(SELECTION_SEARCH)) {
             selectSearch();
         } else {
             if (movieItemList == null || movieItemList.size() == 0) {
                 downloadMovieData();
                 mRecyclerView.addOnScrollListener(scrollListener);
-
             }
         }
     }
@@ -383,6 +389,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        showFavoriteMovieView();
         mRecyclerView.removeOnScrollListener(scrollListener);
         getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         mCurrentSelection = SELECTION_FAVORITES;
@@ -419,6 +426,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
+        Log.e(MainActivity.class.getSimpleName(), "onLoadFInished favorties");
         movieItemList = Utilities.extractMovieItemFromCursor(data);
 
         mLoadingIndicator.setVisibility(View.INVISIBLE);
