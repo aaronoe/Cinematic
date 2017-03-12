@@ -114,15 +114,6 @@ public class ActorDetailsActivity extends AppCompatActivity {
             public void onResponse(Call<Actor> call, Response<Actor> response) {
                 thisActor = response.body();
 
-                String picturePath = thisActor.getProfilePath();
-                String pictureUrl = "http://image.tmdb.org/t/p/w500/" + picturePath;
-
-                Picasso.with(ActorDetailsActivity.this)
-                        .load(pictureUrl)
-                        .placeholder(R.drawable.placeholder)
-                        .error(R.drawable.error)
-                        .into(mBackdropIv);
-
                 populateWithData();
             }
 
