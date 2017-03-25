@@ -32,4 +32,11 @@
     <string name="actor_name">Name:</string>
     <string name="birthdate">Birthdate:</string>
 
+    <string name="no_network_connection">You are not connected to the internet</string>
+
+    <!-- Content descriptions for images -->
+    <string name="backdrop_description">Movie Backdrop Image</string>
+    <string name="movie_image_main">Movie Poster Image</string>
+    <string name="actor_image_description">Actor Profile Image</string>
+
 </resources>

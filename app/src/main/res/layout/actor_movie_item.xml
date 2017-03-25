@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/movie_image_main"
                 app:riv_corner_radius_bottom_left="0dp"
                 app:riv_corner_radius_bottom_right="0dp"
                 app:riv_corner_radius_top_left="@dimen/card_corner_radius"

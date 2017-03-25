@@ -1,7 +1,10 @@
 package de.aaronoe.popularmovies.Database;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -122,6 +125,17 @@ public class Utilities {
         }
         return targetFormat.format(date);
 
+    }
+
+    /**
+     * Checks if user is connected to a network to download data
+     * @return true if user is connected to a network
+     */
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
 }

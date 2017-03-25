@@ -3,6 +3,7 @@
     package="de.aaronoe.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -41,9 +42,7 @@
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
-            android:label="@string/title_activity_actor_details"
-            android:parentActivityName=".DetailPage.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".DetailPage.DetailActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />

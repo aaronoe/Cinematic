@@ -45,8 +45,8 @@ public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.MovieAdapterOnClickHandler {
 
     // for debugging purposes
-    private static final String TAG = MainActivity.class.getSimpleName();
 
+    private static final String TAG = "MainActivity";
     public MovieAdapter mMovieAdapter;
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity
         mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
         ButterKnife.bind(this);
-
         gridLayout = new StaggeredGridLayoutManager
                 (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
         favoriteGridLayout = new StaggeredGridLayoutManager
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 downloadNextPageOfMovies(page);
-
             }
         };
 
@@ -167,6 +165,35 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    private void downloadNextPageOfMovies(int page) {
+
+        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
+
+        Log.v(TAG, "Downloading next page: " + (page + 1));
+
+        call.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                List<MovieItem> newMovies = response.body().getResults();
+
+                if (newMovies != null) {
+                    int size = newMovies.size();
+                    int previousSize = movieItemList.size();
+                    movieItemList.addAll(newMovies);
+                    mMovieAdapter.notifyItemRangeChanged(previousSize, size);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+
+
     public void initializeFabMenu() {
 
         fabButtonFavorite.setOnClickListener(new View.OnClickListener() {
@@ -206,35 +233,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 selectSearch();
                 fabMenu.close(true);
-            }
-        });
-
-    }
-
-
-
-    private void downloadNextPageOfMovies(int page) {
-
-        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
-
-        Log.v(TAG, "Downloading next page: " + (page + 1));
-
-        call.enqueue(new Callback<MovieResponse>() {
-            @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                List<MovieItem> newMovies = response.body().getResults();
-
-                if (newMovies != null) {
-                    int size = newMovies.size();
-                    int previousSize = movieItemList.size();
-                    movieItemList.addAll(newMovies);
-                    mMovieAdapter.notifyItemRangeChanged(previousSize, size);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
-
             }
         });
 
@@ -341,6 +339,13 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+
+        // check if network conditions exists
+        if (!Utilities.isOnline(MainActivity.this)) {
+            mErrorMessageDisplay.setText(getString(R.string.no_network_connection));
+        } else {
+            mErrorMessageDisplay.setText(getString(R.string.error_message));
+        }
     }
 
 
