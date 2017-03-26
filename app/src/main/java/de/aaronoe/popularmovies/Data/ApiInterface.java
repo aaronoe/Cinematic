@@ -4,6 +4,7 @@ import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.Crew.Credits;
 import de.aaronoe.popularmovies.Data.FullMovie.FullMovie;
+import de.aaronoe.popularmovies.Data.TvShow.ShowsResponse;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.Movies.ReviewResponse;
 import de.aaronoe.popularmovies.Movies.VideoResponse;
@@ -59,6 +60,10 @@ public interface ApiInterface {
     @GET("movie/{id}")
     Call<FullMovie> getMovieDetails(@Path("id") int movieId,
                                     @Query("api_key") String apiKey);
+
+    @GET("tv/{filter}")
+    Call<ShowsResponse> getTvShows(@Path("filter") String filter,
+                                   @Query("api_key") String apiKey);
 
 
 }

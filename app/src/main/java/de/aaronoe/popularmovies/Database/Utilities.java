@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -28,6 +29,7 @@ import static android.content.ContentValues.TAG;
  */
 
 public class Utilities {
+
 
     /**
      * This function takes the required fields of a {@link MovieItem} and puts them into
@@ -128,6 +130,28 @@ public class Utilities {
     }
 
     /**
+     * Converts a date returned by the API into a different format.
+     *
+     * @param sourceDate a string representing a date in this format: 2015-12-15
+     * @return a string representing a date in this format: 2015
+     */
+    public static String convertDateToYear(String sourceDate) {
+
+        DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        DateFormat targetFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+
+        Date date = null;
+        try {
+            date = sourceFormat.parse(sourceDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error formatting the date");
+        }
+        return targetFormat.format(date);
+
+    }
+
+    /**
      * Checks if user is connected to a network to download data
      * @return true if user is connected to a network
      */
@@ -137,5 +161,12 @@ public class Utilities {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
+
+    public static int calculateNoOfColumns(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return (int) (dpWidth / 180);
+    }
+
 
 }

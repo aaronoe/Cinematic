@@ -13,7 +13,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,11 +98,10 @@ public class MoviesFragment extends Fragment
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
-        ButterKnife.bind(getActivity());
         gridLayout = new StaggeredGridLayoutManager
-                (calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+                (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
         favoriteGridLayout = new StaggeredGridLayoutManager
-                (calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+                (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
 
         mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
 
@@ -292,14 +290,6 @@ public class MoviesFragment extends Fragment
         });
 
     }
-
-
-    public static int calculateNoOfColumns(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return (int) (dpWidth / 180);
-    }
-
 
     @Override
     public void onClick(MovieItem movieItem) {

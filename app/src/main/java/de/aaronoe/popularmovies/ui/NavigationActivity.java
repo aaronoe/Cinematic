@@ -27,8 +27,10 @@ public class NavigationActivity extends AppCompatActivity {
     @Nullable
     @BindView(R.id.drawer)
     DrawerLayout drawerLayout;
+
     @BindView(R.id.navigation_view)
     NavigationView navigationView;
+
     @BindView(R.id.frame)
     FrameLayout frame;
 
@@ -58,14 +60,20 @@ public class NavigationActivity extends AppCompatActivity {
 
                     case R.id.drawer_menu_movies:
                         Toast.makeText(NavigationActivity.this, "Movies Seleted", Toast.LENGTH_SHORT).show();
-                        MoviesFragment fragment = new MoviesFragment();
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.frame, fragment);
-                        fragmentTransaction.commit();
+                        MoviesFragment moviesFragment = new MoviesFragment();
+                        FragmentTransaction moviesFragmentTransaction =
+                                getSupportFragmentManager().beginTransaction();
+                        moviesFragmentTransaction.replace(R.id.frame, moviesFragment);
+                        moviesFragmentTransaction.commit();
                         return true;
 
                     case R.id.drawer_menu_shows:
                         Toast.makeText(NavigationActivity.this, "Shows selected", Toast.LENGTH_SHORT).show();
+                        TvShowsFragment tvShowsFragment = new TvShowsFragment();
+                        FragmentTransaction showsFragmentTransaction =
+                                getSupportFragmentManager().beginTransaction();
+                        showsFragmentTransaction.replace(R.id.frame, tvShowsFragment);
+                        showsFragmentTransaction.commit();
                         return true;
 
                     case R.id.drawer_menu_actors:
