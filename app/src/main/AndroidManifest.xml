@@ -42,11 +42,12 @@
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
-            android:parentActivityName=".DetailPage.DetailActivity" >
+            android:parentActivityName=".DetailPage.DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
         </activity>
+        <activity android:name=".ui.NavigationActivity"></activity>
     </application>
 
 </manifest>

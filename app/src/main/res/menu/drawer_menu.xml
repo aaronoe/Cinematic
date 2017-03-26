@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_menu_movies"
+            android:checked="false"
+            android:icon="@drawable/ic_movie_creation_black_24dp"
+            android:title="@string/drawer_menu__movies" />
+
+        <item
+            android:id="@+id/drawer_menu_shows"
+            android:checked="false"
+            android:icon="@drawable/ic_airplay_black_24dp"
+            android:title="@string/drawer_menu__tv_shows" />
+
+        <item
+            android:id="@+id/drawer_menu_actors"
+            android:checked="false"
+            android:icon="@drawable/ic_recent_actors_black_24dp"
+            android:title="@string/drawer_menu__actors" />
+
+    </group>
+
+</menu>

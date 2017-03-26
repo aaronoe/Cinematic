@@ -1,4 +1,4 @@
-package de.aaronoe.popularmovies;
+package de.aaronoe.popularmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,15 +6,18 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.EndlessRecyclerViewScrollListener;
@@ -34,15 +38,17 @@ import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
+import de.aaronoe.popularmovies.MainActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
-import de.aaronoe.popularmovies.ui.NavigationActivity;
+import de.aaronoe.popularmovies.R;
+import de.aaronoe.popularmovies.SearchActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity
+public class MoviesFragment extends Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.MovieAdapterOnClickHandler {
 
     // for debugging purposes
@@ -78,22 +84,26 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
+    public MoviesFragment() {}
 
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.activity_main, container, false);
+
+        ButterKnife.bind(this, rootView);
 
         // Get last state
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
-        ButterKnife.bind(this);
+        ButterKnife.bind(getActivity());
         gridLayout = new StaggeredGridLayoutManager
-                (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+                (calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
         favoriteGridLayout = new StaggeredGridLayoutManager
-                        (calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+                (calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
 
         mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
 
@@ -121,21 +131,27 @@ public class MainActivity extends AppCompatActivity
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            showFavoriteMovieView();
-            mRecyclerView.removeOnScrollListener(scrollListener);
-            getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-            mCurrentSelection = SELECTION_FAVORITES;
-            mMovieAdapter.setMovieData(null);
-            saveSelection(SELECTION_FAVORITES);
-        } else if (mCurrentSelection.equals(SELECTION_SEARCH)) {
-            selectSearch();
-        } else {
-            if (movieItemList == null || movieItemList.size() == 0) {
-                downloadMovieData();
-                mRecyclerView.addOnScrollListener(scrollListener);
-            }
+        switch (mCurrentSelection) {
+            case SELECTION_FAVORITES:
+                showFavoriteMovieView();
+                mRecyclerView.removeOnScrollListener(scrollListener);
+                getActivity().getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+                mCurrentSelection = SELECTION_FAVORITES;
+                mMovieAdapter.setMovieData(null);
+                saveSelection(SELECTION_FAVORITES);
+                break;
+            case SELECTION_SEARCH:
+                selectSearch();
+                break;
+            default:
+                if (movieItemList == null || movieItemList.size() == 0) {
+                    downloadMovieData();
+                    mRecyclerView.addOnScrollListener(scrollListener);
+                }
+                break;
         }
+
+        return rootView;
     }
 
 
@@ -146,10 +162,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
             mMovieAdapter.setMovieData(movieItemList);
@@ -159,7 +174,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<MovieItem>) movieItemList);
@@ -288,7 +303,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(MainActivity.this, DetailActivity.class);
+        Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieItem", movieItem);
         startActivity(intentToStartDetailActivity);
     }
@@ -321,7 +336,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private void saveSelection(String selection) {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(getString(R.string.SAVE_SELECTION_KEY), selection);
         editor.apply();
@@ -342,7 +357,7 @@ public class MainActivity extends AppCompatActivity
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
 
         // check if network conditions exists
-        if (!Utilities.isOnline(MainActivity.this)) {
+        if (!Utilities.isOnline(getActivity())) {
             mErrorMessageDisplay.setText(getString(R.string.no_network_connection));
         } else {
             mErrorMessageDisplay.setText(getString(R.string.error_message));
@@ -352,7 +367,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean selectPopular() {
         if (mCurrentSelection.equals(SELECTION_POPULAR)) {
-            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
             mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
@@ -366,8 +381,7 @@ public class MainActivity extends AppCompatActivity
 
     private void selectSearch() {
         saveSelection(SELECTION_SEARCH);
-        // TODO TESTING
-        Intent intentToStartSearchActivity = new Intent(MainActivity.this, NavigationActivity.class);
+        Intent intentToStartSearchActivity = new Intent(getActivity(), SearchActivity.class);
         startActivity(intentToStartSearchActivity);
     }
 
@@ -375,7 +389,7 @@ public class MainActivity extends AppCompatActivity
     private boolean selectTopRated() {
         // return if the option is already selected
         if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
-            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
             mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
@@ -391,14 +405,14 @@ public class MainActivity extends AppCompatActivity
     private boolean selectFavorite() {
 
         if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
             mFavoritesRecyclerView.smoothScrollToPosition(1);
             return true;
         }
 
         showFavoriteMovieView();
         mRecyclerView.removeOnScrollListener(scrollListener);
-        getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
         mCurrentSelection = SELECTION_FAVORITES;
         mMovieAdapter.setMovieData(null);
         saveSelection(SELECTION_FAVORITES);
@@ -408,7 +422,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean selectUpcoming() {
         if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
-            Toast.makeText(this, "This option is already selected", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
             mRecyclerView.smoothScrollToPosition(1);
             return true;
         }
@@ -424,7 +438,7 @@ public class MainActivity extends AppCompatActivity
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         return new CursorLoader(
-                this,
+                getActivity(),
                 MovieEntry.CONTENT_URI,
                 null, null, null, null);
 
@@ -453,7 +467,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMovieAdapter.setMovieData(null);
-        getSupportLoaderManager().restartLoader(0, null, this);
+        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
 }

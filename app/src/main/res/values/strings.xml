@@ -38,5 +38,18 @@
     <string name="backdrop_description">Movie Backdrop Image</string>
     <string name="movie_image_main">Movie Poster Image</string>
     <string name="actor_image_description">Actor Profile Image</string>
+    <string name="drawer_menu__movies">Movies</string>
+    <string name="drawer_menu__tv_shows">TV Shows</string>
+    <string name="drawer_menu__actors">Actors</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="closeDrawer">Navigation View</string>
+    <string name="openDrawer">Navigation View Closed</string>
 
 </resources>
