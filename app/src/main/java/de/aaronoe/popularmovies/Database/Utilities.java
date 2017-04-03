@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
@@ -118,15 +119,53 @@ public class Utilities {
         DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
 
+        if (sourceDate == null || sourceDate.equals("")) return null;
+
         Date date = null;
         try {
             date = sourceFormat.parse(sourceDate);
         } catch (ParseException e) {
             e.printStackTrace();
             Log.e(TAG, "Error formatting the date");
+            return null;
         }
         return targetFormat.format(date);
 
+    }
+
+    /**
+     * Get the difference between a date and the current point in time in days
+     * @param sourceDate the source date
+     * @return the difference in days
+     */
+    public static long computeDifferenceInDays(String sourceDate) {
+        DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+
+        if (sourceDate == null || sourceDate.equals("")) return Long.MAX_VALUE;
+
+        Date date = null;
+        try {
+            date = sourceFormat.parse(sourceDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error formatting the date");
+            return Long.MAX_VALUE;
+        }
+
+        return getDateDiff(date, new Date(System.currentTimeMillis()), TimeUnit.DAYS);
+
+    }
+
+    /**
+     * Get a diff between two dates
+     * @param date1 the oldest date
+     * @param date2 the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    private static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -139,6 +178,8 @@ public class Utilities {
 
         DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("yyyy", Locale.ENGLISH);
+
+        if (sourceDate == null || sourceDate.equals("")) return null;
 
         Date date = null;
         try {

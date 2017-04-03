@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:background="@color/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/tv_detail_backdrop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/walking_dead_backdro"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <ImageView
+            android:src="@drawable/walking_dead_profile"
+            android:id="@+id/tv_detail_profile"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:layout_width="wrap_content"
+            android:layout_height="140dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_detail_backdrop"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_backdrop"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <TextView
+            tools:text="The Walking Dead"
+            android:id="@+id/tv_detail_title"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_backdrop"
+            app:layout_constraintLeft_toRightOf="@+id/tv_detail_profile"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/tv_detail_year"
+            tools:text="2010"
+            android:textColor="@color/grey_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_detail_title" />
+
+        <TextView
+            android:id="@+id/tv_detail_dividerdot"
+            android:text="@string/divider_dot"
+            android:textColor="@color/grey_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/smaller_vertical_padding"
+            android:layout_marginStart="@dimen/smaller_vertical_padding"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
+            app:layout_constraintLeft_toRightOf="@+id/tv_detail_year" />
+
+        <TextView
+            android:id="@+id/tv_detail_age_rating"
+            tools:text="18"
+            android:textColor="@color/grey_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/smaller_vertical_padding"
+            android:layout_marginStart="@dimen/smaller_vertical_padding"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
+            app:layout_constraintLeft_toRightOf="@+id/tv_detail_dividerdot" />
+
+        <TextView
+            tools:text="7.6 (3450)"
+            style="@style/show_detail_score_trailer"
+            android:id="@+id/tv_detail_user_score_tv"
+            android:drawableStart="@drawable/ic_star_black_24dp"
+            android:drawableLeft="@drawable/ic_star_black_24dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_dividerdot"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_height="0dp"
+            android:layout_width="0dp" />
+
+        <TextView
+            tools:text="Play Trailer"
+            style="@style/show_detail_score_trailer"
+            android:id="@+id/tv_detail_play_trailer"
+            android:drawableStart="@drawable/ic_play_arrow_black_24dp"
+            android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_detail_dividerdot"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_height="0dp"
+            android:layout_width="0dp" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:background="@drawable/detail_screen_gradient"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/overview"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:paddingBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_detail_overview"
+            tools:text="Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies. He sets out to find his family and encounters many other survivors along the way."
+            android:textColor="#fff"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/featured_crew"
+            android:textColor="#fff"
+            android:textSize="18sp"
+            android:paddingBottom="@dimen/small_vertical_padding"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:src="@drawable/test_actorimg"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/tv_show_data"
+            android:textSize="18sp"
+            android:textColor="#000"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/status"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_status"
+            tools:text="Returning Series"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/last_air_date"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_last_air_date"
+            tools:text="Mar 13, 2017"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/first_air_date"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_first_air_date"
+            tools:text="Nov 13, 2005"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/runtime"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_minutes"
+            tools:text="45 Minutes"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/genres"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_genres"
+            tools:text="Drama, Mystery"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/number_of_seasons"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_nr_seasons"
+            tools:text="12"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/number_of_episodes"
+            android:textSize="16sp"
+            android:textColor="@color/primary_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content" />
+
+        <TextView
+            android:id="@+id/show_runtime_nr_episodes"
+            tools:text="258"
+            android:textSize="14sp"
+            android:textColor="@color/secondary_text"
+            android:layout_marginBottom="@dimen/small_vertical_padding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

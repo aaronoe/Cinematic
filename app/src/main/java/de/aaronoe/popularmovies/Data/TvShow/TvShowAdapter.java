@@ -32,11 +32,14 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
 
     private List<TvShow> videoItemList;
     private Context mContext;
-    public Map<Integer,String> map;
+    private Map<Integer,String> map;
+    private TvShowAdapterOnClickHandler mClickHandler;
 
 
-    public TvShowAdapter(Context context) {
+    public TvShowAdapter(Context context, TvShowAdapterOnClickHandler clickHandler) {
         mContext = context;
+        mClickHandler = clickHandler;
+
         // get genre mappings
         map = new HashMap<Integer,String>();
         map.put(10759, "Action & Adventure");
@@ -57,6 +60,11 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         map.put(37, "Western");
 
     }
+
+    public interface TvShowAdapterOnClickHandler {
+        void onClick(int movieId);
+    }
+
 
     @Override
     public TvShowViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -85,8 +93,8 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
 
         Picasso.with(mContext)
                 .load(pictureUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
+                .placeholder(R.drawable.poster_show_loading)
+                .error(R.drawable.poster_show_not_available)
                 .into(holder.backdropImageView);
 
     }
@@ -103,7 +111,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
     }
 
 
-    class TvShowViewHolder extends RecyclerView.ViewHolder {
+    class TvShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.tv_shows_backdrop_iv) ImageView backdropImageView;
         @BindView(R.id.tv_shows_h1_tv) TextView showTitleTextView;
@@ -114,6 +122,14 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         public TvShowViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int adapterPosition = getAdapterPosition();
+            TvShow thisShow = videoItemList.get(adapterPosition);
+            mClickHandler.onClick(thisShow.getId());
         }
     }
 
@@ -140,6 +156,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         }
 
         String list = resBuilder.toString();
+        if (list.length() == 0) return mContext.getString(R.string.genre_not_available);
         return list.substring(0, list.length() - SEPARATOR.length());
     }
 

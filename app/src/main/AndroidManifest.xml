@@ -47,7 +47,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
         </activity>
-        <activity android:name=".ui.NavigationActivity"></activity>
+        <activity android:name=".ui.NavigationActivity" />
+
+        <service
+            android:name=".Database.MovieUpdateService"
+            android:exported="false" />
+
+        <activity android:name=".ui.TvShowDetailActivity"></activity>
     </application>
 
 </manifest>
