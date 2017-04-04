@@ -2,6 +2,7 @@ package de.aaronoe.popularmovies.Data.TvShow;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.Season;
+import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
+
+import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 
 /**
  *
@@ -26,11 +30,16 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
 
     private List<Season> seasonList;
     private Context mContext;
+    private SeasonAdapterOnClickHandler seasonAdapterOnClickHandler;
 
-    public SeasonAdapter(Context context) {
+    public SeasonAdapter(Context context, SeasonAdapterOnClickHandler clickHandler) {
         mContext = context;
+        seasonAdapterOnClickHandler = clickHandler;
     }
 
+    public interface SeasonAdapterOnClickHandler {
+        void onClick(int seasonNumber);
+    }
 
     @Override
     public SeasonViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -52,10 +61,12 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
                 .error(R.drawable.error)
                 .into(holder.posterImageView);
 
-        holder.episodeCountTextView.setText(mContext.getString(R.string.nr_episodes, mSeason.getEpisodeCount()));
+        String episodeCount = mContext.getString(R.string.nr_episodes, mSeason.getEpisodeCount());
+        holder.episodeCountTextView.setText(episodeCount);
         String metaData = mContext.getString(
-                R.string.season_and_year,
-                mSeason.getSeasonNumber());
+                R.string.episodes_and_year,
+                mSeason.getSeasonNumber(),
+                Utilities.convertDateToYear(mSeason.getAirDate()));
         holder.seasonNumberTextView.setText(metaData);
     }
 
@@ -71,7 +82,7 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
         return seasonList.size();
     }
 
-    class SeasonViewHolder extends RecyclerView.ViewHolder {
+    class SeasonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.poster_imageview)
         ImageView posterImageView;
@@ -83,6 +94,15 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
         SeasonViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "onClick() called with: v = [" + v + "]");
+            int adapterPosition = getAdapterPosition();
+            Season item = seasonList.get(adapterPosition);
+            seasonAdapterOnClickHandler.onClick(item.getSeasonNumber());
         }
     }
 

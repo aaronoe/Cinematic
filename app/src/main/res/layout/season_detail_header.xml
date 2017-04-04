@@ -62,7 +62,6 @@
                 android:id="@+id/season_detail_title"
                 tools:text="The Walking Dead"
                 android:textColor="@color/grey_500"
-                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="parent"

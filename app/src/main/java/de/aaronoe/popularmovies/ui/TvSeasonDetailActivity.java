@@ -3,8 +3,12 @@ package de.aaronoe.popularmovies.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +19,7 @@ import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
+import de.aaronoe.popularmovies.Data.TvShow.EpisodeAdapter;
 import de.aaronoe.popularmovies.Data.TvShow.FullSeason.FullSeason;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
@@ -33,6 +38,7 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
     int showId;
     ApiInterface apiInterface;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
+    EpisodeAdapter episodeAdapter;
 
 
     @BindView(R.id.tv_detail_backdrop)
@@ -49,6 +55,14 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
     TextView tvDetailDividerdot;
     @BindView(R.id.tv_detail_age_rating)
     TextView tvDetailAgeRating;
+    @BindView(R.id.season_overview_tv)
+    TextView seasonOverviewTv;
+    @BindView(R.id.single_season_recycler_view)
+    RecyclerView singleSeasonRecyclerView;
+    @BindView(R.id.episode_overview_textview)
+    TextView overViewTV;
+    @BindView(R.id.episode_overview_container)
+    LinearLayout episodeOverviewContainer;
 
 
     @Override
@@ -85,7 +99,7 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: " + selectedSeason);
 
-        Log.d(TAG, "onCreate: "+ showId + " " + selectedSeason);
+        Log.d(TAG, "onCreate: " + showId + " " + selectedSeason);
 
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         downloadSeasonDetails();
@@ -123,6 +137,20 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
         tvDetailYear.setText(Utilities.convertDateToYear(mSeason.getAirDate()));
 
         tvDetailAgeRating.setText(getString(R.string.nr_episodes, mSeason.getEpisodes().size()));
+
+        if (mSeason.getOverview() == null || mSeason.getOverview().equals("")) {
+            episodeOverviewContainer.setVisibility(View.GONE);
+        }
+
+        seasonOverviewTv.setText(mSeason.getOverview());
+
+
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        singleSeasonRecyclerView.setLayoutManager(linearLayoutManager);
+        episodeAdapter = new EpisodeAdapter(this);
+        singleSeasonRecyclerView.setAdapter(episodeAdapter);
+        episodeAdapter.setEpisodeList(mSeason.getEpisodes());
 
     }
 

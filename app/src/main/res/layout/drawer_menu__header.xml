@@ -2,12 +2,11 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="190dp"
     android:orientation="vertical"
     android:gravity="bottom"
-    android:background="@drawable/bg_mat_drawer"
+    android:background="@drawable/detail_screen_gradient"
     >
 
     <TextView
@@ -15,7 +14,7 @@
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textSize="16sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#fff"
         android:textStyle="bold"
         android:gravity="start"
         android:id="@+id/username"

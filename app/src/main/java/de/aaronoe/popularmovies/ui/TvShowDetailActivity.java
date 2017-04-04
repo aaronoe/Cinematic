@@ -33,7 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TvShowDetailActivity extends AppCompatActivity {
+public class TvShowDetailActivity extends AppCompatActivity implements SeasonAdapter.SeasonAdapterOnClickHandler {
 
     private static final String TAG = "TvShowDetailActivity";
 
@@ -211,30 +211,26 @@ public class TvShowDetailActivity extends AppCompatActivity {
 
         List<Season> seasonList = thisShow.getSeasons();
 
-        /*
-        detailShowViewEpisodesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, TvSeasonDetailActivity.class);
-                intent.putExtra(getString(R.string.intent_key_tvshow), thisShow.getName());
-                intent.putExtra(getString(R.string.intent_key_season_id), thisShow.getId());
-                intent.putExtra(getString(R.string.intent_key_selected_season), selectedSeason);
-                intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
-                mContext.startActivity(intent);
-            }
-        });
-        */
-
         // new season pane
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         seasonRecylcerView.setLayoutManager(linearLayoutManager);
         seasonRecylcerView.setNestedScrollingEnabled(false);
-        seasonAdapter = new SeasonAdapter(this);
+        seasonAdapter = new SeasonAdapter(this, this);
         seasonRecylcerView.setAdapter(seasonAdapter);
         seasonAdapter.setSeasonList(seasonList);
 
     }
 
 
+    @Override
+    public void onClick(int seasonNumber) {
+        Log.d(TAG, "onClick() called with: seasonNumber = [" + seasonNumber + "]");
+        Intent intent = new Intent(mContext, TvSeasonDetailActivity.class);
+        intent.putExtra(getString(R.string.intent_key_tvshow), thisShow.getName());
+        intent.putExtra(getString(R.string.intent_key_season_id), thisShow.getId());
+        intent.putExtra(getString(R.string.intent_key_selected_season), seasonNumber);
+        intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
+        mContext.startActivity(intent);
+    }
 }
