@@ -67,5 +67,18 @@
     <string name="runtime_minutes">Minutes</string>
 
     <string name="runtime_today">(Today)</string>
+    <string name="creator">Creator</string>
+    <string name="seasons">Season</string>
+    <string name="select_a_season_to_show_information">Select a season to show information</string>
+    <string name="view_episodes">View Episodes</string>
+    <string name="season_h1_pane">Season %d</string>
+    <string name="nr_episodes">%d Episodes</string>
+    <string name="intent_key_tvshow">INTENT_KEY_FULL_TVSHOW</string>
+    <string name="intent_key_selected_season">INTENT_KEY_SELECTED_SEASON</string>
+    <string name="intent_key_backdrop">INTENT_KEY_BACKDROP</string>
+    <string name="intent_key_season_id">INTENT_KEY_SEASON_ID</string>
+    <string name="season_x">Season %d</string>
+    <string name="seasons_h1">Seasons</string>
+    <string name="season_and_year">Season %d</string>
 
 </resources>

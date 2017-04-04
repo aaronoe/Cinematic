@@ -1,21 +1,28 @@
 
-package de.aaronoe.popularmovies.Data.TvShow.FullShow;
+package de.aaronoe.popularmovies.Data.TvShow.FullSeason;
 
+import java.util.List;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Season implements Parcelable
+public class FullSeason implements Parcelable
 {
 
     @SerializedName("air_date")
     @Expose
     private String airDate;
-    @SerializedName("episode_count")
+    @SerializedName("episodes")
     @Expose
-    private Integer episodeCount;
+    private List<Episode> episodes = null;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("overview")
+    @Expose
+    private String overview;
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -25,24 +32,26 @@ public class Season implements Parcelable
     @SerializedName("season_number")
     @Expose
     private Integer seasonNumber;
-    public final static Parcelable.Creator<Season> CREATOR = new Creator<Season>() {
+    public final static Parcelable.Creator<FullSeason> CREATOR = new Creator<FullSeason>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Season createFromParcel(Parcel in) {
-            Season instance = new Season();
+        public FullSeason createFromParcel(Parcel in) {
+            FullSeason instance = new FullSeason();
             instance.airDate = ((String) in.readValue((String.class.getClassLoader())));
-            instance.episodeCount = ((Integer) in.readValue((Integer.class.getClassLoader())));
+            in.readList(instance.episodes, (de.aaronoe.popularmovies.Data.TvShow.FullSeason.Episode.class.getClassLoader()));
+            instance.name = ((String) in.readValue((String.class.getClassLoader())));
+            instance.overview = ((String) in.readValue((String.class.getClassLoader())));
             instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.posterPath = ((String) in.readValue((String.class.getClassLoader())));
             instance.seasonNumber = ((Integer) in.readValue((Integer.class.getClassLoader())));
             return instance;
         }
 
-        public Season[] newArray(int size) {
-            return (new Season[size]);
+        public FullSeason[] newArray(int size) {
+            return (new FullSeason[size]);
         }
 
     }
@@ -56,12 +65,28 @@ public class Season implements Parcelable
         this.airDate = airDate;
     }
 
-    public Integer getEpisodeCount() {
-        return episodeCount;
+    public List<Episode> getEpisodes() {
+        return episodes;
     }
 
-    public void setEpisodeCount(Integer episodeCount) {
-        this.episodeCount = episodeCount;
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
     public Integer getId() {
@@ -90,7 +115,9 @@ public class Season implements Parcelable
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(airDate);
-        dest.writeValue(episodeCount);
+        dest.writeList(episodes);
+        dest.writeValue(name);
+        dest.writeValue(overview);
         dest.writeValue(id);
         dest.writeValue(posterPath);
         dest.writeValue(seasonNumber);

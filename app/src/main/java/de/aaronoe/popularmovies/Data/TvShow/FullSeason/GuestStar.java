@@ -1,5 +1,5 @@
 
-package de.aaronoe.popularmovies.Data.TvShow.FullShow;
+package de.aaronoe.popularmovies.Data.TvShow.FullSeason;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CreatedBy implements Parcelable
+public class GuestStar implements Parcelable
 {
 
     @SerializedName("id")
@@ -16,25 +16,37 @@ public class CreatedBy implements Parcelable
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("credit_id")
+    @Expose
+    private String creditId;
+    @SerializedName("character")
+    @Expose
+    private String character;
+    @SerializedName("order")
+    @Expose
+    private Integer order;
     @SerializedName("profile_path")
     @Expose
     private String profilePath;
-    public final static Parcelable.Creator<CreatedBy> CREATOR = new Creator<CreatedBy>() {
+    public final static Parcelable.Creator<GuestStar> CREATOR = new Creator<GuestStar>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public CreatedBy createFromParcel(Parcel in) {
-            CreatedBy instance = new CreatedBy();
+        public GuestStar createFromParcel(Parcel in) {
+            GuestStar instance = new GuestStar();
             instance.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.name = ((String) in.readValue((String.class.getClassLoader())));
+            instance.creditId = ((String) in.readValue((String.class.getClassLoader())));
+            instance.character = ((String) in.readValue((String.class.getClassLoader())));
+            instance.order = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.profilePath = ((String) in.readValue((String.class.getClassLoader())));
             return instance;
         }
 
-        public CreatedBy[] newArray(int size) {
-            return (new CreatedBy[size]);
+        public GuestStar[] newArray(int size) {
+            return (new GuestStar[size]);
         }
 
     }
@@ -56,6 +68,30 @@ public class CreatedBy implements Parcelable
         this.name = name;
     }
 
+    public String getCreditId() {
+        return creditId;
+    }
+
+    public void setCreditId(String creditId) {
+        this.creditId = creditId;
+    }
+
+    public String getCharacter() {
+        return character;
+    }
+
+    public void setCharacter(String character) {
+        this.character = character;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
     public String getProfilePath() {
         return profilePath;
     }
@@ -67,6 +103,9 @@ public class CreatedBy implements Parcelable
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(name);
+        dest.writeValue(creditId);
+        dest.writeValue(character);
+        dest.writeValue(order);
         dest.writeValue(profilePath);
     }
 

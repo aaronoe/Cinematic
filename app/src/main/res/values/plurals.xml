@@ -6,4 +6,9 @@
         <item quantity="other"> (in %d days)</item>
     </plurals>
 
+    <plurals name="no_of_seasons">
+        <item quantity="one">%d Season</item>
+        <item quantity="other">%d Seasons</item>
+    </plurals>
+
 </resources>

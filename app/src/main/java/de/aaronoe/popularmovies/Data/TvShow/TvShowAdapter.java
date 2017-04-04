@@ -119,7 +119,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         @BindView(R.id.tv_shows_rating_tv) TextView showRatingTextView;
         @BindView(R.id.tv_shows_year_tv) TextView showYearTextView;
 
-        public TvShowViewHolder(View itemView) {
+        TvShowViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);

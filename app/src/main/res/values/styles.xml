@@ -64,5 +64,12 @@
         <item name="android:layout_marginTop">32dp</item>
     </style>
 
+    <style name="ThemeSpinner">
+        <!-- Color when pressed -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Default color for the dropdown arrow and line -->
+        <item name="colorControlNormal">#fff</item>
+    </style>
+
 
 </resources>

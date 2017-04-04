@@ -11,141 +11,76 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
-        android:background="@color/colorPrimaryDark"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/tv_detail_backdrop"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/walking_dead_backdro"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-
-        <ImageView
-            android:src="@drawable/walking_dead_profile"
-            android:id="@+id/tv_detail_profile"
-            android:scaleType="fitCenter"
-            android:adjustViewBounds="true"
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_detail_backdrop"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_backdrop"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <TextView
-            tools:text="The Walking Dead"
-            android:id="@+id/tv_detail_title"
-            android:textColor="#fff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="22sp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_backdrop"
-            app:layout_constraintLeft_toRightOf="@+id/tv_detail_profile"
-            android:layout_marginLeft="16dp"
-            android:layout_marginStart="16dp" />
-
-        <TextView
-            android:id="@+id/tv_detail_year"
-            tools:text="2010"
-            android:textColor="@color/grey_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
-            app:layout_constraintLeft_toLeftOf="@+id/tv_detail_title" />
-
-        <TextView
-            android:id="@+id/tv_detail_dividerdot"
-            android:text="@string/divider_dot"
-            android:textColor="@color/grey_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/smaller_vertical_padding"
-            android:layout_marginStart="@dimen/smaller_vertical_padding"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
-            app:layout_constraintLeft_toRightOf="@+id/tv_detail_year" />
-
-        <TextView
-            android:id="@+id/tv_detail_age_rating"
-            tools:text="18"
-            android:textColor="@color/grey_500"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/smaller_vertical_padding"
-            android:layout_marginStart="@dimen/smaller_vertical_padding"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_title"
-            app:layout_constraintLeft_toRightOf="@+id/tv_detail_dividerdot" />
-
-        <TextView
-            tools:text="7.6 (3450)"
-            style="@style/show_detail_score_trailer"
-            android:id="@+id/tv_detail_user_score_tv"
-            android:drawableStart="@drawable/ic_star_black_24dp"
-            android:drawableLeft="@drawable/ic_star_black_24dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_dividerdot"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_height="0dp"
-            android:layout_width="0dp" />
-
-        <TextView
-            tools:text="Play Trailer"
-            style="@style/show_detail_score_trailer"
-            android:id="@+id/tv_detail_play_trailer"
-            android:drawableStart="@drawable/ic_play_arrow_black_24dp"
-            android:drawableLeft="@drawable/ic_play_arrow_black_24dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_detail_dividerdot"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_height="0dp"
-            android:layout_width="0dp" />
-
-
-    </android.support.constraint.ConstraintLayout>
+    <include layout="@layout/show_details_header_pane" />
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/detail_screen_gradient"
         android:orientation="vertical"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:padding="@dimen/activity_horizontal_margin">
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/small_vertical_padding"
             android:text="@string/overview"
             android:textColor="#fff"
-            android:textSize="18sp"
-            android:paddingBottom="@dimen/small_vertical_padding"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_detail_overview"
-            tools:text="Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies. He sets out to find his family and encounters many other survivors along the way."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:textColor="#fff"
             android:textSize="14sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            tools:text="Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies. He sets out to find his family and encounters many other survivors along the way." />
 
         <TextView
-            android:text="@string/featured_crew"
-            android:textColor="#fff"
-            android:textSize="18sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingBottom="@dimen/small_vertical_padding"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="@string/featured_crew"
+            android:textColor="#fff"
+            android:textSize="18sp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:src="@drawable/test_actorimg"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp" />
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/detail_show_crew_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp" />
+
+            <TextView
+                android:id="@+id/detail_show_crew_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#d81f25"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Eric Kripe"
+                app:layout_constraintLeft_toRightOf="@+id/detail_show_crew_image"
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="20dp" />
+
+            <TextView
+                android:text="@string/creator"
+                android:id="@+id/detail_show_crew_title"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toLeftOf="@id/detail_show_crew_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                app:layout_constraintTop_toBottomOf="@+id/detail_show_crew_name" />
+
+        </android.support.constraint.ConstraintLayout>
+
 
     </LinearLayout>
 
@@ -278,6 +213,7 @@
 
         </LinearLayout>
 
+    <include layout="@layout/seasons_pane" />
 
     </LinearLayout>
 

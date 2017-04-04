@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".PopularMoviesApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -53,7 +54,8 @@
             android:name=".Database.MovieUpdateService"
             android:exported="false" />
 
-        <activity android:name=".ui.TvShowDetailActivity"></activity>
+        <activity android:name=".ui.TvShowDetailActivity" />
+        <activity android:name=".ui.TvSeasonDetailActivity"></activity>
     </application>
 
 </manifest>

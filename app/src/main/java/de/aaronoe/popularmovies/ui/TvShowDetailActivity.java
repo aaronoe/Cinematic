@@ -1,9 +1,13 @@
 package de.aaronoe.popularmovies.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,10 +21,14 @@ import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
+import de.aaronoe.popularmovies.Data.TvShow.FullShow.CreatedBy;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.Genre;
+import de.aaronoe.popularmovies.Data.TvShow.FullShow.Season;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
+import de.aaronoe.popularmovies.Data.TvShow.SeasonAdapter;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,10 +49,6 @@ public class TvShowDetailActivity extends AppCompatActivity {
     TextView tvDetailDividerdot;
     @BindView(R.id.tv_detail_age_rating)
     TextView tvDetailAgeRating;
-    @BindView(R.id.tv_detail_user_score_tv)
-    TextView tvDetailUserScoreTv;
-    @BindView(R.id.tv_detail_play_trailer)
-    TextView tvDetailPlayTrailer;
     @BindView(R.id.show_runtime_status)
     TextView showRuntimeStatus;
     @BindView(R.id.show_runtime_last_air_date)
@@ -61,11 +65,22 @@ public class TvShowDetailActivity extends AppCompatActivity {
     TextView showRuntimeNrEpisodes;
     @BindView(R.id.tv_detail_overview)
     TextView tvDetailOverview;
+    @BindView(R.id.detail_show_crew_image)
+    CircleImageView detailShowCrewImage;
+    @BindView(R.id.detail_show_crew_name)
+    TextView detailShowCrewName;
+    @BindView(R.id.detail_show_crew_title)
+    TextView detailShowCrewTitle;
+    @BindView(R.id.seasons_recycler_view)
+    RecyclerView seasonRecylcerView;
 
     int movieId;
     ApiInterface apiInterface;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
+    Context mContext;
+    SeasonAdapter seasonAdapter;
+
 
 
     @Override
@@ -73,6 +88,7 @@ public class TvShowDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tv_show_details);
         ButterKnife.bind(this);
+        mContext = this;
 
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
@@ -126,12 +142,36 @@ public class TvShowDetailActivity extends AppCompatActivity {
                 .into(tvDetailProfile);
 
         tvDetailTitle.setText(thisShow.getName());
-        tvDetailYear.setText(thisShow.getFirstAirDate());
+        tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
+        int numberOfSeasons = thisShow.getNumberOfSeasons();
+        tvDetailAgeRating.setText(getResources().
+                getQuantityString(R.plurals.no_of_seasons, numberOfSeasons, numberOfSeasons));
+
+
+        // Creator
+        List<CreatedBy> createdByList = thisShow.getCreatedBy();
+        if (createdByList == null || createdByList.size() == 0) {
+            // remove views
+            detailShowCrewImage.setVisibility(View.INVISIBLE);
+            detailShowCrewName.setVisibility(View.INVISIBLE);
+            detailShowCrewTitle.setVisibility(View.INVISIBLE);
+        } else {
+            CreatedBy firstEntry = createdByList.get(0);
+            detailShowCrewName.setText(firstEntry.getName());
+
+            String creatorProfileUrl = "http://image.tmdb.org/t/p/w185/" + firstEntry.getProfilePath();
+            Picasso.with(this)
+                    .load(creatorProfileUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(detailShowCrewImage);
+        }
+
         tvDetailOverview.setText(thisShow.getOverview());
         showRuntimeStatus.setText(thisShow.getStatus());
         showRuntimeFirstAirDate.setText(Utilities.convertDate(thisShow.getFirstAirDate()));
         showRuntimeNrEpisodes.setText(String.valueOf(thisShow.getNumberOfEpisodes()));
-        showRuntimeNrSeasons.setText(String.valueOf(thisShow.getNumberOfSeasons()));
+        showRuntimeNrSeasons.setText(String.valueOf(thisShow.getNumberOfSeasons() + 1));
 
         int diff = (int) Utilities.computeDifferenceInDays(thisShow.getLastAirDate());
         String lastRuntime = Utilities.convertDate(thisShow.getLastAirDate());
@@ -144,7 +184,7 @@ public class TvShowDetailActivity extends AppCompatActivity {
         }
 
         showRuntimeLastAirDate.setText(lastRuntime);
-        Log.d(TAG, "populateViewsWithData: "+ diff);
+        Log.d(TAG, "populateViewsWithData: " + diff);
 
         List<Integer> runtime = thisShow.getEpisodeRunTime();
         String runtimeString = "";
@@ -168,6 +208,33 @@ public class TvShowDetailActivity extends AppCompatActivity {
         }
         showRuntimeGenres.setText(genreString);
 
+
+        List<Season> seasonList = thisShow.getSeasons();
+
+        /*
+        detailShowViewEpisodesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, TvSeasonDetailActivity.class);
+                intent.putExtra(getString(R.string.intent_key_tvshow), thisShow.getName());
+                intent.putExtra(getString(R.string.intent_key_season_id), thisShow.getId());
+                intent.putExtra(getString(R.string.intent_key_selected_season), selectedSeason);
+                intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
+                mContext.startActivity(intent);
+            }
+        });
+        */
+
+        // new season pane
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        seasonRecylcerView.setLayoutManager(linearLayoutManager);
+        seasonRecylcerView.setNestedScrollingEnabled(false);
+        seasonAdapter = new SeasonAdapter(this);
+        seasonRecylcerView.setAdapter(seasonAdapter);
+        seasonAdapter.setSeasonList(seasonList);
+
     }
+
 
 }
