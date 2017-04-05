@@ -14,6 +14,8 @@ public class MoviesContract {
     static final String CONTENT_AUTHORITY = "de.aaronoe.popularmovies";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     static final String PATH_FAVORITE = "faves";
+    static final String PATH_FAVORITE_SHOWS = "shows_faves";
+
 
     /**
      * This class holds constants for the favored movies table
@@ -50,6 +52,24 @@ public class MoviesContract {
         static final String COLUMN_VOTE_AVERAGE = "voteaverage";
         static final String COLUMN_BACKDROP_PATH = "backdroppath";
 
+
+    }
+
+    public static final class ShowEntry implements BaseColumns {
+
+        // The content uri is the base uri with the path appended
+        // This will be used to query the favorite shows
+        public static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITE_SHOWS).build();
+
+        static final String TABLE_NAME = "fave_shows";
+
+        static final String COLUMN_ID = "show_id";
+        static final String COLUMN_TITLE = "title";
+        static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        static final String COLUMN_FIRST_AIR_DATE = "first_air_date";
+        static final String COLUMN_GENRES = "show_genres";
+        static final String COLUMN_BACKDROP_PATH = "backdrop_path";
 
     }
 

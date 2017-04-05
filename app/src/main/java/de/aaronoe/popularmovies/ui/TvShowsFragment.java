@@ -1,22 +1,26 @@
 package de.aaronoe.popularmovies.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -44,13 +48,19 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     List<TvShow> tvShowList;
-    LinearLayoutManager linearLayout;
+    GridLayoutManager linearLayout;
     TvShowAdapter tvShowAdapter;
+    private Parcelable mLayoutManagerSavedState;
     EndlessRecyclerViewScrollListener scrollListener;
 
 
+    private static final String BUNDLE_RECYCLER_LAYOUT = "tvshows.recycler.layout";
+    private static final String BUNDLE_SHOW_LIST_KEY = "BUNDLE_SHOW_LIST_KEY";
     private static final String TAG = "TvShowsFragment";
     private static final String SELECTION_POPULAR = "popular";
+    private static final String SELECTION_TOP_RATED = "top_rated";
+    private static final String SELECTION_ON_THE_AIR = "on_the_air";
+    private String mCurrentSelection;
 
     @BindView(R.id.rv_main_movie_list)
     RecyclerView rvMainMovieList;
@@ -58,31 +68,34 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     TextView tvErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar pbLoadingIndicator;
-    @BindView(R.id.fab_action_popular)
-    FloatingActionButton fabActionPopular;
-    @BindView(R.id.fab_action_top_rated)
-    FloatingActionButton fabActionTopRated;
-    @BindView(R.id.fab_action_upcoming)
-    FloatingActionButton fabActionUpcoming;
-    @BindView(R.id.fab_action_favorite)
-    FloatingActionButton fabActionFavorite;
-    @BindView(R.id.fab_action_search)
-    FloatingActionButton fabActionSearch;
+    @BindView(R.id.fab_action_show_popular)
+    FloatingActionButton fabActionShowPopular;
+    @BindView(R.id.fab_action_show_top_rated)
+    FloatingActionButton fabActionShowTopRated;
+    @BindView(R.id.fab_action_shows_on_the)
+    FloatingActionButton fabActionShowsOnThe;
     @BindView(R.id.fab_menu)
     FloatingActionMenu fabMenu;
-    @BindView(R.id.activity_main)
-    FrameLayout activityMain;
 
-    public TvShowsFragment() {}
+
+    public TvShowsFragment() {
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_main, container, false);
+        View rootView = inflater.inflate(R.layout.activity_shows_list, container, false);
 
         ButterKnife.bind(this, rootView);
 
-        linearLayout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        // Get last state
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        mCurrentSelection = sharedPref.getString(getString(R.string.pref_key_shows), SELECTION_POPULAR);
+
+        initializeFabMenu();
+
+        linearLayout = new GridLayoutManager
+                (getActivity(), Utilities.calculateNoOfColumnsShow(getContext()));
         tvShowAdapter = new TvShowAdapter(getActivity(), this);
 
         rvMainMovieList.setLayoutManager(linearLayout);
@@ -108,7 +121,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
         pbLoadingIndicator.setVisibility(View.VISIBLE);
 
-        Call<ShowsResponse> call = apiService.getTvShows(SELECTION_POPULAR, API_KEY, page);
+        Call<ShowsResponse> call = apiService.getTvShows(mCurrentSelection, API_KEY, page);
 
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
@@ -135,7 +148,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
     private void donwloadNextPageOfShows(int page) {
 
-        Call<ShowsResponse> call = apiService.getTvShows(SELECTION_POPULAR, API_KEY, page);
+        Call<ShowsResponse> call = apiService.getTvShows(mCurrentSelection, API_KEY, page);
 
         Log.v(TAG, "Downloading next page: " + (page));
 
@@ -149,7 +162,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
                     int previousSize = tvShowList.size();
                     tvShowList.addAll(newShows);
                     tvShowAdapter.notifyItemRangeChanged(previousSize, size);
-                    Log.d(TAG, "onResponse: size: " + size + " previoussize: " + previousSize + "- fullsize: " +tvShowList.size() );
+                    Log.d(TAG, "onResponse: size: " + size + " previoussize: " + previousSize + "- fullsize: " + tvShowList.size());
                 }
             }
 
@@ -183,11 +196,107 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         }
     }
 
+    private void initializeFabMenu() {
+        fabActionShowPopular.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectPopular();
+                fabMenu.close(true);
+            }
+        });
+        fabActionShowsOnThe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectOnTheAir();
+                fabMenu.close(true);
+            }
+        });
+        fabActionShowTopRated.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTopRated();
+                fabMenu.close(true);
+            }
+        });
+    }
+
+    private void saveSelection(String selection) {
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.pref_key_shows), selection);
+        editor.apply();
+    }
+
+    private boolean selectPopular() {
+        if (mCurrentSelection.equals(SELECTION_POPULAR)) {
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
+            rvMainMovieList.smoothScrollToPosition(1);
+            return true;
+        }
+
+        tvShowAdapter.setVideoData(null);
+        mCurrentSelection = SELECTION_POPULAR;
+        downloadShowData(1);
+        saveSelection(SELECTION_POPULAR);
+        return true;
+    }
+
+    private boolean selectTopRated() {
+        // return if the option is already selected
+        if (mCurrentSelection.equals(SELECTION_TOP_RATED)) {
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
+            rvMainMovieList.smoothScrollToPosition(1);
+            return true;
+        }
+
+        tvShowAdapter.setVideoData(null);
+        mCurrentSelection = SELECTION_TOP_RATED;
+        downloadShowData(1);
+        saveSelection(SELECTION_TOP_RATED);
+        return true;
+    }
+
+    private boolean selectOnTheAir() {
+        // return if the option is already selected
+        if (mCurrentSelection.equals(SELECTION_ON_THE_AIR)) {
+            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
+            rvMainMovieList.smoothScrollToPosition(1);
+            return true;
+        }
+
+        tvShowAdapter.setVideoData(null);
+        mCurrentSelection = SELECTION_ON_THE_AIR;
+        downloadShowData(1);
+        saveSelection(SELECTION_ON_THE_AIR);
+        return true;
+    }
 
     @Override
     public void onClick(int movieId) {
         Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
         getActivity().startActivity(intentToStartDetailActivity);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
+            tvShowList = savedInstanceState.getParcelableArrayList(BUNDLE_SHOW_LIST_KEY);
+            tvShowAdapter.setVideoData(tvShowList);
+            mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, rvMainMovieList.getLayoutManager().onSaveInstanceState());
+        outState.putParcelableArrayList(BUNDLE_SHOW_LIST_KEY, (ArrayList<TvShow>) tvShowList);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

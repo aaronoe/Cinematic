@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -79,7 +78,11 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
             }
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_selected_season))) {
                 selectedSeason = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_selected_season), -1);
-                tvDetailTitle.setText(getString(R.string.season_x, selectedSeason));
+                if (selectedSeason == 0) {
+                    tvDetailTitle.setText(getString(R.string.extras_and_year));
+                } else {
+                    tvDetailTitle.setText(getString(R.string.season_x, selectedSeason));
+                }
             }
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_backdrop))) {
                 showBackdropPath = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_backdrop));
@@ -97,9 +100,6 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
                 .error(R.drawable.poster_show_not_available)
                 .into(tvDetailBackdrop);
 
-        Log.d(TAG, "onCreate: " + selectedSeason);
-
-        Log.d(TAG, "onCreate: " + showId + " " + selectedSeason);
 
         apiInterface = ApiClient.getClient().create(ApiInterface.class);
         downloadSeasonDetails();

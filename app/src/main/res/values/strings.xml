@@ -81,6 +81,11 @@
     <string name="seasons_h1">Seasons</string>
     <string name="season_and_year">Season %d</string>
     <string name="episodes_and_year">Season %1$d (%2$s)</string>
+    <string name="extras_and_year">Extras</string>
+    <string name="on_the_air">On The Air</string>
+    <string name="pref_key_shows">PREF_KEY_SHOWS_SELECTION</string>
+    <string name="today_show">(today)</string>
+    <string name="key_nav_selection">NAVIGATION_SELECTION_KEY</string>
 
 
 </resources>

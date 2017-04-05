@@ -171,15 +171,20 @@ public class TvShowDetailActivity extends AppCompatActivity implements SeasonAda
         showRuntimeStatus.setText(thisShow.getStatus());
         showRuntimeFirstAirDate.setText(Utilities.convertDate(thisShow.getFirstAirDate()));
         showRuntimeNrEpisodes.setText(String.valueOf(thisShow.getNumberOfEpisodes()));
-        showRuntimeNrSeasons.setText(String.valueOf(thisShow.getNumberOfSeasons() + 1));
+        showRuntimeNrSeasons.setText(String.valueOf(thisShow.getNumberOfSeasons()));
 
         int diff = (int) Utilities.computeDifferenceInDays(thisShow.getLastAirDate());
         String lastRuntime = Utilities.convertDate(thisShow.getLastAirDate());
 
 
         if (diff <= 0) {
-            String daysDifference = getResources()
-                    .getQuantityString(R.plurals.x_days_ago_plurals, Math.abs(diff), Math.abs(diff));
+            String daysDifference;
+            if (diff < 0) {
+                daysDifference = getResources()
+                        .getQuantityString(R.plurals.x_days_ago_plurals, Math.abs(diff), Math.abs(diff));
+            } else {
+                daysDifference = getString(R.string.today_show);
+            }
             lastRuntime += " " + daysDifference;
         }
 

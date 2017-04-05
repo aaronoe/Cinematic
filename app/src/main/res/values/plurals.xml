@@ -2,6 +2,7 @@
 <resources>
 
     <plurals name="x_days_ago_plurals">
+        <item quantity="zero"> (today)</item>
         <item quantity="one"> (in %d day)</item>
         <item quantity="other"> (in %d days)</item>
     </plurals>

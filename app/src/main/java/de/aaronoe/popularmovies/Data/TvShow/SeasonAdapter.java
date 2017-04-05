@@ -63,10 +63,18 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
 
         String episodeCount = mContext.getString(R.string.nr_episodes, mSeason.getEpisodeCount());
         holder.episodeCountTextView.setText(episodeCount);
-        String metaData = mContext.getString(
-                R.string.episodes_and_year,
-                mSeason.getSeasonNumber(),
-                Utilities.convertDateToYear(mSeason.getAirDate()));
+        int seasonNumber = mSeason.getSeasonNumber();
+
+        String metaData;
+        if (seasonNumber == 0) {
+            metaData = mContext.getString(R.string.extras_and_year);
+        } else {
+            metaData = mContext.getString(
+                    R.string.episodes_and_year,
+                    mSeason.getSeasonNumber(),
+                    Utilities.convertDateToYear(mSeason.getAirDate()));
+        }
+
         holder.seasonNumberTextView.setText(metaData);
     }
 
