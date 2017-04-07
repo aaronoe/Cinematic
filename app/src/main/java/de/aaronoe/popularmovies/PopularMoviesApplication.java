@@ -3,6 +3,7 @@ package de.aaronoe.popularmovies;
 import android.app.Application;
 
 import com.facebook.stetho.Stetho;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  *
@@ -30,5 +31,12 @@ public class PopularMoviesApplication extends Application {
 
         // Initialize Stetho with the Initializer
         Stetho.initialize(initializer);
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
     }
 }

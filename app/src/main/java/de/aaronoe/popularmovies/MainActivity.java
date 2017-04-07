@@ -166,6 +166,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+
     private void downloadNextPageOfMovies(int page) {
 
         Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
