@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import de.aaronoe.popularmovies.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 
 public class DetailPageVideosFragment extends Fragment {
 
@@ -60,12 +63,14 @@ public class DetailPageVideosFragment extends Fragment {
 
         mProgressBar.setVisibility(View.VISIBLE);
         int movieId = mMovieItem.getmMovieId();
-
+        Log.d(TAG, "downloadVideoData() called" + movieId) ;
         Call<VideoResponse> call = apiService.getVideos(movieId, API_KEY);
 
         call.enqueue(new Callback<VideoResponse>() {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
+
+                if (response.body() == null) return;
 
                 List<VideoItem> videoItems = response.body().getResults();
 

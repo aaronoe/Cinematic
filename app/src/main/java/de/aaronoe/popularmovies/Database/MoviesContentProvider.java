@@ -12,9 +12,11 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
+import de.aaronoe.popularmovies.Database.MoviesContract.ShowEntry;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.MainActivity;
 
+import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 import static de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry.TABLE_NAME;
 
 /**
@@ -26,6 +28,8 @@ public class MoviesContentProvider extends ContentProvider {
 
     public static final int MOVIES = 100;
     public static final int MOVIES_WITH_ID = 101;
+    private static final int SHOWS = 671;
+    private static final int SHOWS_WITH_ID = 470;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -38,7 +42,6 @@ public class MoviesContentProvider extends ContentProvider {
 
         // Initialize a UriMatcher with no matches by passing in NO_MATCH to the constructor
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
         /*
           All paths added to the UriMatcher have a corresponding int.
           For each kind of uri you may want to access, add the corresponding match with addURI.
@@ -48,6 +51,10 @@ public class MoviesContentProvider extends ContentProvider {
                 (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE, MOVIES);
         uriMatcher.addURI
                 (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE + "/#", MOVIES_WITH_ID);
+        uriMatcher.addURI
+                (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE_SHOWS, SHOWS);
+        uriMatcher.addURI
+                (MoviesContract.CONTENT_AUTHORITY, MoviesContract.PATH_FAVORITE_SHOWS + "/#", SHOWS_WITH_ID);
 
         return uriMatcher;
     }
@@ -79,6 +86,7 @@ public class MoviesContentProvider extends ContentProvider {
 
         final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
         Cursor result;
+        Log.d(TAG, "query() called with: uri = [" + uri + "], projection = [" + projection + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "], sortOrder = [" + sortOrder + "]");
 
         switch (sUriMatcher.match(uri)) {
 
@@ -86,6 +94,49 @@ public class MoviesContentProvider extends ContentProvider {
 
                 result = db.query(
                         TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+
+                break;
+
+            case MOVIES_WITH_ID:
+
+                String id = uri.getPathSegments().get(1);
+
+                result = db.query(
+                        TABLE_NAME,
+                        projection,
+                        MovieEntry.COLUMN_MOVIE_ID + "=?",
+                        new String[]{id},
+                        null,
+                        null,
+                        null);
+
+                break;
+
+            case SHOWS_WITH_ID:
+
+                String show_id = uri.getPathSegments().get(1);
+
+                result = db.query(
+                        ShowEntry.TABLE_NAME,
+                        projection,
+                        ShowEntry.COLUMN_ID + "=?",
+                        new String[]{show_id},
+                        null,
+                        null,
+                        null);
+
+                break;
+
+            case SHOWS:
+
+                result = db.query(
+                        ShowEntry.TABLE_NAME,
                         projection,
                         selection,
                         selectionArgs,
@@ -120,6 +171,7 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
 
+        Log.d(TAG, "insert() called with: uri = [" + uri + "], values = [" + values + "]");
 
         final SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
         Uri returnUri;
@@ -131,7 +183,6 @@ public class MoviesContentProvider extends ContentProvider {
 
                 Log.e(MoviesContentProvider.class.getSimpleName(), "Insert called with Uri: " + uri);
 
-
                 long id = db.insert(
                         TABLE_NAME,
                         null,
@@ -142,6 +193,21 @@ public class MoviesContentProvider extends ContentProvider {
 
                 if (id > 0 ) {
                     returnUri = ContentUris.withAppendedId(MovieEntry.CONTENT_URI, id);
+                } else {
+                    throw new SQLiteException("Failed to insert row into " + uri);
+                }
+
+                break;
+
+            case SHOWS:
+
+                long show_id = db.insert(
+                        ShowEntry.TABLE_NAME,
+                        null,
+                        values);
+
+                if (show_id > 0) {
+                    returnUri = ContentUris.withAppendedId(ShowEntry.CONTENT_URI, show_id);
                 } else {
                     throw new SQLiteException("Failed to insert row into " + uri);
                 }
@@ -170,6 +236,8 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull  Uri uri, String selection, String[] selectionArgs) {
 
+        Log.d(TAG, "delete() called with: uri = [" + uri + "], selection = [" + selection + "], selectionArgs = [" + selectionArgs + "]");
+
         int numberOfRowsDeleted;
 
         SQLiteDatabase db = mMoviesDbHelper.getWritableDatabase();
@@ -184,6 +252,17 @@ public class MoviesContentProvider extends ContentProvider {
                         TABLE_NAME,
                         MovieEntry.COLUMN_MOVIE_ID + "=?",
                         new String[]{id});
+
+                break;
+
+            case SHOWS_WITH_ID:
+
+                String showId = uri.getPathSegments().get(1);
+
+                numberOfRowsDeleted = db.delete(
+                        ShowEntry.TABLE_NAME,
+                        ShowEntry.COLUMN_ID + "=?",
+                        new String[]{showId});
 
                 break;
 

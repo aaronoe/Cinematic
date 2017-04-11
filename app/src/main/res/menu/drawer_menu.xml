@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group android:id="@+id/group2" android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_menu_search"
+            android:checked="false"
+            android:title="@string/action_search"
+            android:icon="@drawable/ic_search_white_24dp" />
+
+        <item
+            android:id="@+id/drawer_menu_faves"
+            android:checked="false"
+            android:title="@string/action_favorite"
+            android:icon="@drawable/ic_star_black_24dp"/>
+
+    </group>
+
     <group android:id="@+id/group1" android:checkableBehavior="single">
 
         <item

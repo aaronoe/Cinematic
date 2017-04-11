@@ -55,12 +55,14 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "tvshows.recycler.layout";
+    private static final String BUNDLE_SCROLL_POSITION = "tvshows.scroll.position";
     private static final String BUNDLE_SHOW_LIST_KEY = "BUNDLE_SHOW_LIST_KEY";
     private static final String TAG = "TvShowsFragment";
     private static final String SELECTION_POPULAR = "popular";
     private static final String SELECTION_TOP_RATED = "top_rated";
     private static final String SELECTION_ON_THE_AIR = "on_the_air";
     private String mCurrentSelection;
+    private int scrollListenerPosition = 1;
 
     @BindView(R.id.rv_main_movie_list)
     RecyclerView rvMainMovieList;
@@ -103,15 +105,24 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayout) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                Log.d(TAG, "onLoadMore: with page: " + page);
-                donwloadNextPageOfShows(page + 1);
+                Log.e(TAG, "onLoadMore: with page: " + page + "  scrollposition" + scrollListenerPosition);
+                donwloadNextPageOfShows(scrollListenerPosition + 1);
+                scrollListenerPosition++;
             }
         };
+
+        if (savedInstanceState != null) {
+            tvShowList = savedInstanceState.getParcelableArrayList(BUNDLE_SHOW_LIST_KEY);
+            restorePosition();
+            Log.d(TAG, "onCreateView:  restoring position" );
+        }
+
         rvMainMovieList.addOnScrollListener(scrollListener);
 
-
         apiService = ApiClient.getClient().create(ApiInterface.class);
-        downloadShowData(1);
+        if (tvShowList == null || tvShowList.size() == 0) {
+            downloadShowData(1);
+        }
 
         return rootView;
     }
@@ -150,7 +161,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
         Call<ShowsResponse> call = apiService.getTvShows(mCurrentSelection, API_KEY, page);
 
-        Log.v(TAG, "Downloading next page: " + (page));
+        Log.e(TAG, "Downloading next page: " + (page));
 
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
@@ -235,6 +246,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         }
 
         tvShowAdapter.setVideoData(null);
+        scrollListenerPosition = 1;
         mCurrentSelection = SELECTION_POPULAR;
         downloadShowData(1);
         saveSelection(SELECTION_POPULAR);
@@ -250,6 +262,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         }
 
         tvShowAdapter.setVideoData(null);
+        scrollListenerPosition = 1;
         mCurrentSelection = SELECTION_TOP_RATED;
         downloadShowData(1);
         saveSelection(SELECTION_TOP_RATED);
@@ -265,6 +278,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         }
 
         tvShowAdapter.setVideoData(null);
+        scrollListenerPosition = 1;
         mCurrentSelection = SELECTION_ON_THE_AIR;
         downloadShowData(1);
         saveSelection(SELECTION_ON_THE_AIR);
@@ -283,8 +297,17 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             tvShowList = savedInstanceState.getParcelableArrayList(BUNDLE_SHOW_LIST_KEY);
+            Log.d(TAG, "onViewStateRestored: list length:" + tvShowList.size());
             tvShowAdapter.setVideoData(tvShowList);
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            scrollListenerPosition = savedInstanceState.getInt(BUNDLE_SCROLL_POSITION);
+        }
+    }
+
+    private void restorePosition() {
+        if (mLayoutManagerSavedState != null) {
+            linearLayout.onRestoreInstanceState(mLayoutManagerSavedState);
+            mLayoutManagerSavedState = null;
         }
     }
 
@@ -293,6 +316,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, rvMainMovieList.getLayoutManager().onSaveInstanceState());
         outState.putParcelableArrayList(BUNDLE_SHOW_LIST_KEY, (ArrayList<TvShow>) tvShowList);
+        outState.putInt(BUNDLE_SCROLL_POSITION, scrollListenerPosition);
     }
 
     @Override

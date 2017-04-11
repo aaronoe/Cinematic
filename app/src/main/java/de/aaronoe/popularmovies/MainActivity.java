@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity
 
         Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
 
-        Log.v(TAG, "Downloading next page: " + (page + 1));
+        Log.e(TAG, "Downloading next page: " + (page + 1));
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override

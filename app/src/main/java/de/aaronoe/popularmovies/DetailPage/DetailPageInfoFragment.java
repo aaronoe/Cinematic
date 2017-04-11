@@ -124,7 +124,6 @@ public class DetailPageInfoFragment extends Fragment {
      */
     private boolean isMovieFavorite(MovieItem movieItem) {
 
-        int id = movieItem.getmMovieId();
         String[] selection = new String[]{Integer.toString(movieItem.getmMovieId())};
 
         Cursor result =
@@ -178,6 +177,9 @@ public class DetailPageInfoFragment extends Fragment {
         call.enqueue(new Callback<Credits>() {
             @Override
             public void onResponse(Call<Credits> call, Response<Credits> response) {
+
+                if (response.body() == null) return;
+
                 castList = response.body().getCast();
                 mActorRecyclerView.setVisibility(View.VISIBLE);
                 if (castList != null) {

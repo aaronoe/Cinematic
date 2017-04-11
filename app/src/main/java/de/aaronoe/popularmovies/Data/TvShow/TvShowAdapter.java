@@ -111,7 +111,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
     }
 
 
-    class TvShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class TvShowViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.tv_shows_backdrop_iv) ImageView backdropImageView;
         @BindView(R.id.tv_shows_h1_tv) TextView showTitleTextView;

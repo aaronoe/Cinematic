@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -18,7 +19,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import de.aaronoe.popularmovies.Data.MovieAdapter;
+import de.aaronoe.popularmovies.Data.TvShow.FullShow.Genre;
+import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
+import de.aaronoe.popularmovies.Database.MoviesContract.ShowEntry;
 import de.aaronoe.popularmovies.MainActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 
@@ -54,6 +58,31 @@ public class Utilities {
 
         return cv;
 
+    }
+
+
+    public static ContentValues getContentValuesForShow(TvShowFull tvShowFull, Context context) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(ShowEntry.COLUMN_ID, tvShowFull.getId());
+        cv.put(ShowEntry.COLUMN_TITLE, tvShowFull.getName());
+        cv.put(ShowEntry.COLUMN_BACKDROP_PATH, tvShowFull.getBackdropPath());
+        cv.put(ShowEntry.COLUMN_FIRST_AIR_DATE, tvShowFull.getFirstAirDate());
+        cv.put(ShowEntry.COLUMN_VOTE_AVERAGE, tvShowFull.getVoteAverage());
+
+        List<Genre> genreList = tvShowFull.getGenres();
+        String genreString = "";
+        for (int i = 0; i < genreList.size(); i++) {
+            if (i != 0) {
+                genreString += ", ";
+            }
+            genreString += genreList.get(i).getName();
+        }
+
+        cv.put(ShowEntry.COLUMN_GENRES, genreString);
+
+        return cv;
     }
 
     /**
@@ -213,6 +242,10 @@ public class Utilities {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
         return (int) (dpWidth / 300);
+    }
+
+    public static Uri buildShowUri(int showId) {
+        return Uri.withAppendedPath(ShowEntry.CONTENT_URI, String.valueOf(showId));
     }
 
 

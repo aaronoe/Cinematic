@@ -54,8 +54,31 @@
             android:name=".Database.MovieUpdateService"
             android:exported="false" />
 
-        <activity android:name=".ui.TvShowDetailActivity" />
-        <activity android:name=".ui.TvSeasonDetailActivity"></activity>
+        <activity
+            android:name=".ui.TvShowDetailActivity"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.TvSeasonDetailActivity"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.FavoritesActivity"
+            android:theme="@style/AppThemeWithActionbar"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
     </application>
 
 </manifest>

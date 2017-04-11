@@ -86,6 +86,7 @@
     <string name="pref_key_shows">PREF_KEY_SHOWS_SELECTION</string>
     <string name="today_show">(today)</string>
     <string name="key_nav_selection">NAVIGATION_SELECTION_KEY</string>
+    <string name="removed_from_favorites">Removed from your favorites</string>
 
 
 </resources>

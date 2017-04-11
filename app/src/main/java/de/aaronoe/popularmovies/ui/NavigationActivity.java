@@ -1,6 +1,7 @@
 package de.aaronoe.popularmovies.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -52,7 +53,6 @@ public class NavigationActivity extends AppCompatActivity {
         // Setting toolbar as the actionbar
         setSupportActionBar(toolbar);
 
-
         if (savedInstanceState == null) {
             // Get last state
             SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -73,7 +73,6 @@ public class NavigationActivity extends AppCompatActivity {
                     break;
             }
         }
-
 
         // set up navigation
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -99,6 +98,12 @@ public class NavigationActivity extends AppCompatActivity {
                     case R.id.drawer_menu_actors:
                         Toast.makeText(NavigationActivity.this, "Actors selected", Toast.LENGTH_SHORT).show();
                         return true;
+
+                    case R.id.drawer_menu_faves:
+                        Toast.makeText(NavigationActivity.this, "Faves selected", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(NavigationActivity.this, FavoritesActivity.class));
+                        return true;
+
 
                     default:
                         Toast.makeText(NavigationActivity.this, "Something went terribly wrong", Toast.LENGTH_SHORT).show();
@@ -130,6 +135,29 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // Get last state
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        mCurrentSelection = sharedPref.getInt(getString(R.string.key_nav_selection), MOVIES_SELECTION);
+        Log.d(TAG, "onStart: " + mCurrentSelection);
+        switch (mCurrentSelection) {
+            case MOVIES_SELECTION:
+                navigationView.setCheckedItem(R.id.drawer_menu_movies);
+                break;
+            case SHOWS_SELECTION:
+                navigationView.setCheckedItem(R.id.drawer_menu_shows);
+                break;
+            default:
+                navigationView.setCheckedItem(R.id.drawer_menu_movies);
+                break;
+        }
+
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -149,7 +177,7 @@ public class NavigationActivity extends AppCompatActivity {
 
     private void selectMovieView() {
         mCurrentSelection = MOVIES_SELECTION;
-        Toast.makeText(NavigationActivity.this, "Movies Seleted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(NavigationActivity.this, "Movies selected", Toast.LENGTH_SHORT).show();
         MoviesFragment moviesFragment = new MoviesFragment();
         FragmentTransaction moviesFragmentTransaction =
                 getSupportFragmentManager().beginTransaction();

@@ -2,15 +2,21 @@ package de.aaronoe.popularmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -26,6 +32,7 @@ import de.aaronoe.popularmovies.Data.TvShow.FullShow.Genre;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.Season;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
 import de.aaronoe.popularmovies.Data.TvShow.SeasonAdapter;
+import de.aaronoe.popularmovies.Database.MovieUpdateService;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -33,9 +40,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TvShowDetailActivity extends AppCompatActivity implements SeasonAdapter.SeasonAdapterOnClickHandler {
+public class TvShowDetailActivity extends AppCompatActivity implements
+        SeasonAdapter.SeasonAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = "TvShowDetailActivity";
+    private static final int CHECK_FAVE_LOADER_ID = 609;
 
     @BindView(R.id.tv_detail_backdrop)
     ImageView tvDetailBackdrop;
@@ -73,6 +82,8 @@ public class TvShowDetailActivity extends AppCompatActivity implements SeasonAda
     TextView detailShowCrewTitle;
     @BindView(R.id.seasons_recycler_view)
     RecyclerView seasonRecylcerView;
+    @BindView(R.id.toggleFavoriteShowButton)
+    ToggleButton toggleFavoriteShowButton;
 
     int movieId;
     ApiInterface apiInterface;
@@ -99,6 +110,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements SeasonAda
             }
         }
         downloadShowDetails();
+
     }
 
 
@@ -225,6 +237,9 @@ public class TvShowDetailActivity extends AppCompatActivity implements SeasonAda
         seasonRecylcerView.setAdapter(seasonAdapter);
         seasonAdapter.setSeasonList(seasonList);
 
+        Log.d(TAG, "populateViewsWithData: "+ Utilities.buildShowUri(thisShow.getId()));
+        getSupportLoaderManager().initLoader(CHECK_FAVE_LOADER_ID, null, this);
+
     }
 
 
@@ -238,4 +253,61 @@ public class TvShowDetailActivity extends AppCompatActivity implements SeasonAda
         intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
         mContext.startActivity(intent);
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, Utilities.buildShowUri(thisShow.getId()), null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        if (data != null) {
+            Log.d(TAG, "onLoadFinished: " +data.getCount());
+            if (data.getCount() == 0) {
+                toggleFavoriteShowButton.setTextOn(getString(R.string.button_off));
+                toggleFavoriteShowButton.setChecked(false);
+            } else {
+                toggleFavoriteShowButton.setTextOff(getString(R.string.button_on));
+                toggleFavoriteShowButton.setChecked(true);
+            }
+        } else {
+            Log.d(TAG, "onLoadFinished: data is null" );
+        }
+
+        toggleFavoriteShowButton.setOnCheckedChangeListener(favoriteShowsChangeListener);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+
+    private CompoundButton.OnCheckedChangeListener favoriteShowsChangeListener =
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                    Log.d(TAG, "onCheckedChanged() called with: compoundButton = [" + compoundButton + "], isChecked = [" + isChecked + "]");
+                    if (isChecked) {
+                        // Toggle is enabled
+                        toggleFavoriteShowButton.setText(getString(R.string.button_on));
+                        toggleFavoriteShowButton.setTextOn(getString(R.string.button_on));
+                        toggleFavoriteShowButton.setChecked(true);
+                        Toast.makeText(mContext, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+
+                        MovieUpdateService.insertNewShow
+                                (mContext, Utilities.getContentValuesForShow(thisShow, mContext));
+                    } else {
+                        toggleFavoriteShowButton.setText(getString(R.string.button_off));
+                        toggleFavoriteShowButton.setTextOff(getString(R.string.button_off));
+                        toggleFavoriteShowButton.setChecked(false);
+                        Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
+
+                        MovieUpdateService.deleteTask(mContext, Utilities.buildShowUri(thisShow.getId()));
+
+                    }
+                }
+            };
+
 }
