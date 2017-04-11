@@ -83,7 +83,9 @@ public class NavigationActivity extends AppCompatActivity {
                 item.setChecked(!item.isChecked());
 
                 //Closing drawer on item click
-                drawerLayout.closeDrawers();
+                if (drawerLayout != null) {
+                    drawerLayout.closeDrawers();
+                }
 
                 switch (item.getItemId()) {
 
@@ -130,7 +132,9 @@ public class NavigationActivity extends AppCompatActivity {
             }
         };
 
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        if (drawerLayout != null) {
+            drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        }
         actionBarDrawerToggle.syncState();
 
     }

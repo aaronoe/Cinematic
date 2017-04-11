@@ -297,7 +297,6 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             tvShowList = savedInstanceState.getParcelableArrayList(BUNDLE_SHOW_LIST_KEY);
-            Log.d(TAG, "onViewStateRestored: list length:" + tvShowList.size());
             tvShowAdapter.setVideoData(tvShowList);
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             scrollListenerPosition = savedInstanceState.getInt(BUNDLE_SCROLL_POSITION);

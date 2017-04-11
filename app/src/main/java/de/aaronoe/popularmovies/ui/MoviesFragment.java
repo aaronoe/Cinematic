@@ -68,8 +68,10 @@ public class MoviesFragment extends Fragment
     StaggeredGridLayoutManager favoriteGridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
+    private static final String BUNDLE_SCROLL_POSITION = "BUNDLE_SCROLL_POSITION_MOVIES";
     private Parcelable mLayoutManagerSavedState;
     private EndlessRecyclerViewScrollListener scrollListener;
+    private int scrollPosition = 1;
 
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
@@ -114,7 +116,8 @@ public class MoviesFragment extends Fragment
         scrollListener = new EndlessRecyclerViewScrollListener(gridLayout) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                downloadNextPageOfMovies(page);
+                downloadNextPageOfMovies(scrollPosition + 1);
+                scrollPosition++;
             }
         };
 
@@ -168,6 +171,7 @@ public class MoviesFragment extends Fragment
             mMovieAdapter.setMovieData(movieItemList);
             Log.e(TAG, "Movie data size after restore: " + movieItemList.size());
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
+            scrollPosition = savedInstanceState.getInt(BUNDLE_SCROLL_POSITION);
         }
     }
 
@@ -176,6 +180,7 @@ public class MoviesFragment extends Fragment
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
         outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<MovieItem>) movieItemList);
+        outState.putInt(BUNDLE_SCROLL_POSITION, scrollPosition);
     }
 
 
@@ -258,6 +263,7 @@ public class MoviesFragment extends Fragment
         if (movieItemList != null) {
             movieItemList.clear();
             mMovieAdapter.notifyDataSetChanged();
+            scrollPosition = 1;
             scrollListener.resetState();
         }
 
