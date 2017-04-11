@@ -22,15 +22,18 @@
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/actor_image_description" />
 
         <TextView
             android:id="@+id/name_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/actor_name"
+            android:textAppearance="@style/TextAppearance.Design.Hint"
             app:layout_constraintTop_toTopOf="@+id/actor_imageview"
             android:layout_marginTop="16dp"
+            android:textSize="16sp"
             app:layout_constraintLeft_toRightOf="@+id/actor_imageview"
             android:layout_marginStart="32dp"
             android:layout_marginLeft="32dp" />
@@ -40,13 +43,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Hugh Jackman"
+            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintLeft_toLeftOf="@+id/name_label_tv"
             app:layout_constraintTop_toBottomOf="@+id/name_label_tv" />
 
         <TextView
             android:id="@+id/birthday_label_tv"
             android:layout_width="wrap_content"
-            android:layout_height="17dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textAppearance="@style/TextAppearance.Design.Hint"
             android:text="@string/birthdate"
             app:layout_constraintLeft_toLeftOf="@+id/name_value_textview"
             android:layout_marginTop="16dp"
@@ -57,6 +64,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="24 Nov, 2000"
+            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             app:layout_constraintLeft_toLeftOf="@+id/birthday_label_tv"
             app:layout_constraintTop_toBottomOf="@+id/birthday_label_tv" />
 
@@ -65,22 +74,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/birthplace"
+            android:textSize="16sp"
+            android:textAppearance="@style/TextAppearance.Design.Hint"
             android:layout_marginTop="16dp"
             app:layout_constraintTop_toBottomOf="@+id/birthday_value_tv"
             app:layout_constraintLeft_toLeftOf="@+id/birthday_value_tv" />
 
         <TextView
             android:id="@+id/birthplace_value_tv"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="160dp"
+            android:textSize="14sp"
             android:maxLines="2"
             tools:text="Sydney, New South Wales, Australia"
             app:layout_constraintTop_toBottomOf="@+id/birthplace_label_tv"
             app:layout_constraintLeft_toLeftOf="@+id/birthplace_label_tv"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="0dp"
-            app:layout_constraintHorizontal_bias="0.04" />
+            />
 
 
         <com.ms.square.android.expandabletextview.ExpandableTextView
@@ -89,7 +100,8 @@
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="@+id/actor_imageview"
+            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/actor_imageview"
             expandableTextView:maxCollapsedLines="4"
             expandableTextView:animDuration="200"
@@ -113,15 +125,30 @@
 
         <android.support.v7.widget.RecyclerView
             app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintRight_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/expand_text_view"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:id="@+id/actor_credits_rv"
             android:paddingBottom="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="8dp">
+            android:layout_height="wrap_content">
 
         </android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/pb_loading_indicator"
+            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:layout_gravity="center"
+            android:visibility="invisible"
+            app:layout_constraintTop_toBottomOf="@+id/actor_credits_rv"
+            app:layout_constraintBottom_toTopOf="@+id/actor_credits_rv"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
     </android.support.constraint.ConstraintLayout>
 

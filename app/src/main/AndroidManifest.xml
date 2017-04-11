@@ -3,8 +3,10 @@
     package="de.aaronoe.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".PopularMoviesApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -41,13 +43,42 @@
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
-            android:label="@string/title_activity_actor_details"
-            android:parentActivityName=".DetailPage.DetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:parentActivityName=".DetailPage.DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
         </activity>
+        <activity android:name=".ui.NavigationActivity" />
+
+        <service
+            android:name=".Database.MovieUpdateService"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.TvShowDetailActivity"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.TvSeasonDetailActivity"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
+        <activity
+            android:name=".ui.FavoritesActivity"
+            android:theme="@style/AppThemeWithActionbar"
+            android:parentActivityName=".ui.NavigationActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        </activity>
+
     </application>
 
 </manifest>

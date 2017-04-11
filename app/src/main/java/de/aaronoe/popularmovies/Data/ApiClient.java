@@ -11,9 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String PATH_SIMILAR = "similar";
-    public static final String PATH_REVIEWS = "reviews";
-    public static final String PATH_VIDEOS = "videos";
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;

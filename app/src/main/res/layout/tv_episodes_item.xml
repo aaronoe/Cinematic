@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv"
+        android:elevation="8dp"
+        app:cardCornerRadius="8dp"
+        style="@style/CardViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/poster_show_loading"
+                android:id="@+id/episode_poster_imageview" />
+
+            <android.support.constraint.ConstraintLayout
+                app:layout_constraintLeft_toLeftOf="@+id/poster_imageview"
+                app:layout_constraintBottom_toBottomOf="@+id/poster_imageview"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent" >
+
+                <TextView
+                    android:id="@+id/episode_number_tv"
+                    tools:text="1"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/secondary_text"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="8dp"
+                    app:layout_constraintTop_toTopOf="@+id/episode_title_tv"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/episode_release_date"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/episode_title_tv"
+                    tools:text="Keep Calm and Carry on"
+                    android:layout_width="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/primary_text"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    app:layout_constraintLeft_toRightOf="@+id/episode_number_tv"
+                    app:layout_constraintBottom_toBottomOf="@+id/episode_number_tv"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:id="@+id/episode_release_date"
+                    tools:text="February 2, 2017"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="@+id/episode_title_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/episode_title_tv" />
+
+            </android.support.constraint.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/episode_overview"
+                    app:layout_constraintTop_toBottomOf="@id/episode_release_date"
+                    tools:text="Lily Sunder steeps herself in black magic, honing her powers for over a century, waiting to exact revenge on a band of angels that murdered her family. Sam and Dean must work quickly to stop Castiel from becoming her next victim."
+                    android:paddingBottom="@dimen/activity_horizontal_margin"
+                    android:paddingLeft="@dimen/activity_vertical_margin"
+                    android:paddingStart="@dimen/activity_vertical_margin"
+                    android:paddingEnd="@dimen/activity_vertical_margin"
+                    android:paddingRight="@dimen/activity_vertical_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+
+
+</FrameLayout>

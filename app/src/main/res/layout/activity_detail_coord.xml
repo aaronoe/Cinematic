@@ -32,7 +32,7 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
-                />
+                android:contentDescription="@string/backdrop_description" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -44,6 +44,7 @@
             android:layout_marginTop="-48dp"
             android:layout_gravity="center_horizontal"
             android:elevation="8dp"
+            android:contentDescription="@string/movie_image_main"
             app:border_width="2dp"
             app:border_color="#FFF"
             app:layout_scrollFlags="scroll"

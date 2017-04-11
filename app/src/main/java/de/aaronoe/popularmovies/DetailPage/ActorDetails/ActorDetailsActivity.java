@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ public class ActorDetailsActivity extends AppCompatActivity {
     List<de.aaronoe.popularmovies.Data.ActorCredits.Cast> castList;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
 
-    @BindView(R.id.detail_actor_backdrop) ImageView mBackdropIv;
     @BindView(R.id.actor_imageview) ImageView mProfileIv;
     @BindView(R.id.name_value_textview) TextView mNameTextView;
     @BindView(R.id.birthday_value_tv) TextView mBirthdayTextView;
@@ -154,6 +154,17 @@ public class ActorDetailsActivity extends AppCompatActivity {
                 .error(R.drawable.error)
                 .into(mProfileIv);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 }

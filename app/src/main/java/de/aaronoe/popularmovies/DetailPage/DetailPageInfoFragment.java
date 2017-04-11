@@ -26,6 +26,7 @@ import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.Crew.Cast;
 import de.aaronoe.popularmovies.Data.Crew.Credits;
 import de.aaronoe.popularmovies.Data.Crew.CrewAdapter;
+import de.aaronoe.popularmovies.Database.MovieUpdateService;
 import de.aaronoe.popularmovies.Database.MoviesContract;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
@@ -123,7 +124,6 @@ public class DetailPageInfoFragment extends Fragment {
      */
     private boolean isMovieFavorite(MovieItem movieItem) {
 
-        int id = movieItem.getmMovieId();
         String[] selection = new String[]{Integer.toString(movieItem.getmMovieId())};
 
         Cursor result =
@@ -148,29 +148,18 @@ public class DetailPageInfoFragment extends Fragment {
         public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
             if (isChecked) {
                 // Toggle is enabled
-
-                Uri uri = getActivity().getContentResolver().insert(
-                        MoviesContract.MovieEntry.CONTENT_URI,
-                        Utilities.getContentValuesForMovie(mMovieItem));
+                MovieUpdateService.insertNewMovie(getContext(), Utilities.getContentValuesForMovie(mMovieItem));
 
                 Toast.makeText(getActivity(), getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
 
 
             } else {
 
-                int numberOfItemsDeleted;
                 int movieId = mMovieItem.getmMovieId();
                 Uri deleteUri = MoviesContract.MovieEntry.CONTENT_URI.buildUpon().
                         appendPath(Integer.toString(movieId)).build();
 
-
-                numberOfItemsDeleted = getActivity().getContentResolver().delete(
-                        deleteUri,
-                        null,
-                        null
-                );
-
-                if (numberOfItemsDeleted > 0) Log.e("DetailActivity: ", "Items deleted: " + numberOfItemsDeleted);
+                MovieUpdateService.deleteTask(getContext(), deleteUri);
 
             }
         }
@@ -188,6 +177,9 @@ public class DetailPageInfoFragment extends Fragment {
         call.enqueue(new Callback<Credits>() {
             @Override
             public void onResponse(Call<Credits> call, Response<Credits> response) {
+
+                if (response.body() == null) return;
+
                 castList = response.body().getCast();
                 mActorRecyclerView.setVisibility(View.VISIBLE);
                 if (castList != null) {

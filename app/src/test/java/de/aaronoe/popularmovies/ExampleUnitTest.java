@@ -2,6 +2,8 @@ package de.aaronoe.popularmovies;
 
 import org.junit.Test;
 
+import de.aaronoe.popularmovies.Database.Utilities;
+
 import static org.junit.Assert.*;
 
 /**
@@ -14,4 +16,28 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void mainActivityNotNull() throws Exception {
+        MainActivity mainActivity = new MainActivity();
+        assertNotNull(mainActivity);
+    }
+
+    @Test
+    public void testDateFormatting() throws Exception {
+        String date = "2015-12-15";
+        assertEquals("2015", Utilities.convertDateToYear(date));
+        assertEquals("December 15, 2015", Utilities.convertDate(date));
+    }
+
+    @Test
+    public void datesNotNull() throws Exception {
+        assertNull(Utilities.convertDate(null));
+        assertNull(Utilities.convertDateToYear(null));
+
+        String date = "2015-12-15";
+        assertNotNull(Utilities.convertDateToYear(date));
+        assertNotNull(Utilities.convertDate(date));
+    }
+
 }

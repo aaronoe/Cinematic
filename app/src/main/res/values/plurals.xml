@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <plurals name="x_days_ago_plurals">
+        <item quantity="zero"> (today)</item>
+        <item quantity="one"> (in %d day)</item>
+        <item quantity="other"> (in %d days)</item>
+    </plurals>
+
+    <plurals name="no_of_seasons">
+        <item quantity="one">%d Season</item>
+        <item quantity="other">%d Seasons</item>
+    </plurals>
+
+</resources>

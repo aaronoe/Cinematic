@@ -24,12 +24,69 @@
     <string name="action_search">Search</string>
     <string name="added_to_favorites">Added to your favorites</string>
     <string name="search_for_movie">Search for Movies</string>
-    <string name="SAVE_SELECTION_KEY">SAVE_SELECTION_KEY</string>
-    <string name="SAVE_POSITION_KEY">SAVE_POSITION_KEY</string>
+    <string name="SAVE_SELECTION_KEY" translatable="false">SAVE_SELECTION_KEY</string>
+    <string name="SAVE_POSITION_KEY" translatable="false">SAVE_POSITION_KEY</string>
     <string name="title_activity_actor_details">ActorDetailsActivity</string>
 
     <string name="birthplace">Birthplace:</string>
     <string name="actor_name">Name:</string>
     <string name="birthdate">Birthdate:</string>
+
+    <string name="no_network_connection">You are not connected to the internet</string>
+
+    <!-- Content descriptions for images -->
+    <string name="backdrop_description">Movie Backdrop Image</string>
+    <string name="movie_image_main">Movie Poster Image</string>
+    <string name="actor_image_description">Actor Profile Image</string>
+    <string name="drawer_menu__movies">Movies</string>
+    <string name="drawer_menu__tv_shows">TV Shows</string>
+    <string name="drawer_menu__actors">Actors</string>
+    <string name="title_activity_navigation">NavigationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+
+    <string name="closeDrawer">Navigation View</string>
+    <string name="openDrawer">Navigation View Closed</string>
+    <string name="divider_dot">•</string>
+    <string name="genre_not_available">n/a</string>
+    <string name="overview">Overview</string>
+    <string name="featured_crew">Featured Crew</string>
+    <string name="tv_show_data">TV Show Data</string>
+    <string name="status">Status</string>
+    <string name="last_air_date">Latest Episode</string>
+    <string name="first_air_date">First Air Date</string>
+    <string name="runtime">Runtime</string>
+    <string name="genres">Genres</string>
+    <string name="number_of_seasons">Number of Seasons</string>
+    <string name="number_of_episodes">Number of Episodes</string>
+    <string name="intent_key_tv_show">INTENT_KEY_TV_SHOW</string>
+    <string name="runtime_minutes">Minutes</string>
+
+    <string name="runtime_today">(Today)</string>
+    <string name="creator">Creator</string>
+    <string name="seasons">Season</string>
+    <string name="select_a_season_to_show_information">Select a season to show information</string>
+    <string name="view_episodes">View Episodes</string>
+    <string name="season_h1_pane">Season %d</string>
+    <string name="nr_episodes">%d Episodes</string>
+    <string name="intent_key_tvshow">INTENT_KEY_FULL_TVSHOW</string>
+    <string name="intent_key_selected_season">INTENT_KEY_SELECTED_SEASON</string>
+    <string name="intent_key_backdrop">INTENT_KEY_BACKDROP</string>
+    <string name="intent_key_season_id">INTENT_KEY_SEASON_ID</string>
+    <string name="season_x">Season %d</string>
+    <string name="seasons_h1">Seasons</string>
+    <string name="season_and_year">Season %d</string>
+    <string name="episodes_and_year">Season %1$d (%2$s)</string>
+    <string name="extras_and_year">Extras</string>
+    <string name="on_the_air">On The Air</string>
+    <string name="pref_key_shows">PREF_KEY_SHOWS_SELECTION</string>
+    <string name="today_show">(today)</string>
+    <string name="key_nav_selection">NAVIGATION_SELECTION_KEY</string>
+    <string name="removed_from_favorites">Removed from your favorites</string>
+
 
 </resources>

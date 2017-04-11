@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,7 +79,7 @@ public class DetailActivity extends AppCompatActivity
                 id = intentThatStartedThisActivity.getIntExtra("MovieId", -1);
             }
         }
-
+        Log.e(DetailActivity.class.getSimpleName(), "ID: " + id);
         if (id != -1) {
             downloadExtraInfo(id);
         }
@@ -125,7 +126,16 @@ public class DetailActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
 
     public void populateViewsWithData() {
 

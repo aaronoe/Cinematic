@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
+                android:contentDescription="@string/actor_image_description"
                 app:riv_corner_radius_bottom_left="0dp"
                 app:riv_corner_radius_bottom_right="0dp"
                 app:riv_corner_radius_top_left="@dimen/card_corner_radius"
