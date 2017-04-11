@@ -21,6 +21,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.R;
+import de.aaronoe.popularmovies.SearchActivity;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -106,6 +107,10 @@ public class NavigationActivity extends AppCompatActivity {
                         startActivity(new Intent(NavigationActivity.this, FavoritesActivity.class));
                         return true;
 
+                    case R.id.drawer_menu_search:
+                        Toast.makeText(NavigationActivity.this, "Search selected", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(NavigationActivity.this, SearchActivity.class));
+                        return true;
 
                     default:
                         Toast.makeText(NavigationActivity.this, "Something went terribly wrong", Toast.LENGTH_SHORT).show();
