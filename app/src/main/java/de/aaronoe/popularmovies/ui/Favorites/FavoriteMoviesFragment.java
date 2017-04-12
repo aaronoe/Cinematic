@@ -9,26 +9,19 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Database.MoviesContract;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
-import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.R;
-
-import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 
 /**
  *
@@ -37,11 +30,10 @@ import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 
 public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
         implements LoaderManager.LoaderCallbacks<Cursor>,
-        MovieAdapter.MovieAdapterOnClickHandler {
+        FavoriteMoviesAdapter.MovieAdapterOnClickHandler {
 
     StaggeredGridLayoutManager favoriteGridLayout;
-    MovieAdapter movieAdapter;
-    List<MovieItem> movieItemList;
+    FavoriteMoviesAdapter favoriteMoviesAdapter;
     private static final int FAVORITE_MOVIES_LOADER_ID = 314;
 
 
@@ -63,18 +55,18 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootview = inflater.inflate(R.layout.favorites_list_fragment, container, false);
-        unbinder = ButterKnife.bind(this, rootview);
+        View rootView = inflater.inflate(R.layout.favorites_list_fragment, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         favoriteGridLayout = new StaggeredGridLayoutManager
                 (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-        movieAdapter = new MovieAdapter(this);
-        rvFavoriteFragment.setAdapter(movieAdapter);
+        favoriteMoviesAdapter = new FavoriteMoviesAdapter(getActivity(), this);
+        rvFavoriteFragment.setAdapter(favoriteMoviesAdapter);
         rvFavoriteFragment.setLayoutManager(favoriteGridLayout);
 
-        getActivity().getSupportLoaderManager().restartLoader(FAVORITE_MOVIES_LOADER_ID, null, this);
+        getActivity().getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER_ID, null, this);
 
-        return rootview;
+        return rootView;
     }
 
 
@@ -95,7 +87,7 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
         if (!Utilities.isOnline(getActivity())) {
             faveTvErrorMessageDisplay.setText(getString(R.string.no_network_connection));
         } else {
-            faveTvErrorMessageDisplay.setText(getString(R.string.error_message));
+            faveTvErrorMessageDisplay.setText(R.string.no_movies_favorites);
         }
     }
 
@@ -106,13 +98,6 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     }
 
     @Override
-    public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
-        startActivity(intentToStartDetailActivity);
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader
                 (getActivity(), MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null);
@@ -120,20 +105,26 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        movieItemList = Utilities.extractMovieItemFromCursor(data);
-        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
-        Log.d(TAG, "onLoadFinished: "+ movieItemList.size());
 
-        if (movieItemList != null) {
-            showFavoriteMovieView();
-            movieAdapter.setMovieData(movieItemList);
-            movieAdapter.notifyDataSetChanged();
-        } else {
+        if (data == null || data.getCount() == 0) {
             showErrorMessage();
+            return;
         }
+        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
+        showFavoriteMovieView();
+        favoriteMoviesAdapter.changeCursor(data);
+        favoriteMoviesAdapter.notifyDataSetChanged();
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    @Override
+    public void onClick(int movieId) {
+        Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
+        intentToStartDetailActivity.putExtra("MovieId", movieId);
+        startActivity(intentToStartDetailActivity);
     }
 }

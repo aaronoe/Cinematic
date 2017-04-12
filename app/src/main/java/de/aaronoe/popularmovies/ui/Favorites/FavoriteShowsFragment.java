@@ -1,5 +1,6 @@
 package de.aaronoe.popularmovies.ui.Favorites;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import de.aaronoe.popularmovies.Data.TvShow.TvShow;
 import de.aaronoe.popularmovies.Database.MoviesContract;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
+import de.aaronoe.popularmovies.ui.TvShowDetailActivity;
 
 /**
  *
@@ -129,13 +131,15 @@ public class FavoriteShowsFragment extends Fragment implements
         if (!Utilities.isOnline(getActivity())) {
             faveTvErrorMessageDisplay.setText(getString(R.string.no_network_connection));
         } else {
-            faveTvErrorMessageDisplay.setText(getString(R.string.error_message));
+            faveTvErrorMessageDisplay.setText(R.string.no_shows_favorites);
         }
     }
 
 
     @Override
     public void onClick(int movieId) {
-
+        Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
+        getActivity().startActivity(intentToStartDetailActivity);
     }
 }

@@ -87,6 +87,8 @@
     <string name="today_show">(today)</string>
     <string name="key_nav_selection">NAVIGATION_SELECTION_KEY</string>
     <string name="removed_from_favorites">Removed from your favorites</string>
+    <string name="no_shows_favorites">You haven\'t added any shows to your favorites yet!</string>
+    <string name="no_movies_favorites">You haven\'t added any movies to your favorites yet</string>
 
 
 </resources>

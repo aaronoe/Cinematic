@@ -241,7 +241,7 @@ public class Utilities {
     public static int calculateNoOfColumnsShow(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return (int) (dpWidth / 300);
+        return (int) (dpWidth / 200);
     }
 
     public static Uri buildShowUri(int showId) {
