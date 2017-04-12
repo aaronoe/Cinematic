@@ -20,11 +20,9 @@ public class FavoritesAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                // Movies
-                return null;
+                return new FavoriteMoviesFragment();
             case 1:
-                // Shows
-                return null;
+                return new FavoriteShowsFragment();
         }
         return null;
     }

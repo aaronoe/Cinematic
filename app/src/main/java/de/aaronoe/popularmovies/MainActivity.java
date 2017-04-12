@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
             mMovieAdapter.setMovieData(movieItemList);
-            Log.e(TAG, "Movie data size after restore: " + movieItemList.size());
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
         }
     }

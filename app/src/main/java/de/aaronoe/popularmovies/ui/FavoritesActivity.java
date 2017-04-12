@@ -13,11 +13,13 @@ import de.aaronoe.popularmovies.ui.Favorites.FavoritesAdapter;
 
 public class FavoritesActivity extends AppCompatActivity {
 
+    private static final String TAG = "FavoritesActivity";
+
     @BindView(R.id.favorites_tabs)
     TabLayout tabs;
     @BindView(R.id.favorites_appbar)
     AppBarLayout appbar;
-    @BindView(R.id.detailpage_viewpager)
+    @BindView(R.id.favorites_viewpager)
     ViewPager viewpager;
 
     @Override

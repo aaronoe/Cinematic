@@ -117,6 +117,7 @@ public class MoviesFragment extends Fragment
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 downloadNextPageOfMovies(scrollPosition + 1);
+                Log.d(TAG, "onLoadMore: page: "+ page + " scrollpos: "+ scrollPosition);
                 scrollPosition++;
             }
         };
@@ -186,9 +187,9 @@ public class MoviesFragment extends Fragment
 
     private void downloadNextPageOfMovies(int page) {
 
-        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
+        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page);
 
-        Log.e(TAG, "Downloading next page: " + (page + 1));
+        Log.e(TAG, "Downloading next page: " + (page));
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -463,7 +464,6 @@ public class MoviesFragment extends Fragment
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mMovieAdapter.setMovieData(null);
-        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
 }
