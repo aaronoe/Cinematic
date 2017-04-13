@@ -62,7 +62,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
     }
 
     public interface TvShowAdapterOnClickHandler {
-        void onClick(int movieId);
+        void onClick(int movieId, String showTitle);
     }
 
 
@@ -129,7 +129,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             TvShow thisShow = videoItemList.get(adapterPosition);
-            mClickHandler.onClick(thisShow.getId());
+            mClickHandler.onClick(thisShow.getId(), thisShow.getName());
         }
     }
 

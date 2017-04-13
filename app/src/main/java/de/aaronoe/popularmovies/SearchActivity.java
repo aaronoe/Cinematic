@@ -1,19 +1,26 @@
 package de.aaronoe.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +38,7 @@ import retrofit2.Response;
 public class SearchActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
 
+    private static final String TAG = "SearchActivity";
 
     List<MovieItem> movieItemList;
     public MovieAdapter mMovieAdapter;
@@ -41,11 +49,14 @@ public class SearchActivity extends AppCompatActivity
     private static final String BUNDLE_RECYCLER_LAYOUT = "BUNDLE_RECYCLER_LAYOUT";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
 
-    @BindView(R.id.search_edit_text) EditText searchEditText;
-    @BindView(R.id.search_rv_main) RecyclerView mRecyclerView;
-    @BindView(R.id.search_pb_loading_indicator) ProgressBar searchProgressBar;
-    @BindView(R.id.search_tv_error_message_display) TextView searchErrorTv;
-    @BindView(R.id.search_button) Button searchButton;
+    @BindView(R.id.search_rv_main)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.search_pb_loading_indicator)
+    ProgressBar searchProgressBar;
+    @BindView(R.id.search_tv_error_message_display)
+    TextView searchErrorTv;
+    @BindView(R.id.search_edit_text)
+    EditText searchEditText;
 
 
     @Override
@@ -55,8 +66,12 @@ public class SearchActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(getString(R.string.action_search));
+        }
+
         gridLayout = new StaggeredGridLayoutManager
-                        (Utilities.calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+                (Utilities.calculateNoOfColumnsShow(this), StaggeredGridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
@@ -65,13 +80,56 @@ public class SearchActivity extends AppCompatActivity
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                String inputQuery = searchEditText.getText().toString();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                inputQuery = inputQuery.replace(" ", "%20");
-                downloadMovieData(inputQuery);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                timer.cancel();
+                timer = new Timer();
+                final String text = s.toString();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // download movie stuff
+                        Log.d(TAG, "run: "+ text);
+                        if (text.equals("")) return;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                downloadMovieData(text);
+                            }
+                        });
+
+                    }
+                }, DELAY);
+            }
+
+            private Timer timer = new Timer();
+            private final long DELAY = 500; // milliseconds
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                
+            }
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((actionId== EditorInfo.IME_ACTION_SEARCH )   )
+                {
+                    // hide virtual keyboard
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -128,7 +186,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * This method will make the View for the weather data visible and
      * hide the error message.
-     *
+     * <p>
      * Since it is okay to redundantly set the visibility of a View, we don't
      * need to check whether each view is currently visible or invisible.
      */
@@ -143,7 +201,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * This method will make the error message visible and hide the weather
      * View.
-     *
+     * <p>
      * Since it is okay to redundantly set the visibility of a View, we don't
      * need to check whether each view is currently visible or invisible.
      */
@@ -155,11 +213,10 @@ public class SearchActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public void onClick(MovieItem movieItem) {
         Intent intentToStartDetailActivity = new Intent(SearchActivity.this, DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
+        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         startActivity(intentToStartDetailActivity);
     }
 

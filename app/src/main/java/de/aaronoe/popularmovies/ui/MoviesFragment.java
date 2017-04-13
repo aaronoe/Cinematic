@@ -137,7 +137,6 @@ public class MoviesFragment extends Fragment
         if (savedInstanceState != null) {
             movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
             mMovieAdapter.setMovieData(movieItemList);
-            Log.e(TAG, "Movie data size after restore: " + movieItemList.size());
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             scrollPosition = savedInstanceState.getInt(BUNDLE_SCROLL_POSITION);
         }
@@ -253,6 +252,7 @@ public class MoviesFragment extends Fragment
     public void onClick(MovieItem movieItem) {
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
         startActivity(intentToStartDetailActivity);
     }
 

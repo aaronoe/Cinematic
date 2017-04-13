@@ -14,7 +14,6 @@ import android.util.Log;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.MoviesContract.ShowEntry;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
-import de.aaronoe.popularmovies.MainActivity;
 
 import static com.makeramen.roundedimageview.RoundedImageView.TAG;
 import static de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry.TABLE_NAME;

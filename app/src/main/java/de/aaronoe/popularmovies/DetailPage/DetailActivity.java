@@ -47,6 +47,7 @@ public class DetailActivity extends AppCompatActivity
     @BindView(R.id.detailpage_appbar) AppBarLayout mAppBarLayout;
     @BindView(R.id.detailpage_toolbar) Toolbar mToolBar;
 
+    String movieName;
     MovieItem mMovieItem;
     FullMovie mFullMovie;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
@@ -77,6 +78,12 @@ public class DetailActivity extends AppCompatActivity
             }
             if (intentThatStartedThisActivity.hasExtra("MovieId")) {
                 id = intentThatStartedThisActivity.getIntExtra("MovieId", -1);
+            }
+            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_movie_name))) {
+                movieName = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_movie_name));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(movieName);
+                }
             }
         }
         Log.e(DetailActivity.class.getSimpleName(), "ID: " + id);
@@ -111,6 +118,10 @@ public class DetailActivity extends AppCompatActivity
                     mMovieItem.setReleaseDate(mFullMovie.getReleaseDate());
                     mMovieItem.setVoteAverage(mFullMovie.getVoteAverage());
                     mMovieItem.setBackdropPath(mFullMovie.getBackdropPath());
+
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(mFullMovie.getTitle());
+                    }
 
                     populateViewsWithData();
                     setUpViewPager();

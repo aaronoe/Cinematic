@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -41,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TvShowDetailActivity extends AppCompatActivity implements
-        SeasonAdapter.SeasonAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor>{
+        SeasonAdapter.SeasonAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "TvShowDetailActivity";
     private static final int CHECK_FAVE_LOADER_ID = 609;
@@ -84,14 +86,16 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     RecyclerView seasonRecylcerView;
     @BindView(R.id.toggleFavoriteShowButton)
     ToggleButton toggleFavoriteShowButton;
+    @BindView(R.id.show_detail_container)
+    ScrollView showDetailContainer;
 
     int movieId;
+    String showName;
     ApiInterface apiInterface;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
     Context mContext;
     SeasonAdapter seasonAdapter;
-
 
 
     @Override
@@ -107,6 +111,12 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         if (startIntent != null) {
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show))) {
                 movieId = startIntent.getIntExtra(getString(R.string.intent_key_tv_show), -1);
+            }
+            if (startIntent.hasExtra(getString(R.string.intent_key_tv_show_update))) {
+                showName = startIntent.getStringExtra(getString(R.string.intent_key_tv_show_update));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(showName);
+                }
             }
         }
         downloadShowDetails();
@@ -237,7 +247,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         seasonRecylcerView.setAdapter(seasonAdapter);
         seasonAdapter.setSeasonList(seasonList);
 
-        Log.d(TAG, "populateViewsWithData: "+ Utilities.buildShowUri(thisShow.getId()));
+        Log.d(TAG, "populateViewsWithData: " + Utilities.buildShowUri(thisShow.getId()));
         getSupportLoaderManager().initLoader(CHECK_FAVE_LOADER_ID, null, this);
 
     }
@@ -263,7 +273,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
         if (data != null) {
-            Log.d(TAG, "onLoadFinished: " +data.getCount());
+            Log.d(TAG, "onLoadFinished: " + data.getCount());
             if (data.getCount() == 0) {
                 toggleFavoriteShowButton.setTextOn(getString(R.string.button_off));
                 toggleFavoriteShowButton.setChecked(false);
@@ -272,7 +282,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 toggleFavoriteShowButton.setChecked(true);
             }
         } else {
-            Log.d(TAG, "onLoadFinished: data is null" );
+            Log.d(TAG, "onLoadFinished: data is null");
         }
 
         toggleFavoriteShowButton.setOnCheckedChangeListener(favoriteShowsChangeListener);
@@ -291,23 +301,53 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                     Log.d(TAG, "onCheckedChanged() called with: compoundButton = [" + compoundButton + "], isChecked = [" + isChecked + "]");
                     if (isChecked) {
                         // Toggle is enabled
-                        toggleFavoriteShowButton.setText(getString(R.string.button_on));
-                        toggleFavoriteShowButton.setTextOn(getString(R.string.button_on));
-                        toggleFavoriteShowButton.setChecked(true);
-                        Toast.makeText(mContext, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+                        addToFavorites();
+                        Snackbar snackbar = Snackbar
+                                .make(showDetailContainer, getString(R.string.added_to_favorites), Snackbar.LENGTH_LONG)
+                                .setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        removeFromFavorites();
+                                        Snackbar undo = Snackbar.make(showDetailContainer, getString(R.string.removed_from_favorites), Snackbar.LENGTH_SHORT);
+                                        undo.show();
+                                    }
+                                });
+                        snackbar.show();
 
-                        MovieUpdateService.insertNewShow
-                                (mContext, Utilities.getContentValuesForShow(thisShow, mContext));
                     } else {
-                        toggleFavoriteShowButton.setText(getString(R.string.button_off));
-                        toggleFavoriteShowButton.setTextOff(getString(R.string.button_off));
-                        toggleFavoriteShowButton.setChecked(false);
-                        Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
-
-                        MovieUpdateService.deleteTask(mContext, Utilities.buildShowUri(thisShow.getId()));
-
+                        removeFromFavorites();
+                        Snackbar snackbar = Snackbar
+                                .make(showDetailContainer, getString(R.string.removed_from_favorites), Snackbar.LENGTH_LONG)
+                                .setAction("UNDO", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        addToFavorites();
+                                        Snackbar undo = Snackbar.make(showDetailContainer, getString(R.string.added_to_favorites), Snackbar.LENGTH_SHORT);
+                                        undo.show();
+                                    }
+                                });
+                        snackbar.show();
                     }
                 }
             };
+
+            private void addToFavorites() {
+                toggleFavoriteShowButton.setText(getString(R.string.button_on));
+                toggleFavoriteShowButton.setTextOn(getString(R.string.button_on));
+                toggleFavoriteShowButton.setChecked(true);
+                //Toast.makeText(mContext, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+
+                MovieUpdateService.insertNewShow
+                        (mContext, Utilities.getContentValuesForShow(thisShow, mContext));
+            }
+
+            private void removeFromFavorites() {
+                toggleFavoriteShowButton.setText(getString(R.string.button_off));
+                toggleFavoriteShowButton.setTextOff(getString(R.string.button_off));
+                toggleFavoriteShowButton.setChecked(false);
+                //Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
+
+                MovieUpdateService.deleteTask(mContext, Utilities.buildShowUri(thisShow.getId()));
+            }
 
 }

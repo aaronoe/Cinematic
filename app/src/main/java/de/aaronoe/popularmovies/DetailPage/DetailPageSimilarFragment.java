@@ -128,9 +128,9 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
 
     @Override
     public void onClick(MovieItem movieItem) {
-        // TODO Implement intent to new detailactivity
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
+        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
         startActivity(intentToStartDetailActivity);
     }
 }

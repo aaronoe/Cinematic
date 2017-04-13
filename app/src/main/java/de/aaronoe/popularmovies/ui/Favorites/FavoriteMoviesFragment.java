@@ -122,9 +122,10 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     }
 
     @Override
-    public void onClick(int movieId) {
+    public void onClick(int movieId, String movieName) {
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieId);
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieName);
         startActivity(intentToStartDetailActivity);
     }
 }

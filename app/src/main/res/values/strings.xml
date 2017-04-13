@@ -89,6 +89,13 @@
     <string name="removed_from_favorites">Removed from your favorites</string>
     <string name="no_shows_favorites">You haven\'t added any shows to your favorites yet!</string>
     <string name="no_movies_favorites">You haven\'t added any movies to your favorites yet</string>
+    <string name="search">Search</string>
+    <string name="intent_key_tv_show_update">INTENT_KEY_TV_SHOW_NAME</string>
+    <string name="intent_key_movie_name">INTENT_KEY_MOVIE_NAME</string>
+    <string name="favorites_h1">Favorites</string>
+    <string name="favorites_h2">Faves</string>
+    <string name="disabled">Disabled</string>
+    <string name="search_h1">Search</string>
 
 
 </resources>

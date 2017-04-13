@@ -68,10 +68,10 @@ class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAdapter.F
     }
 
     interface MovieAdapterOnClickHandler {
-        void onClick(int movieId);
+        void onClick(int movieId, String movieName);
     }
 
-    public void changeCursor(Cursor data) {
+    void changeCursor(Cursor data) {
         if (data == null) return;
         movieCursor = data;
     }
@@ -96,7 +96,8 @@ class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAdapter.F
 
             if (movieCursor.moveToPosition(adapterPosition)) {
                 int movieId = movieCursor.getInt(movieCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ID));
-                mClickHandler.onClick(movieId);
+                String movieName = movieCursor.getString(movieCursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TITLE));
+                mClickHandler.onClick(movieId, movieName);
             }
         }
     }

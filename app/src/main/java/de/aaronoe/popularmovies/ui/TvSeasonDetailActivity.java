@@ -75,6 +75,9 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_tvshow))) {
                 showName = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_tvshow));
                 seasonDetailTitle.setText(showName);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(showName);
+                }
             }
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_selected_season))) {
                 selectedSeason = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_selected_season), -1);

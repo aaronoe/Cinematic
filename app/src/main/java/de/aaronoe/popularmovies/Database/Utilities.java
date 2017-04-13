@@ -158,6 +158,7 @@ public class Utilities {
 
     }
 
+
     /**
      * Get a diff between two dates
      * @param date1 the oldest date

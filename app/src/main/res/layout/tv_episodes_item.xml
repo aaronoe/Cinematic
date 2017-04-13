@@ -43,9 +43,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginLeft="8dp"
                     app:layout_constraintTop_toTopOf="@+id/episode_title_tv"
-                    android:layout_marginTop="8dp"
                     app:layout_constraintBottom_toBottomOf="@+id/episode_release_date"
-                    android:layout_marginBottom="8dp"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView

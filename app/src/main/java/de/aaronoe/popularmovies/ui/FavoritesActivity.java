@@ -24,6 +24,9 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
         ButterKnife.bind(this);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.favorites_h1);
+        }
 
         setUpViewPager();
     }

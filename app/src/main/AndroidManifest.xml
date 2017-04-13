@@ -15,6 +15,7 @@
 
         <activity
             android:name=".DetailPage.DetailActivity"
+            android:theme="@style/AppThemeWithActionbar"
             android:parentActivityName=".ui.NavigationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -28,6 +29,7 @@
 
         <activity
             android:name=".SearchActivity"
+            android:theme="@style/AppThemeWithActionbar"
             android:parentActivityName=".ui.NavigationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -35,6 +37,7 @@
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
+            android:theme="@style/AppThemeWithActionbar"
             android:parentActivityName=".DetailPage.DetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -45,9 +48,10 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <service
@@ -56,6 +60,7 @@
 
         <activity
             android:name=".ui.TvShowDetailActivity"
+            android:theme="@style/AppThemeWithActionbar"
             android:parentActivityName=".ui.NavigationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -64,6 +69,7 @@
 
         <activity
             android:name=".ui.TvSeasonDetailActivity"
+            android:theme="@style/AppThemeWithActionbar"
             android:parentActivityName=".ui.NavigationActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
