@@ -2,7 +2,6 @@ package de.aaronoe.popularmovies.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -14,17 +13,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import de.aaronoe.popularmovies.Data.MovieAdapter;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.Genre;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.MoviesContract.ShowEntry;
-import de.aaronoe.popularmovies.MainActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
+import de.aaronoe.popularmovies.R;
 
 import static android.content.ContentValues.TAG;
 
@@ -34,6 +33,11 @@ import static android.content.ContentValues.TAG;
  */
 
 public class Utilities {
+
+
+
+    static HashMap<Integer, String> movieGenres = new HashMap<>();
+
 
 
     /**
@@ -48,13 +52,13 @@ public class Utilities {
 
         ContentValues cv = new ContentValues();
 
-        cv.put(MovieEntry.COLUMN_POSTER_PATH, movieItem.getmPosterPath());
-        cv.put(MovieEntry.COLUMN_DESCRIPTION, movieItem.getmMovieDescription());
-        cv.put(MovieEntry.COLUMN_TITLE, movieItem.getmTitle());
-        cv.put(MovieEntry.COLUMN_MOVIE_ID, movieItem.getmMovieId());
-        cv.put(MovieEntry.COLUMN_RELEASE_DATE, movieItem.getmReleaseDate());
-        cv.put(MovieEntry.COLUMN_VOTE_AVERAGE, movieItem.getmVoteAverage());
-        cv.put(MovieEntry.COLUMN_BACKDROP_PATH, movieItem.getmBackdropPath());
+        cv.put(MovieEntry.COLUMN_POSTER_PATH, movieItem.getPosterPath());
+        cv.put(MovieEntry.COLUMN_DESCRIPTION, movieItem.getOverview());
+        cv.put(MovieEntry.COLUMN_TITLE, movieItem.getTitle());
+        cv.put(MovieEntry.COLUMN_MOVIE_ID, movieItem.getId());
+        cv.put(MovieEntry.COLUMN_RELEASE_DATE, movieItem.getReleaseDate());
+        cv.put(MovieEntry.COLUMN_VOTE_AVERAGE, movieItem.getVoteAverage());
+        cv.put(MovieEntry.COLUMN_BACKDROP_PATH, movieItem.getBackdropPath());
 
         return cv;
 
@@ -85,57 +89,7 @@ public class Utilities {
         return cv;
     }
 
-    /**
-     * Takes a Cursor as it's input and returns a {@link List<MovieItem>} object to pass into the
-     * {@link MovieAdapter} to populate the corresponding RecyclerView in {@link MainActivity}
-     *
-     * @param movieCursor containing a user's favorite movie
-     * @return a {@link List<MovieItem>} containing movie information
-     */
-    public static List<MovieItem> extractMovieItemFromCursor(Cursor movieCursor) {
 
-        if (movieCursor == null || movieCursor.getCount() == 0) return null;
-
-        List<MovieItem> resultList = new ArrayList<>();
-
-        int movieIdIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_MOVIE_ID);
-        int movieTitleIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_TITLE);
-        int movieDescriptionIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_DESCRIPTION);
-        int moviePosterPathIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_POSTER_PATH);
-        int movieReleaseDateIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_RELEASE_DATE);
-        int movieVoteAverageIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_VOTE_AVERAGE);
-        int movieBackdropIndex = movieCursor.getColumnIndex(MovieEntry.COLUMN_BACKDROP_PATH);
-
-        try {
-
-            while (movieCursor.moveToNext()) {
-
-                Log.d(TAG, "cursor moved");
-
-                String posterPath = movieCursor.getString(moviePosterPathIndex);
-                String movieDescription = movieCursor.getString(movieDescriptionIndex);
-                String movieTitle = movieCursor.getString(movieTitleIndex);
-                int movieId = movieCursor.getInt(movieIdIndex);
-                String releaseDate = movieCursor.getString(movieReleaseDateIndex);
-                Double voteAverage = movieCursor.getDouble(movieVoteAverageIndex);
-                String backdropPath = movieCursor.getString(movieBackdropIndex);
-
-                MovieItem currentMovie =
-                        new MovieItem(posterPath, movieDescription, movieTitle,
-                                movieId, releaseDate, voteAverage, backdropPath);
-
-                Log.d(Utilities.class.getSimpleName(), "Movie queried: " + movieTitle);
-
-                resultList.add(currentMovie);
-
-            }
-
-        } finally {
-            movieCursor.close();
-        }
-
-        return resultList;
-    }
 
     /**
      * Converts a date returned by the API into a different format.
@@ -147,6 +101,25 @@ public class Utilities {
 
         DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         DateFormat targetFormat = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+
+        if (sourceDate == null || sourceDate.equals("")) return null;
+
+        Date date = null;
+        try {
+            date = sourceFormat.parse(sourceDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.e(TAG, "Error formatting the date");
+            return null;
+        }
+        return targetFormat.format(date);
+
+    }
+
+    public static String convertDateShort(String sourceDate) {
+
+        DateFormat sourceFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        DateFormat targetFormat = new SimpleDateFormat("MMM. dd, yy", Locale.ENGLISH);
 
         if (sourceDate == null || sourceDate.equals("")) return null;
 
@@ -241,11 +214,59 @@ public class Utilities {
     public static int calculateNoOfColumnsShow(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        return (int) (dpWidth / 200);
+        return (int) (dpWidth / 220);
     }
 
     public static Uri buildShowUri(int showId) {
         return Uri.withAppendedPath(ShowEntry.CONTENT_URI, String.valueOf(showId));
+    }
+
+
+    public static String extractMovieGenres(List<Integer> genres, Context mContext) {
+
+        movieGenres = new HashMap<>();
+        movieGenres.put(28, "Action");
+        movieGenres.put(12, "Adventure");
+        movieGenres.put(16, "Animation");
+        movieGenres.put(35, "Comedy");
+        movieGenres.put(80, "Crime");
+        movieGenres.put(99, "Documentary");
+        movieGenres.put(18, "Drama");
+        movieGenres.put(10751, "Family");
+        movieGenres.put(14, "Fantasy");
+        movieGenres.put(36, "History");
+        movieGenres.put(27, "Horror");
+        movieGenres.put(10402, "Music");
+        movieGenres.put(9648, "Mystery");
+        movieGenres.put(10749, "Romance");
+        movieGenres.put(878, "Science Fiction");
+        movieGenres.put(10770, "TV Movie");
+        movieGenres.put(53, "Thriller");
+
+        final String SEPARATOR = ", ";
+        if (genres == null || genres.size() == 0) return null;
+
+        List<String> result = new ArrayList<>();
+
+        for (int id : genres) {
+            if (movieGenres.containsKey(id)) {
+                result.add(movieGenres.get(id));
+            } else {
+                Log.d(TAG, "extractGenres: " + id);
+            }
+        }
+
+        StringBuilder resBuilder = new StringBuilder();
+
+        for (String item : result) {
+            resBuilder.append(item);
+            resBuilder.append(SEPARATOR);
+        }
+
+        String list = resBuilder.toString();
+        if (list.length() == 0) return mContext.getString(R.string.genre_not_available);
+        return list.substring(0, list.length() - SEPARATOR.length());
+
     }
 
 

@@ -20,6 +20,7 @@ import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
+import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
@@ -55,11 +56,11 @@ public class SearchActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         gridLayout = new StaggeredGridLayoutManager
-                        (MainActivity.calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
+                        (Utilities.calculateNoOfColumns(this), StaggeredGridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);

@@ -11,9 +11,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.Database.MoviesContract.ShowEntry;
@@ -28,7 +25,6 @@ import de.aaronoe.popularmovies.R;
 public class FavoriteTvShowsAdaper extends RecyclerView.Adapter<FavoriteTvShowsAdaper.TvShowViewHolder> {
 
     private Context mContext;
-    private Map<Integer,String> map;
     private TvShowAdapterOnClickHandler mClickHandler;
     private Cursor showCursor;
 
@@ -38,24 +34,6 @@ public class FavoriteTvShowsAdaper extends RecyclerView.Adapter<FavoriteTvShowsA
         mClickHandler = clickHandler;
         showCursor = data;
 
-        // get genre mappings
-        map = new HashMap<Integer,String>();
-        map.put(10759, "Action & Adventure");
-        map.put(16, "Animation");
-        map.put(35, "Comedy");
-        map.put(80, "Crime");
-        map.put(99, "Documentary");
-        map.put(18, "Drama");
-        map.put(10751, "Family");
-        map.put(10752, "Kids");
-        map.put(9648, "Mystery");
-        map.put(10763, "News");
-        map.put(10764, "Reality");
-        map.put(10765, "Sci-Fi & Fantasy");
-        map.put(10766, "Soap");
-        map.put(10767, "Talk");
-        map.put(10768, "War & Politics");
-        map.put(37, "Western");
 
     }
 

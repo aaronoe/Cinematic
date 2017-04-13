@@ -65,7 +65,7 @@ public class DetailPageReviewFragment extends android.support.v4.app.Fragment {
     private void downloadReviewData() {
 
         mProgressBar.setVisibility(View.VISIBLE);
-        int movieId = mMovieItem.getmMovieId();
+        int movieId = mMovieItem.getId();
 
         Call<ReviewResponse> call = apiService.getReviews(movieId, API_KEY);
 

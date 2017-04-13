@@ -78,14 +78,14 @@ public class DetailPageInfoFragment extends Fragment {
 
         toggleFavoriteButton.setOnCheckedChangeListener(favoriteChangeListener);
 
-        Log.d(DetailPageInfoFragment.class.getSimpleName(), "Title: " + mMovieItem.getmTitle());
+        Log.d(DetailPageInfoFragment.class.getSimpleName(), "Title: " + mMovieItem.getTitle());
 
-        String ratingText = mMovieItem.getmVoteAverage() + "/10";
+        String ratingText = mMovieItem.getVoteAverage() + "/10";
         ratingTextView.setText(ratingText);
 
-        dateTextView.setText(Utilities.convertDate(mMovieItem.getmReleaseDate()));
+        dateTextView.setText(Utilities.convertDate(mMovieItem.getReleaseDate()));
 
-        descriptionTextView.setText(mMovieItem.getmMovieDescription());
+        descriptionTextView.setText(mMovieItem.getOverview());
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -96,7 +96,7 @@ public class DetailPageInfoFragment extends Fragment {
         mActorRecyclerView.setAdapter(crewAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
-        downloadCredits(mMovieItem.getmMovieId());
+        downloadCredits(mMovieItem.getId());
 
         return rootView;
 
@@ -124,7 +124,7 @@ public class DetailPageInfoFragment extends Fragment {
      */
     private boolean isMovieFavorite(MovieItem movieItem) {
 
-        String[] selection = new String[]{Integer.toString(movieItem.getmMovieId())};
+        String[] selection = new String[]{Integer.toString(movieItem.getId())};
 
         Cursor result =
                 getActivity().getContentResolver().query(
@@ -155,7 +155,7 @@ public class DetailPageInfoFragment extends Fragment {
 
             } else {
 
-                int movieId = mMovieItem.getmMovieId();
+                int movieId = mMovieItem.getId();
                 Uri deleteUri = MoviesContract.MovieEntry.CONTENT_URI.buildUpon().
                         appendPath(Integer.toString(movieId)).build();
 

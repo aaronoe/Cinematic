@@ -41,7 +41,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         mClickHandler = clickHandler;
 
         // get genre mappings
-        map = new HashMap<Integer,String>();
+        map = new HashMap<>();
         map.put(10759, "Action & Adventure");
         map.put(16, "Animation");
         map.put(35, "Comedy");

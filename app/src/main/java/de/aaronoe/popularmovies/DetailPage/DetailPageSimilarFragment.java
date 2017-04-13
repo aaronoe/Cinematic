@@ -19,7 +19,7 @@ import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
-import de.aaronoe.popularmovies.MainActivity;
+import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.R;
@@ -57,16 +57,16 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
         mMovieItem = getArguments().getParcelable("thisMovie");
 
         gridLayout = new StaggeredGridLayoutManager
-                (MainActivity.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+                (Utilities.calculateNoOfColumnsShow(getActivity()), StaggeredGridLayoutManager.VERTICAL);
 
 
         mRecyclerView.setLayoutManager(gridLayout);
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, getActivity());
         mRecyclerView.setAdapter(mMovieAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        downloadSimilarMovieData(mMovieItem.getmMovieId());
+        downloadSimilarMovieData(mMovieItem.getId());
 
         return rootView;
     }

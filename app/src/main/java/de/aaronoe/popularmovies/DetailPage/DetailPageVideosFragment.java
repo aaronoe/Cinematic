@@ -62,7 +62,7 @@ public class DetailPageVideosFragment extends Fragment {
     private void downloadVideoData() {
 
         mProgressBar.setVisibility(View.VISIBLE);
-        int movieId = mMovieItem.getmMovieId();
+        int movieId = mMovieItem.getId();
         Log.d(TAG, "downloadVideoData() called" + movieId) ;
         Call<VideoResponse> call = apiService.getVideos(movieId, API_KEY);
 

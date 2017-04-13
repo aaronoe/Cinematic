@@ -1,4 +1,5 @@
-package de.aaronoe.popularmovies.Movies;
+
+package de.aaronoe.popularmovies.Data.MovieList;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,12 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Class to hold information on an individual movie
- * Created by aaron on 21.01.17.
- */
+public class Movie implements Parcelable
+{
 
-public class MovieItem implements Parcelable {
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
@@ -56,14 +54,14 @@ public class MovieItem implements Parcelable {
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
-    public final static Parcelable.Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
+    public final static Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
 
 
         @SuppressWarnings({
-                "unchecked"
+            "unchecked"
         })
-        public MovieItem createFromParcel(Parcel in) {
-            MovieItem instance = new MovieItem();
+        public Movie createFromParcel(Parcel in) {
+            Movie instance = new Movie();
             instance.posterPath = ((String) in.readValue((String.class.getClassLoader())));
             instance.adult = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
             instance.overview = ((String) in.readValue((String.class.getClassLoader())));
@@ -81,12 +79,12 @@ public class MovieItem implements Parcelable {
             return instance;
         }
 
-        public MovieItem[] newArray(int size) {
-            return (new MovieItem[size]);
+        public Movie[] newArray(int size) {
+            return (new Movie[size]);
         }
 
     }
-            ;
+    ;
 
     public String getPosterPath() {
         return posterPath;
@@ -96,7 +94,7 @@ public class MovieItem implements Parcelable {
         this.posterPath = posterPath;
     }
 
-    public MovieItem withPosterPath(String posterPath) {
+    public Movie withPosterPath(String posterPath) {
         this.posterPath = posterPath;
         return this;
     }
@@ -109,7 +107,7 @@ public class MovieItem implements Parcelable {
         this.adult = adult;
     }
 
-    public MovieItem withAdult(Boolean adult) {
+    public Movie withAdult(Boolean adult) {
         this.adult = adult;
         return this;
     }
@@ -122,7 +120,7 @@ public class MovieItem implements Parcelable {
         this.overview = overview;
     }
 
-    public MovieItem withOverview(String overview) {
+    public Movie withOverview(String overview) {
         this.overview = overview;
         return this;
     }
@@ -135,7 +133,7 @@ public class MovieItem implements Parcelable {
         this.releaseDate = releaseDate;
     }
 
-    public MovieItem withReleaseDate(String releaseDate) {
+    public Movie withReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
         return this;
     }
@@ -148,7 +146,7 @@ public class MovieItem implements Parcelable {
         this.genreIds = genreIds;
     }
 
-    public MovieItem withGenreIds(List<Integer> genreIds) {
+    public Movie withGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
         return this;
     }
@@ -161,7 +159,7 @@ public class MovieItem implements Parcelable {
         this.id = id;
     }
 
-    public MovieItem withId(Integer id) {
+    public Movie withId(Integer id) {
         this.id = id;
         return this;
     }
@@ -174,7 +172,7 @@ public class MovieItem implements Parcelable {
         this.originalTitle = originalTitle;
     }
 
-    public MovieItem withOriginalTitle(String originalTitle) {
+    public Movie withOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
         return this;
     }
@@ -187,7 +185,7 @@ public class MovieItem implements Parcelable {
         this.originalLanguage = originalLanguage;
     }
 
-    public MovieItem withOriginalLanguage(String originalLanguage) {
+    public Movie withOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
         return this;
     }
@@ -200,7 +198,7 @@ public class MovieItem implements Parcelable {
         this.title = title;
     }
 
-    public MovieItem withTitle(String title) {
+    public Movie withTitle(String title) {
         this.title = title;
         return this;
     }
@@ -213,7 +211,7 @@ public class MovieItem implements Parcelable {
         this.backdropPath = backdropPath;
     }
 
-    public MovieItem withBackdropPath(String backdropPath) {
+    public Movie withBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
         return this;
     }
@@ -226,7 +224,7 @@ public class MovieItem implements Parcelable {
         this.popularity = popularity;
     }
 
-    public MovieItem withPopularity(Double popularity) {
+    public Movie withPopularity(Double popularity) {
         this.popularity = popularity;
         return this;
     }
@@ -239,7 +237,7 @@ public class MovieItem implements Parcelable {
         this.voteCount = voteCount;
     }
 
-    public MovieItem withVoteCount(Integer voteCount) {
+    public Movie withVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
         return this;
     }
@@ -252,7 +250,7 @@ public class MovieItem implements Parcelable {
         this.video = video;
     }
 
-    public MovieItem withVideo(Boolean video) {
+    public Movie withVideo(Boolean video) {
         this.video = video;
         return this;
     }
@@ -265,7 +263,7 @@ public class MovieItem implements Parcelable {
         this.voteAverage = voteAverage;
     }
 
-    public MovieItem withVoteAverage(Double voteAverage) {
+    public Movie withVoteAverage(Double voteAverage) {
         this.voteAverage = voteAverage;
         return this;
     }
@@ -288,6 +286,7 @@ public class MovieItem implements Parcelable {
     }
 
     public int describeContents() {
-        return 0;
+        return  0;
     }
+
 }

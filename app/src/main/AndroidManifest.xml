@@ -12,21 +12,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".MainActivity"
-            android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".DetailPage.DetailActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.NavigationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.NavigationActivity" />
         </activity>
 
         <provider
@@ -36,10 +28,10 @@
 
         <activity
             android:name=".SearchActivity"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ui.NavigationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".ui.NavigationActivity" />
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
@@ -48,7 +40,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
         </activity>
-        <activity android:name=".ui.NavigationActivity" />
+        <activity
+            android:name=".ui.NavigationActivity"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".Database.MovieUpdateService"
