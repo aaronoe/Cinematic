@@ -80,8 +80,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     FloatingActionMenu fabMenu;
 
 
-    public TvShowsFragment() {
-    }
+    public TvShowsFragment() {}
 
     @Nullable
     @Override

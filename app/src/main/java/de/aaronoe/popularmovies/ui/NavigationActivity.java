@@ -21,7 +21,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.R;
-import de.aaronoe.popularmovies.SearchActivity;
+import de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -98,15 +98,15 @@ public class NavigationActivity extends AppCompatActivity {
                         selectTvView();
                         return true;
 
-                    case R.id.drawer_menu_actors:
-                        return true;
-
                     case R.id.drawer_menu_faves:
                         startActivity(new Intent(NavigationActivity.this, FavoritesActivity.class));
                         return true;
 
                     case R.id.drawer_menu_search:
-                        startActivity(new Intent(NavigationActivity.this, SearchActivity.class));
+                        startActivity(new Intent(NavigationActivity.this, SearchMoviesActivity.class));
+                        return true;
+
+                    case R.id.drawer_menu_search_shows:
                         return true;
 
                     default:

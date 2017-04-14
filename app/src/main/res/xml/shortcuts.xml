@@ -38,7 +38,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="de.aaronoe.popularmovies"
-            android:targetClass="de.aaronoe.popularmovies.SearchActivity" />
+            android:targetClass="de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->

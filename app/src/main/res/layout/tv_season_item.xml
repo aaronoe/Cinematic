@@ -19,7 +19,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="match_parent"
+                android:contentDescription="@string/season_poster"
+                android:layout_width="140dp"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/error"

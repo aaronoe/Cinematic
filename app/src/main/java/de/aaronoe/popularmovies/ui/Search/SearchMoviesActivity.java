@@ -1,4 +1,4 @@
-package de.aaronoe.popularmovies;
+package de.aaronoe.popularmovies.ui.Search;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +24,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
@@ -31,14 +32,15 @@ import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
+import de.aaronoe.popularmovies.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SearchActivity extends AppCompatActivity
+public class SearchMoviesActivity extends AppCompatActivity
         implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private static final String TAG = "SearchActivity";
+    private static final String TAG = "SearchMoviesActivity";
 
     List<MovieItem> movieItemList;
     public MovieAdapter mMovieAdapter;
@@ -114,7 +116,7 @@ public class SearchActivity extends AppCompatActivity
 
             @Override
             public void afterTextChanged(Editable s) {
-                
+
             }
         });
 
@@ -215,7 +217,7 @@ public class SearchActivity extends AppCompatActivity
 
     @Override
     public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(SearchActivity.this, DetailActivity.class);
+        Intent intentToStartDetailActivity = new Intent(SearchMoviesActivity.this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         startActivity(intentToStartDetailActivity);
     }

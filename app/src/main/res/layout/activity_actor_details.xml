@@ -6,6 +6,6 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <include layout="@layout/content_actor_details" />
+    <include layout="@layout/new_actor_details" />
 
 </android.support.v4.widget.NestedScrollView>

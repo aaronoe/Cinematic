@@ -96,6 +96,13 @@
     <string name="favorites_h2">Faves</string>
     <string name="disabled">Disabled</string>
     <string name="search_h1">Search</string>
+    <string name="season_poster">Season Poster</string>
+    <string name="biography">Biography</string>
+    <string name="expand_text">Expand text</string>
+    <string name="tv_shows">TV Shows</string>
+    <string name="search_for_movies">Movies</string>
+    <string name="find_movies">Find Movies</string>
+    <string name="find_shows">Find Shows</string>
 
 
 </resources>
