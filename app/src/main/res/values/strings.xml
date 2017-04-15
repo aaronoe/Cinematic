@@ -103,6 +103,11 @@
     <string name="search_for_movies">Movies</string>
     <string name="find_movies">Find Movies</string>
     <string name="find_shows">Find Shows</string>
+    <string name="search_movies">Find Movies</string>
+    <string name="search_shows">Find Shows</string>
+    <string name="type_person">PERSON</string>
+    <string name="type_movie">MOVIE</string>
+    <string name="type_tv">TV</string>
 
 
 </resources>

@@ -22,6 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.R;
 import de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity;
+import de.aaronoe.popularmovies.ui.Search.SearchShowsActivity;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -107,6 +108,7 @@ public class NavigationActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.drawer_menu_search_shows:
+                        startActivity(new Intent(NavigationActivity.this, SearchShowsActivity.class));
                         return true;
 
                     default:

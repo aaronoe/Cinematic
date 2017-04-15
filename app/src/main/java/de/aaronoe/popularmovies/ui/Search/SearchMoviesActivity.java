@@ -27,23 +27,23 @@ import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.BuildConfig;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
-import de.aaronoe.popularmovies.Data.MovieAdapter;
+import de.aaronoe.popularmovies.Data.MultiSearch.MultiSearchResponse;
+import de.aaronoe.popularmovies.Data.MultiSearch.SearchItem;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
-import de.aaronoe.popularmovies.Movies.MovieItem;
-import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.R;
+import de.aaronoe.popularmovies.ui.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SearchMoviesActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickHandler {
+        implements MultiSearchAdapter.MultiSearchItemOnClickHandler {
 
     private static final String TAG = "SearchMoviesActivity";
 
-    List<MovieItem> movieItemList;
-    public MovieAdapter mMovieAdapter;
+    List<SearchItem> searchItemList;
+    public MultiSearchAdapter mMultiSearchAdapter;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
     StaggeredGridLayoutManager gridLayout;
@@ -69,7 +69,7 @@ public class SearchMoviesActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getString(R.string.action_search));
+            getSupportActionBar().setTitle(R.string.search_movies);
         }
 
         gridLayout = new StaggeredGridLayoutManager
@@ -77,8 +77,8 @@ public class SearchMoviesActivity extends AppCompatActivity
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
-        mMovieAdapter = new MovieAdapter(this, this);
-        mRecyclerView.setAdapter(mMovieAdapter);
+        mMultiSearchAdapter = new MultiSearchAdapter(this, this);
+        mRecyclerView.setAdapter(mMultiSearchAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
@@ -142,35 +142,37 @@ public class SearchMoviesActivity extends AppCompatActivity
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
-            Log.e(DetailActivity.class.getSimpleName(), "Restoring state");
-            movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
+            searchItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
             gridLayout.onRestoreInstanceState(savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT));
-            mMovieAdapter.setMovieData(movieItemList);
+            mMultiSearchAdapter.setData(searchItemList);
         }
     }
 
     private void downloadMovieData(String query) {
 
+        Log.d(TAG, "downloadMovieData() called with: query = [" + query + "]");
         searchProgressBar.setVisibility(View.VISIBLE);
 
-        Call<MovieResponse> call = apiService.searchForMovies(query, API_KEY);
+        Call<MultiSearchResponse> call = apiService.multiSearch(query, API_KEY);
 
-        call.enqueue(new Callback<MovieResponse>() {
+
+        call.enqueue(new Callback<MultiSearchResponse>() {
             @Override
-            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-                movieItemList = response.body().getResults();
+            public void onResponse(Call<MultiSearchResponse> call, Response<MultiSearchResponse> response) {
+                searchItemList = response.body().getSearchItems();
 
                 searchProgressBar.setVisibility(View.INVISIBLE);
-                if (movieItemList != null) {
+                if (searchItemList != null) {
                     showMovieView();
-                    mMovieAdapter.setMovieData(movieItemList);
+                    Log.d(TAG, "onResponse: List size " + searchItemList.size());
+                    mMultiSearchAdapter.setData(searchItemList);
                 } else {
                     showErrorMessage();
                 }
             }
 
             @Override
-            public void onFailure(Call<MovieResponse> call, Throwable t) {
+            public void onFailure(Call<MultiSearchResponse> call, Throwable t) {
                 searchProgressBar.setVisibility(View.INVISIBLE);
                 showErrorMessage();
             }
@@ -182,7 +184,7 @@ public class SearchMoviesActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, mRecyclerView.getLayoutManager().onSaveInstanceState());
-        outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<MovieItem>) movieItemList);
+        outState.putParcelableArrayList(BUNDLE_MOVIE_LIST_KEY, (ArrayList<SearchItem>) searchItemList);
     }
 
     /**
@@ -215,11 +217,30 @@ public class SearchMoviesActivity extends AppCompatActivity
     }
 
 
+    /*
     @Override
     public void onClick(MovieItem movieItem) {
         Intent intentToStartDetailActivity = new Intent(SearchMoviesActivity.this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         startActivity(intentToStartDetailActivity);
     }
+    */
 
+    @Override
+    public void onClick(int itemId, String itemType) {
+        switch (itemType) {
+            case MultiSearchAdapter.MEDIA_TYPE_MOVIE:
+                Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
+                intentToStartDetailActivity.putExtra("MovieId", itemId);
+                startActivity(intentToStartDetailActivity);
+                break;
+            case MultiSearchAdapter.MEDIA_TYPE_TV:
+                Intent intentToStartShowActivity = new Intent(this, TvShowDetailActivity.class);
+                intentToStartShowActivity.putExtra(getString(R.string.intent_key_tv_show), itemId);
+                startActivity(intentToStartShowActivity);
+                break;
+            default:
+                break;
+        }
+    }
 }

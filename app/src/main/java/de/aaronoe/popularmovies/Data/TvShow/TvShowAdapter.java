@@ -81,6 +81,8 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
 
         TvShow thisItem = videoItemList.get(position);
 
+        Log.d(TAG, "onBindViewHolder: "+ thisItem.getName());
+
         holder.showRatingTextView.setText(String.valueOf(thisItem.getVoteAverage()));
         holder.showTitleTextView.setText(thisItem.getName());
         holder.showYearTextView.setText(Utilities.convertDateToYear(thisItem.getFirstAirDate()));
