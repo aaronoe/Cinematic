@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="favorites"
+        android:enabled="true"
+        android:icon="@drawable/ic_star_black_24dp"
+        android:shortcutShortLabel="@string/favorites_h2"
+        android:shortcutLongLabel="@string/favorites_h1"
+        android:shortcutDisabledMessage="@string/disabled"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="de.aaronoe.popularmovies"
+            android:targetClass="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="de.aaronoe.popularmovies"
+            android:targetClass="de.aaronoe.popularmovies.ui.FavoritesActivity" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search_grey_24dp"
+        android:shortcutShortLabel="@string/search_h1"
+        android:shortcutLongLabel="@string/search_h1"
+        android:shortcutDisabledMessage="@string/disabled"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="de.aaronoe.popularmovies"
+            android:targetClass="de.aaronoe.popularmovies.ui.NavigationActivity" />
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="de.aaronoe.popularmovies"
+            android:targetClass="de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
+

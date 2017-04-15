@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:layout_margin="@dimen/small_vertical_padding"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -10,8 +10,8 @@
         android:id="@+id/cv"
         android:elevation="8dp"
         style="@style/CardViewStyle"
-        android:layout_width="140dp"
-        android:layout_height="200dp"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center">
 
         <android.support.constraint.ConstraintLayout
@@ -19,10 +19,12 @@
             android:layout_height="wrap_content">
 
             <ImageView
+                android:contentDescription="@string/season_poster"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/error"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:adjustViewBounds="true"
+                tools:src="@drawable/error"
                 android:id="@+id/poster_imageview" />
 
             <android.support.constraint.ConstraintLayout
@@ -31,7 +33,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/poster_imageview"
                 android:background="@color/backgroundPrimary"
                 android:layout_height="wrap_content"
-                android:layout_width="140dp" >
+                android:layout_width="match_parent" >
 
                 <TextView
                     android:id="@+id/season_number"

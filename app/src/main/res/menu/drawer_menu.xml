@@ -6,7 +6,7 @@
         <item
             android:id="@+id/drawer_menu_search"
             android:checked="false"
-            android:title="@string/action_search"
+            android:title="@string/search"
             android:icon="@drawable/ic_search_white_24dp" />
 
         <item
@@ -31,12 +31,7 @@
             android:icon="@drawable/ic_airplay_black_24dp"
             android:title="@string/drawer_menu__tv_shows" />
 
-        <item
-            android:id="@+id/drawer_menu_actors"
-            android:checked="false"
-            android:icon="@drawable/ic_recent_actors_black_24dp"
-            android:title="@string/drawer_menu__actors" />
-
     </group>
+
 
 </menu>

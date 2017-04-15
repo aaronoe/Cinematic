@@ -3,14 +3,10 @@ package de.aaronoe.popularmovies.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -34,38 +30,31 @@ import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.EndlessRecyclerViewScrollListener;
 import de.aaronoe.popularmovies.Data.MovieAdapter;
-import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
 import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
-import de.aaronoe.popularmovies.MainActivity;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.Movies.MovieResponse;
 import de.aaronoe.popularmovies.R;
-import de.aaronoe.popularmovies.SearchActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 
 public class MoviesFragment extends Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, MovieAdapter.MovieAdapterOnClickHandler {
+        implements MovieAdapter.MovieAdapterOnClickHandler {
 
     // for debugging purposes
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "MoviesFragment";
     public MovieAdapter mMovieAdapter;
     final String SELECTION_POPULAR = "popular";
     final String SELECTION_TOP_RATED = "top_rated";
-    final String SELECTION_FAVORITES = "favorites";
     final String SELECTION_UPCOMING = "upcoming";
-    final String SELECTION_SEARCH = "search";
     String mCurrentSelection;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     ApiInterface apiService;
-    private static final int FAVORITE_LOADER_ID = 26;
     List<MovieItem> movieItemList;
     StaggeredGridLayoutManager gridLayout;
-    StaggeredGridLayoutManager favoriteGridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
     private static final String BUNDLE_SCROLL_POSITION = "BUNDLE_SCROLL_POSITION_MOVIES";
@@ -75,13 +64,10 @@ public class MoviesFragment extends Fragment
 
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
-    @BindView(R.id.fab_action_favorite) FloatingActionButton fabButtonFavorite;
     @BindView(R.id.fab_action_top_rated) FloatingActionButton fabButtonTopRated;
     @BindView(R.id.fab_action_popular) FloatingActionButton fabButtonPopular;
     @BindView(R.id.fab_action_upcoming) FloatingActionButton fabButtonUpcoming;
-    @BindView(R.id.fab_action_search) FloatingActionButton fabButtonSearch;
     @BindView(R.id.rv_main_movie_list) RecyclerView mRecyclerView;
-    @BindView(R.id.rv_favorite_movie_list) RecyclerView mFavoritesRecyclerView;
     @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
@@ -101,15 +87,11 @@ public class MoviesFragment extends Fragment
         mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
         gridLayout = new StaggeredGridLayoutManager
-                (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-        favoriteGridLayout = new StaggeredGridLayoutManager
-                (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-
-        mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
+                (Utilities.calculateNoOfColumnsShow(getActivity()), StaggeredGridLayoutManager.VERTICAL);
 
         mRecyclerView.setLayoutManager(gridLayout);
         //mRecyclerView.hasFixedSize(true);
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, getActivity());
         mRecyclerView.setAdapter(mMovieAdapter);
 
 
@@ -117,6 +99,7 @@ public class MoviesFragment extends Fragment
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 downloadNextPageOfMovies(scrollPosition + 1);
+                Log.d(TAG, "onLoadMore: page: "+ page + " scrollpos: "+ scrollPosition);
                 scrollPosition++;
             }
         };
@@ -132,24 +115,9 @@ public class MoviesFragment extends Fragment
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        switch (mCurrentSelection) {
-            case SELECTION_FAVORITES:
-                showFavoriteMovieView();
-                mRecyclerView.removeOnScrollListener(scrollListener);
-                getActivity().getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-                mCurrentSelection = SELECTION_FAVORITES;
-                mMovieAdapter.setMovieData(null);
-                saveSelection(SELECTION_FAVORITES);
-                break;
-            case SELECTION_SEARCH:
-                selectSearch();
-                break;
-            default:
-                if (movieItemList == null || movieItemList.size() == 0) {
-                    downloadMovieData();
-                    mRecyclerView.addOnScrollListener(scrollListener);
-                }
-                break;
+        if (movieItemList == null || movieItemList.size() == 0) {
+            downloadMovieData();
+            mRecyclerView.addOnScrollListener(scrollListener);
         }
 
         return rootView;
@@ -169,7 +137,6 @@ public class MoviesFragment extends Fragment
         if (savedInstanceState != null) {
             movieItemList = savedInstanceState.getParcelableArrayList(BUNDLE_MOVIE_LIST_KEY);
             mMovieAdapter.setMovieData(movieItemList);
-            Log.e(TAG, "Movie data size after restore: " + movieItemList.size());
             mLayoutManagerSavedState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT);
             scrollPosition = savedInstanceState.getInt(BUNDLE_SCROLL_POSITION);
         }
@@ -186,9 +153,9 @@ public class MoviesFragment extends Fragment
 
     private void downloadNextPageOfMovies(int page) {
 
-        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page + 1);
+        Call<MovieResponse> call = apiService.getPageOfMovies(mCurrentSelection, API_KEY, page);
 
-        Log.e(TAG, "Downloading next page: " + (page + 1));
+        Log.e(TAG, "Downloading next page: " + (page));
 
         call.enqueue(new Callback<MovieResponse>() {
             @Override
@@ -215,14 +182,6 @@ public class MoviesFragment extends Fragment
 
     public void initializeFabMenu() {
 
-        fabButtonFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectFavorite();
-                fabMenu.close(true);
-            }
-        });
-
         fabButtonPopular.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,14 +202,6 @@ public class MoviesFragment extends Fragment
             @Override
             public void onClick(View v) {
                 selectUpcoming();
-                fabMenu.close(true);
-            }
-        });
-
-        fabButtonSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectSearch();
                 fabMenu.close(true);
             }
         });
@@ -300,7 +251,8 @@ public class MoviesFragment extends Fragment
     @Override
     public void onClick(MovieItem movieItem) {
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
+        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
         startActivity(intentToStartDetailActivity);
     }
 
@@ -315,19 +267,10 @@ public class MoviesFragment extends Fragment
         /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
-        mFavoritesRecyclerView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
 
         scrollListener.resetState();
         mRecyclerView.addOnScrollListener(scrollListener);
-    }
-
-    private void showFavoriteMovieView() {
-        /* First, make sure the error is invisible */
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
-        mFavoritesRecyclerView.setVisibility(View.VISIBLE);
-        mRecyclerView.setVisibility(View.GONE);
     }
 
 
@@ -375,12 +318,6 @@ public class MoviesFragment extends Fragment
         return true;
     }
 
-    private void selectSearch() {
-        saveSelection(SELECTION_SEARCH);
-        Intent intentToStartSearchActivity = new Intent(getActivity(), SearchActivity.class);
-        startActivity(intentToStartSearchActivity);
-    }
-
 
     private boolean selectTopRated() {
         // return if the option is already selected
@@ -398,24 +335,6 @@ public class MoviesFragment extends Fragment
     }
 
 
-    private boolean selectFavorite() {
-
-        if (mCurrentSelection.equals(SELECTION_FAVORITES)) {
-            Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
-            mFavoritesRecyclerView.smoothScrollToPosition(1);
-            return true;
-        }
-
-        showFavoriteMovieView();
-        mRecyclerView.removeOnScrollListener(scrollListener);
-        getActivity().getSupportLoaderManager().restartLoader(FAVORITE_LOADER_ID, null, this);
-        mCurrentSelection = SELECTION_FAVORITES;
-        mMovieAdapter.setMovieData(null);
-        saveSelection(SELECTION_FAVORITES);
-        return true;
-    }
-
-
     private boolean selectUpcoming() {
         if (mCurrentSelection.equals(SELECTION_UPCOMING)) {
             Toast.makeText(getActivity(), "This option is already selected", Toast.LENGTH_SHORT).show();
@@ -427,43 +346,6 @@ public class MoviesFragment extends Fragment
         downloadMovieData();
         saveSelection(SELECTION_UPCOMING);
         return true;
-    }
-
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        return new CursorLoader(
-                getActivity(),
-                MovieEntry.CONTENT_URI,
-                null, null, null, null);
-
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-        Log.e(MainActivity.class.getSimpleName(), "onLoadFInished favorties");
-        movieItemList = Utilities.extractMovieItemFromCursor(data);
-
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-        if (movieItemList != null) {
-            mFavoritesRecyclerView.setLayoutManager(favoriteGridLayout);
-            showFavoriteMovieView();
-            mFavoritesRecyclerView.setAdapter(mMovieAdapter);
-            mMovieAdapter.setMovieData(movieItemList);
-            mMovieAdapter.notifyDataSetChanged();
-            restorePosition();
-        } else {
-            showErrorMessage();
-        }
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mMovieAdapter.setMovieData(null);
-        getActivity().getSupportLoaderManager().restartLoader(0, null, this);
     }
 
 }

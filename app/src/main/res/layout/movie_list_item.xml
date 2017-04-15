@@ -12,5 +12,4 @@
         android:scaleType="fitStart"
         android:adjustViewBounds="true" />
 
-
 </LinearLayout>

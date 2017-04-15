@@ -67,7 +67,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
             @Override
             public void onClick(View v) {
                 Intent intentToStartActorDetailActivity = new Intent(mContext, ActorDetailsActivity.class);
-                intentToStartActorDetailActivity.putExtra("CAST_ITEM", castItem);
+                intentToStartActorDetailActivity.putExtra(mContext.getString(R.string.intent_key_cast_id), castItem.getId());
                 mContext.startActivity(intentToStartActorDetailActivity);
             }
         });

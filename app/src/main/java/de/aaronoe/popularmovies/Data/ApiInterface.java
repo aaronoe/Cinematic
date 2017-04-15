@@ -4,6 +4,7 @@ import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.Crew.Credits;
 import de.aaronoe.popularmovies.Data.FullMovie.FullMovie;
+import de.aaronoe.popularmovies.Data.MultiSearch.MultiSearchResponse;
 import de.aaronoe.popularmovies.Data.TvShow.FullSeason.FullSeason;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
 import de.aaronoe.popularmovies.Data.TvShow.ShowsResponse;
@@ -46,6 +47,15 @@ public interface ApiInterface {
     @GET("search/movie")
     Call<MovieResponse> searchForMovies(@Query("query") String searchQuery,
                                         @Query("api_key") String apiKey);
+
+    @GET("search/tv")
+    Call<ShowsResponse> searchForShows(@Query("query") String searchQuery,
+                                       @Query("api_key") String apiKey);
+
+
+    @GET("search/multi")
+    Call<MultiSearchResponse> multiSearch(@Query("query") String searchQuery,
+                                          @Query("api_key") String apiKey);
 
     @GET("movie/{id}/credits")
     Call<Credits> getCredits(@Path("id") int id,

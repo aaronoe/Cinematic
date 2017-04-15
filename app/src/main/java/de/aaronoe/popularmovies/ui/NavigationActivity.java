@@ -21,7 +21,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.popularmovies.R;
-import de.aaronoe.popularmovies.SearchActivity;
+import de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -98,18 +98,12 @@ public class NavigationActivity extends AppCompatActivity {
                         selectTvView();
                         return true;
 
-                    case R.id.drawer_menu_actors:
-                        Toast.makeText(NavigationActivity.this, "Actors selected", Toast.LENGTH_SHORT).show();
-                        return true;
-
                     case R.id.drawer_menu_faves:
-                        Toast.makeText(NavigationActivity.this, "Faves selected", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(NavigationActivity.this, FavoritesActivity.class));
                         return true;
 
                     case R.id.drawer_menu_search:
-                        Toast.makeText(NavigationActivity.this, "Search selected", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(NavigationActivity.this, SearchActivity.class));
+                        startActivity(new Intent(NavigationActivity.this, SearchMoviesActivity.class));
                         return true;
 
                     default:
@@ -156,9 +150,15 @@ public class NavigationActivity extends AppCompatActivity {
         switch (mCurrentSelection) {
             case MOVIES_SELECTION:
                 navigationView.setCheckedItem(R.id.drawer_menu_movies);
+                if (toolbar != null) {
+                    toolbar.setTitle("Movies");
+                }
                 break;
             case SHOWS_SELECTION:
                 navigationView.setCheckedItem(R.id.drawer_menu_shows);
+                if (toolbar != null) {
+                    toolbar.setTitle("TV Shows");
+                }
                 break;
             default:
                 navigationView.setCheckedItem(R.id.drawer_menu_movies);
@@ -186,22 +186,26 @@ public class NavigationActivity extends AppCompatActivity {
 
     private void selectMovieView() {
         mCurrentSelection = MOVIES_SELECTION;
-        Toast.makeText(NavigationActivity.this, "Movies selected", Toast.LENGTH_SHORT).show();
         MoviesFragment moviesFragment = new MoviesFragment();
         FragmentTransaction moviesFragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         moviesFragmentTransaction.replace(R.id.frame, moviesFragment);
         moviesFragmentTransaction.commit();
+        if (toolbar != null) {
+            toolbar.setTitle("Movies");
+        }
     }
 
     private void selectTvView() {
         mCurrentSelection = SHOWS_SELECTION;
-        Toast.makeText(NavigationActivity.this, "Shows selected", Toast.LENGTH_SHORT).show();
         TvShowsFragment tvShowsFragment = new TvShowsFragment();
         FragmentTransaction showsFragmentTransaction =
                 getSupportFragmentManager().beginTransaction();
         showsFragmentTransaction.replace(R.id.frame, tvShowsFragment);
         showsFragmentTransaction.commit();
+        if (toolbar != null) {
+            toolbar.setTitle("TV Shows");
+        }
     }
 
 }

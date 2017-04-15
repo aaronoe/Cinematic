@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,9 +23,8 @@ import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
-import de.aaronoe.popularmovies.Data.Crew.Cast;
-import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,18 +32,25 @@ import retrofit2.Response;
 public class ActorDetailsActivity extends AppCompatActivity {
 
     CreditsAdapter creditsAdapter;
-    Cast thisCastItem;
     Actor thisActor;
+    int actorId;
     ApiInterface apiService;
     List<de.aaronoe.popularmovies.Data.ActorCredits.Cast> castList;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
-
-    @BindView(R.id.actor_imageview) ImageView mProfileIv;
-    @BindView(R.id.name_value_textview) TextView mNameTextView;
-    @BindView(R.id.birthday_value_tv) TextView mBirthdayTextView;
-    @BindView(R.id.birthplace_value_tv) TextView mBirthplaceTextView;
-    @BindView(R.id.expand_text_view) ExpandableTextView mBiographyTv;
-    @BindView(R.id.actor_credits_rv) RecyclerView actorCreditsRv;
+    @BindView(R.id.actor_screen_profile)
+    CircleImageView actorScreenProfile;
+    @BindView(R.id.actor_biography_h1)
+    TextView actorBiographyH1;
+    @BindView(R.id.expandable_text)
+    TextView expandableText;
+    @BindView(R.id.expand_collapse)
+    ImageButton expandCollapse;
+    @BindView(R.id.expand_text_view)
+    ExpandableTextView expandTextView;
+    @BindView(R.id.actor_details_name)
+    TextView actorDetailsName;
+    @BindView(R.id.actor_credits_rv)
+    RecyclerView actorCreditsRv;
 
 
     @Override
@@ -57,16 +63,14 @@ public class ActorDetailsActivity extends AppCompatActivity {
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra("CAST_ITEM")) {
-                thisCastItem = intentThatStartedThisActivity.getParcelableExtra("CAST_ITEM");
+            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_cast_id))) {
+                actorId = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_cast_id), -1);
+
             }
         }
-
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        int id = thisCastItem.getId();
-
-        downloadActorData(id);
+        downloadActorData(actorId);
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -76,12 +80,12 @@ public class ActorDetailsActivity extends AppCompatActivity {
         creditsAdapter = new CreditsAdapter(this);
         actorCreditsRv.setAdapter(creditsAdapter);
 
-        downloadCredits(id);
+        downloadCredits(actorId);
 
     }
 
 
-    public void downloadCredits(int id){
+    public void downloadCredits(int id) {
         Call<ActorCredits> call = apiService.getActorCredits(id, API_KEY);
 
         call.enqueue(new Callback<ActorCredits>() {
@@ -105,7 +109,7 @@ public class ActorDetailsActivity extends AppCompatActivity {
     }
 
 
-    public void downloadActorData(int id){
+    public void downloadActorData(int id) {
 
         Call<Actor> call = apiService.getActorDetails(id, API_KEY);
 
@@ -127,23 +131,15 @@ public class ActorDetailsActivity extends AppCompatActivity {
 
     private void populateWithData() {
 
-        String notAvailable = getResources().getString(R.string.not_available);
         String actorName = thisActor.getName();
         String actorBio = thisActor.getBiography();
-        String actorBirthday = thisActor.getBirthday();
-        String convertedDate = notAvailable;
-        if (!actorBirthday.equals("")) {
-            convertedDate = Utilities.convertDate(actorBirthday);
-        }
-        String actorBirthplace = thisActor.getPlaceOfBirth();
-        if (actorBirthplace == null || actorBirthplace.equals("")) {
-            actorBirthplace = notAvailable;
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(actorName);
         }
 
-        mNameTextView.setText(actorName);
-        mBirthdayTextView.setText(convertedDate);
-        mBirthplaceTextView.setText(actorBirthplace);
-        mBiographyTv.setText(actorBio);
+        actorDetailsName.setText(actorName);
+        expandTextView.setText(actorBio);
 
         String picturePath = thisActor.getProfilePath();
         String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
@@ -152,7 +148,7 @@ public class ActorDetailsActivity extends AppCompatActivity {
                 .load(pictureUrl)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
-                .into(mProfileIv);
+                .into(actorScreenProfile);
 
     }
 

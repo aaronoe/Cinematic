@@ -41,7 +41,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         mClickHandler = clickHandler;
 
         // get genre mappings
-        map = new HashMap<Integer,String>();
+        map = new HashMap<>();
         map.put(10759, "Action & Adventure");
         map.put(16, "Animation");
         map.put(35, "Comedy");
@@ -62,7 +62,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
     }
 
     public interface TvShowAdapterOnClickHandler {
-        void onClick(int movieId);
+        void onClick(int movieId, String showTitle);
     }
 
 
@@ -80,6 +80,8 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
     public void onBindViewHolder(TvShowViewHolder holder, int position) {
 
         TvShow thisItem = videoItemList.get(position);
+
+        Log.d(TAG, "onBindViewHolder: "+ thisItem.getName());
 
         holder.showRatingTextView.setText(String.valueOf(thisItem.getVoteAverage()));
         holder.showTitleTextView.setText(thisItem.getName());
@@ -129,7 +131,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             TvShow thisShow = videoItemList.get(adapterPosition);
-            mClickHandler.onClick(thisShow.getId());
+            mClickHandler.onClick(thisShow.getId(), thisShow.getName());
         }
     }
 

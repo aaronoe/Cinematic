@@ -47,6 +47,7 @@ public class DetailActivity extends AppCompatActivity
     @BindView(R.id.detailpage_appbar) AppBarLayout mAppBarLayout;
     @BindView(R.id.detailpage_toolbar) Toolbar mToolBar;
 
+    String movieName;
     MovieItem mMovieItem;
     FullMovie mFullMovie;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
@@ -70,13 +71,19 @@ public class DetailActivity extends AppCompatActivity
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra("MovieItem")) {
                 mMovieItem = intentThatStartedThisActivity.getParcelableExtra("MovieItem");
-                id = mMovieItem.getmMovieId();
+                id = mMovieItem.getId();
                 Log.e(DetailActivity.class.getSimpleName(), ""+id);
                 populateViewsWithData();
                 setUpViewPager();
             }
             if (intentThatStartedThisActivity.hasExtra("MovieId")) {
                 id = intentThatStartedThisActivity.getIntExtra("MovieId", -1);
+            }
+            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_movie_name))) {
+                movieName = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_movie_name));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(movieName);
+                }
             }
         }
         Log.e(DetailActivity.class.getSimpleName(), "ID: " + id);
@@ -103,14 +110,19 @@ public class DetailActivity extends AppCompatActivity
                 mFullMovie = response.body();
 
                 if (mMovieItem == null) {
-                    mMovieItem = new MovieItem(
-                            mFullMovie.getPosterPath(),
-                            mFullMovie.getOverview(),
-                            mFullMovie.getTitle(),
-                            mFullMovie.getId(),
-                            mFullMovie.getReleaseDate(),
-                            mFullMovie.getVoteAverage(),
-                            mFullMovie.getBackdropPath());
+                    mMovieItem = new MovieItem();
+                    mMovieItem.setPosterPath(mFullMovie.getPosterPath());
+                    mMovieItem.setOverview(mFullMovie.getOverview());
+                    mMovieItem.setTitle(mFullMovie.getTitle());
+                    mMovieItem.setId(mFullMovie.getId());
+                    mMovieItem.setReleaseDate(mFullMovie.getReleaseDate());
+                    mMovieItem.setVoteAverage(mFullMovie.getVoteAverage());
+                    mMovieItem.setBackdropPath(mFullMovie.getBackdropPath());
+
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setTitle(mFullMovie.getTitle());
+                    }
+
                     populateViewsWithData();
                     setUpViewPager();
                 }
@@ -140,10 +152,10 @@ public class DetailActivity extends AppCompatActivity
     public void populateViewsWithData() {
 
         // Set Title
-        mMovieTitleTextView.setText(mMovieItem.getmTitle());
+        mMovieTitleTextView.setText(mMovieItem.getTitle());
 
         // Set Movie Poster
-        String picturePath = mMovieItem.getmPosterPath();
+        String picturePath = mMovieItem.getPosterPath();
         // put the picture URL together
         String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
         Picasso.with(this)
@@ -153,7 +165,7 @@ public class DetailActivity extends AppCompatActivity
                 .into(mProfileImageView);
 
         // Set Movie Backdrop
-        String backdropPath = mMovieItem.getmBackdropPath();
+        String backdropPath = mMovieItem.getBackdropPath();
         // put the picture URL together
         String backdropUrl = "http://image.tmdb.org/t/p/w500/" + backdropPath;
         Picasso.with(this)

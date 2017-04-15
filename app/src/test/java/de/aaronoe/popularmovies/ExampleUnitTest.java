@@ -17,11 +17,6 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
-    @Test
-    public void mainActivityNotNull() throws Exception {
-        MainActivity mainActivity = new MainActivity();
-        assertNotNull(mainActivity);
-    }
 
     @Test
     public void testDateFormatting() throws Exception {

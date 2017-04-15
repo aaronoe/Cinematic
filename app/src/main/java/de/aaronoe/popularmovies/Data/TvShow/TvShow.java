@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TvShow implements Parcelable
@@ -35,10 +36,10 @@ public class TvShow implements Parcelable
     private String firstAirDate;
     @SerializedName("origin_country")
     @Expose
-    private List<String> originCountry = null;
+    private List<String> originCountry = new ArrayList<>();
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIds = null;
+    private List<Integer> genreIds = new ArrayList<>();
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
@@ -79,8 +80,7 @@ public class TvShow implements Parcelable
             return (new TvShow[size]);
         }
 
-    }
-    ;
+    };
 
     public String getPosterPath() {
         return posterPath;

@@ -44,9 +44,9 @@ public class MoviesContract {
 
          */
 
-        static final String COLUMN_POSTER_PATH = "posterpath";
+        public static final String COLUMN_POSTER_PATH = "posterpath";
         static final String COLUMN_DESCRIPTION = "description";
-        static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MOVIE_ID = "movieid";
         static final String COLUMN_RELEASE_DATE = "releasedate";
         static final String COLUMN_VOTE_AVERAGE = "voteaverage";
@@ -64,12 +64,12 @@ public class MoviesContract {
 
         static final String TABLE_NAME = "fave_shows";
 
-        static final String COLUMN_ID = "show_id";
-        static final String COLUMN_TITLE = "title";
-        static final String COLUMN_VOTE_AVERAGE = "vote_average";
-        static final String COLUMN_FIRST_AIR_DATE = "first_air_date";
-        static final String COLUMN_GENRES = "show_genres";
-        static final String COLUMN_BACKDROP_PATH = "backdrop_path";
+        public static final String COLUMN_ID = "show_id";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_VOTE_AVERAGE = "vote_average";
+        public static final String COLUMN_FIRST_AIR_DATE = "first_air_date";
+        public static final String COLUMN_GENRES = "show_genres";
+        public static final String COLUMN_BACKDROP_PATH = "backdrop_path";
 
     }
 

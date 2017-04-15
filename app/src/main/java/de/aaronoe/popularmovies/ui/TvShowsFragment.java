@@ -80,8 +80,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     FloatingActionMenu fabMenu;
 
 
-    public TvShowsFragment() {
-    }
+    public TvShowsFragment() {}
 
     @Nullable
     @Override
@@ -286,9 +285,10 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     }
 
     @Override
-    public void onClick(int movieId) {
+    public void onClick(int movieId, String showTitle) {
         Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show_update), showTitle);
         getActivity().startActivity(intentToStartDetailActivity);
     }
 

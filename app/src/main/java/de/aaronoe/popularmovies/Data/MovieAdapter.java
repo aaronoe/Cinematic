@@ -7,11 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.aaronoe.popularmovies.Database.Utilities;
 import de.aaronoe.popularmovies.Movies.MovieItem;
 import de.aaronoe.popularmovies.R;
 
@@ -23,14 +27,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     // member variable for the list of movie data
     private List<MovieItem> mMovieList;
+    private Context mContext;
 
     private MovieAdapterOnClickHandler mClickHandler;
 
     /**
      * Creates a MovieAdapter with a click handler
      */
-    public MovieAdapter(MovieAdapterOnClickHandler onClickHandler) {
+    public MovieAdapter(MovieAdapterOnClickHandler onClickHandler, Context context) {
         mClickHandler = onClickHandler;
+        mContext = context;
     }
 
     public interface MovieAdapterOnClickHandler {
@@ -41,12 +47,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener{
 
-        final ImageView mImageView;
+        @BindView(R.id.tv_shows_backdrop_iv)
+        ImageView backdropImageView;
+        @BindView(R.id.tv_shows_h1_tv)
+        TextView showTitleTextView;
+        @BindView(R.id.tv_shows_genres_tv) TextView showGenreTextView;
+        @BindView(R.id.tv_shows_rating_tv) TextView showRatingTextView;
+        @BindView(R.id.tv_shows_year_tv) TextView showYearTextView;
 
 
         MovieAdapterViewHolder(View view) {
             super(view);
-            mImageView = (ImageView) view.findViewById(R.id.iv_movie_thumbnail);
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 
@@ -76,7 +88,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.movie_list_item;
+        int layoutIdForListItem = R.layout.shows_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
@@ -101,17 +113,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // get the data of the current movie
         MovieItem thisMovieItem = mMovieList.get(position);
         // retrieve the poster picture path
-        String picturePath = thisMovieItem.getmPosterPath();
+        String picturePath = thisMovieItem.getBackdropPath();
         // put the picture URL together
-        String pictureUrl = "http://image.tmdb.org/t/p/w342/" + picturePath;
+        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + picturePath;
         // get a reference to this item's ImageView
-        ImageView currentImageView = holder.mImageView;
+        ImageView currentImageView = holder.backdropImageView;
         // use picasso to load the image into the view
         Picasso.with(holder.itemView.getContext())
                 .load(pictureUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
+                .placeholder(R.drawable.poster_show_loading)
+                .error(R.drawable.poster_show_not_available)
                 .into(currentImageView);
+
+        holder.showTitleTextView.setText(thisMovieItem.getTitle());
+        holder.showRatingTextView.setText(String.valueOf(thisMovieItem.getVoteAverage()));
+        holder.showYearTextView.setText(Utilities.convertDateToYear(thisMovieItem.getReleaseDate()));
+        holder.showGenreTextView.setText(Utilities.extractMovieGenres(thisMovieItem.getGenreIds(), mContext));
     }
 
 
