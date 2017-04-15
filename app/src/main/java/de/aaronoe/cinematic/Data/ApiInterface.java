@@ -78,4 +78,9 @@ public interface ApiInterface {
                                         @Path("season_number") int seasonNumber,
                                         @Query("api_key") String apiKey);
 
+    @GET("discover/movie")
+    Call<MovieResponse> discoverMoviesForActor(@Query("api_key") String apiKey,
+                                               @Query("sort_by") String filter,
+                                               @Query("with_cast") String actorId);
+
 }

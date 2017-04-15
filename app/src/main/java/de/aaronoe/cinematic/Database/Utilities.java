@@ -219,6 +219,12 @@ public class Utilities {
         return (int) (dpWidth / 220);
     }
 
+    public static int calculateColumnsSmall(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        return (int) (dpWidth / 120);
+    }
+
     public static Uri buildShowUri(int showId) {
         return Uri.withAppendedPath(ShowEntry.CONTENT_URI, String.valueOf(showId));
     }

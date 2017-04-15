@@ -20,22 +20,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.Data.ActorCredits.Actor;
-import de.aaronoe.cinematic.Data.ActorCredits.ActorCredits;
 import de.aaronoe.cinematic.Data.ApiClient;
 import de.aaronoe.cinematic.Data.ApiInterface;
+import de.aaronoe.cinematic.Data.MovieAdapter;
+import de.aaronoe.cinematic.Movies.MovieItem;
+import de.aaronoe.cinematic.Movies.MovieResponse;
 import de.aaronoe.cinematic.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActorDetailsActivity extends AppCompatActivity {
+public class ActorDetailsActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    CreditsAdapter creditsAdapter;
+    MovieAdapter movieAdapter;
     Actor thisActor;
     int actorId;
     ApiInterface apiService;
-    List<de.aaronoe.cinematic.Data.ActorCredits.Cast> castList;
+    List<MovieItem> movieItemList;
+    private static final String SORT_ORDER = "popularity.desc";
+
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     @BindView(R.id.actor_screen_profile)
     CircleImageView actorScreenProfile;
@@ -73,39 +77,42 @@ public class ActorDetailsActivity extends AppCompatActivity {
         downloadActorData(actorId);
 
         LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         actorCreditsRv.setLayoutManager(linearLayoutManager);
         actorCreditsRv.setNestedScrollingEnabled(false);
-        creditsAdapter = new CreditsAdapter(this);
-        actorCreditsRv.setAdapter(creditsAdapter);
 
-        downloadCredits(actorId);
+        movieAdapter = new MovieAdapter(this, this);
+        actorCreditsRv.setAdapter(movieAdapter);
 
+        downloadMovies(actorId);
     }
 
+    private void downloadMovies(int id) {
 
-    public void downloadCredits(int id) {
-        Call<ActorCredits> call = apiService.getActorCredits(id, API_KEY);
+        Call<MovieResponse> movieResponseCall =
+                apiService.discoverMoviesForActor(API_KEY, SORT_ORDER, String.valueOf(id));
 
-        call.enqueue(new Callback<ActorCredits>() {
+        movieResponseCall.enqueue(new Callback<MovieResponse>() {
             @Override
-            public void onResponse(Call<ActorCredits> call, Response<ActorCredits> response) {
-                castList = response.body().getCast();
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                movieItemList = response.body().getResults();
 
-                if (castList != null) {
+                if (movieItemList != null) {
                     actorCreditsRv.setVisibility(View.VISIBLE);
-                    creditsAdapter.setCastList(castList);
+                    movieAdapter.setMovieData(movieItemList);
                 } else {
                     actorCreditsRv.setVisibility(View.INVISIBLE);
                 }
+
             }
 
             @Override
-            public void onFailure(Call<ActorCredits> call, Throwable t) {
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
 
             }
         });
+
     }
 
 
@@ -163,4 +170,8 @@ public class ActorDetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(MovieItem movieItem) {
+
+    }
 }
