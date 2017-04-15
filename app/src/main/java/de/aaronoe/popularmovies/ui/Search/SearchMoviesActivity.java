@@ -1,19 +1,16 @@
 package de.aaronoe.popularmovies.ui.Search;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -51,6 +48,8 @@ public class SearchMoviesActivity extends AppCompatActivity
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "BUNDLE_RECYCLER_LAYOUT";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
+    private Timer timer = new Timer();
+    private final long DELAY = 300; // milliseconds
 
     @BindView(R.id.search_rv_main)
     RecyclerView mRecyclerView;
@@ -58,15 +57,12 @@ public class SearchMoviesActivity extends AppCompatActivity
     ProgressBar searchProgressBar;
     @BindView(R.id.search_tv_error_message_display)
     TextView searchErrorTv;
-    @BindView(R.id.search_edit_text)
-    EditText searchEditText;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
 
         ButterKnife.bind(this);
 
@@ -83,60 +79,6 @@ public class SearchMoviesActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMultiSearchAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
-
-
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                timer.cancel();
-                timer = new Timer();
-                final String text = s.toString();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        // download movie stuff
-                        Log.d(TAG, "run: "+ text);
-                        if (text.equals("")) return;
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                downloadMovieData(text);
-                            }
-                        });
-
-                    }
-                }, DELAY);
-            }
-
-            private Timer timer = new Timer();
-            private final long DELAY = 500; // milliseconds
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((actionId== EditorInfo.IME_ACTION_SEARCH )   )
-                {
-                    // hide virtual keyboard
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
-
-                    return true;
-                }
-                return false;
-            }
-        });
 
     }
 
@@ -155,6 +97,9 @@ public class SearchMoviesActivity extends AppCompatActivity
 
         Log.d(TAG, "downloadMovieData() called with: query = [" + query + "]");
         searchProgressBar.setVisibility(View.VISIBLE);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(getString(R.string.results_for_query, query));
+        }
 
         Call<MultiSearchResponse> call = apiService.multiSearch(query, API_KEY);
 
@@ -241,5 +186,50 @@ public class SearchMoviesActivity extends AppCompatActivity
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.searchbar, menu);
+
+        final MenuItem searchItem = menu.findItem(R.id.actionbar_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if( ! searchView.isIconified()) {
+                    searchView.setIconified(true);
+                }
+                searchItem.collapseActionView();
+                downloadMovieData(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                timer.cancel();
+                timer = new Timer();
+                final String text = newText;
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        // download movie stuff
+                        Log.d(TAG, "run: "+ text);
+                        if (text.equals("")) return;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                downloadMovieData(text);
+                            }
+                        });
+
+                    }
+                }, DELAY);
+                return false;
+            }
+        });
+        return true;
     }
 }

@@ -63,6 +63,11 @@ class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.MultiVi
                 holder.searchItemTitle.setText(searchItem.getName());
                 holder.searchTypeTv.setText(R.string.type_person);
 
+                String knownFor = Utilities.getKnownFor(searchItem.getKnownFor());
+                if (knownFor != null && knownFor != "null") {
+                    holder.searchItemSubtitle.setText(knownFor);
+                }
+
                 picturePath =  searchItem.getProfilePath();
                 pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
 

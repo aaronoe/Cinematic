@@ -8,38 +8,6 @@
     android:orientation="vertical"
     tools:context="de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity">
 
-    <com.github.florent37.materialtextfield.MaterialTextField
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small_vertical_padding"
-        android:layout_marginBottom="@dimen/small_vertical_padding"
-        android:layout_marginStart="@dimen/smaller_vertical_padding"
-        android:layout_marginLeft="@dimen/smaller_vertical_padding"
-        android:layout_marginRight="@dimen/smaller_vertical_padding"
-        android:layout_marginEnd="@dimen/smaller_vertical_padding"
-        app:mtf_labelColor="@color/colorPrimaryDark"
-        app:mtf_cardCollapsedHeight="4dp"
-        app:mtf_backgroundColor="@color/colorPrimary"
-        app:mtf_openKeyboardOnFocus="true"
-        app:mtf_image="@drawable/ic_search_black_24dp"
-        >
-
-        <EditText
-            android:id="@+id/search_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/search"
-            android:maxLines="1"
-            android:inputType="textAutoComplete"
-            android:imeOptions="actionSearch"
-            android:background="@color/colorPrimary"
-            android:textColorHint="@color/icons"
-            android:textColor="@color/icons"
-            android:textSize="16sp" />
-
-    </com.github.florent37.materialtextfield.MaterialTextField>
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_rv_main"
         android:layout_width="match_parent"

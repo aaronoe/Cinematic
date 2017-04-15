@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-class KnownFor implements Parcelable
+public class KnownFor implements Parcelable
 {
 
     @SerializedName("poster_path")
