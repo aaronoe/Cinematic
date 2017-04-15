@@ -11,12 +11,12 @@
         tools:targetApi="n_mr1">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="de.aaronoe.popularmovies"
-            android:targetClass="de.aaronoe.popularmovies.ui.NavigationActivity" />
+            android:targetPackage="de.aaronoe.cinematic"
+            android:targetClass="de.aaronoe.cinematic.ui.NavigationActivity" />
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="de.aaronoe.popularmovies"
-            android:targetClass="de.aaronoe.popularmovies.ui.FavoritesActivity" />
+            android:targetPackage="de.aaronoe.cinematic"
+            android:targetClass="de.aaronoe.cinematic.ui.FavoritesActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->
@@ -33,12 +33,12 @@
         tools:targetApi="n_mr1">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="de.aaronoe.popularmovies"
-            android:targetClass="de.aaronoe.popularmovies.ui.NavigationActivity" />
+            android:targetPackage="de.aaronoe.cinematic"
+            android:targetClass="de.aaronoe.cinematic.ui.NavigationActivity" />
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="de.aaronoe.popularmovies"
-            android:targetClass="de.aaronoe.popularmovies.ui.Search.SearchMoviesActivity" />
+            android:targetPackage="de.aaronoe.cinematic"
+            android:targetClass="de.aaronoe.cinematic.ui.Search.SearchMoviesActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->

@@ -1,49 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="de.aaronoe.popularmovies">
+    package="de.aaronoe.cinematic">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".PopularMoviesApplication"
+        android:name="de.aaronoe.cinematic.PopularMoviesApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".DetailPage.DetailActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.DetailPage.DetailActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
 
         <provider
-            android:name=".Database.MoviesContentProvider"
-            android:authorities="de.aaronoe.popularmovies"
+            android:name="de.aaronoe.cinematic.Database.MoviesContentProvider"
+            android:authorities="de.aaronoe.cinematic"
             android:exported="false" />
 
         <activity
-            android:name=".ui.Search.SearchMoviesActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.ui.Search.SearchMoviesActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
         <activity
-            android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
-            android:parentActivityName=".DetailPage.DetailActivity"
+            android:name="de.aaronoe.cinematic.DetailPage.ActorDetails.ActorDetailsActivity"
+            android:parentActivityName="de.aaronoe.cinematic.DetailPage.DetailActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
+                android:value="de.aaronoe.cinematic.DetailPage.DetailActivity" />
         </activity>
         <activity
-            android:name=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.ui.NavigationActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,40 +57,40 @@
         </activity>
 
         <service
-            android:name=".Database.MovieUpdateService"
+            android:name="de.aaronoe.cinematic.Database.MovieUpdateService"
             android:exported="false" />
 
         <activity
-            android:name=".ui.TvShowDetailActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.ui.TvShowDetailActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
         <activity
-            android:name=".ui.TvSeasonDetailActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.ui.TvSeasonDetailActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
         <activity
-            android:name=".ui.FavoritesActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+            android:name="de.aaronoe.cinematic.ui.FavoritesActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
-        <activity android:name=".ui.AboutActivity"
-            android:parentActivityName=".ui.NavigationActivity"
+        <activity android:name="de.aaronoe.cinematic.ui.AboutActivity"
+            android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.NavigationActivity" />
+                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
 
         </activity>
     </application>
