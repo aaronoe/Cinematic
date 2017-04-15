@@ -12,11 +12,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".DetailPage.DetailActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity">
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.NavigationActivity" />
@@ -29,16 +28,16 @@
 
         <activity
             android:name=".ui.Search.SearchMoviesActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity">
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.NavigationActivity" />
         </activity>
         <activity
             android:name=".DetailPage.ActorDetails.ActorDetailsActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".DetailPage.DetailActivity">
+            android:parentActivityName=".DetailPage.DetailActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.DetailPage.DetailActivity" />
@@ -48,9 +47,12 @@
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
+
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
@@ -60,31 +62,37 @@
 
         <activity
             android:name=".ui.TvShowDetailActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity" >
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
         </activity>
-
         <activity
             android:name=".ui.TvSeasonDetailActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity" >
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
         </activity>
-
         <activity
             android:name=".ui.FavoritesActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity" >
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
         </activity>
+        <activity android:name=".ui.AboutActivity"
+            android:parentActivityName=".ui.NavigationActivity"
+            android:theme="@style/AppThemeWithActionbar">
 
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.NavigationActivity" />
+
+        </activity>
     </application>
 
 </manifest>

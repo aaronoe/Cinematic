@@ -48,7 +48,9 @@
 
                 <TextView
                     android:id="@+id/episode_title_tv"
-                    tools:text="Keep Calm and Carry on"
+                    tools:text="Best little horror house in langley falls"
+                    android:paddingRight="32dp"
+                    android:paddingEnd="32dp"
                     android:layout_width="wrap_content"
                     android:textSize="16sp"
                     android:layout_height="wrap_content"

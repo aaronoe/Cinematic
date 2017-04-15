@@ -44,15 +44,6 @@ public interface ApiInterface {
     Call<VideoResponse> getVideos(@Path("id") int id,
                                   @Query("api_key") String apiKey);
 
-    @GET("search/movie")
-    Call<MovieResponse> searchForMovies(@Query("query") String searchQuery,
-                                        @Query("api_key") String apiKey);
-
-    @GET("search/tv")
-    Call<ShowsResponse> searchForShows(@Query("query") String searchQuery,
-                                       @Query("api_key") String apiKey);
-
-
     @GET("search/multi")
     Call<MultiSearchResponse> multiSearch(@Query("query") String searchQuery,
                                           @Query("api_key") String apiKey);

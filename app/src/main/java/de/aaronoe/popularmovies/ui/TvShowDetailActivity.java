@@ -307,7 +307,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                                 .setAction("UNDO", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        removeFromFavorites();
+                                        toggleFavoriteShowButton.setChecked(false);
                                         Snackbar undo = Snackbar.make(showDetailContainer, getString(R.string.removed_from_favorites), Snackbar.LENGTH_SHORT);
                                         undo.show();
                                     }
@@ -321,7 +321,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                                 .setAction("UNDO", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        addToFavorites();
+                                        toggleFavoriteShowButton.setChecked(true);
                                         Snackbar undo = Snackbar.make(showDetailContainer, getString(R.string.added_to_favorites), Snackbar.LENGTH_SHORT);
                                         undo.show();
                                     }

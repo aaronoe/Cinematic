@@ -45,6 +45,7 @@
     <android.support.constraint.ConstraintLayout
         android:background="@drawable/detail_screen_gradient"
         android:layout_width="match_parent"
+        android:padding="@dimen/activity_horizontal_margin"
         android:layout_height="wrap_content">
 
         <TextView
@@ -55,21 +56,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginStart="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
+
             app:layout_constraintLeft_toLeftOf="parent" />
 
         <com.ms.square.android.expandabletextview.ExpandableTextView
             xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
             android:id="@+id/expand_text_view"
             android:layout_marginTop="@dimen/small_vertical_padding"
-            android:layout_marginStart="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_vertical_margin"
-            android:layout_marginEnd="@dimen/activity_vertical_margin"
-            android:layout_marginRight="@dimen/activity_vertical_margin"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintRight_toLeftOf="parent"

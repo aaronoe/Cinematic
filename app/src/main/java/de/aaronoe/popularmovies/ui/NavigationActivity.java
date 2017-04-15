@@ -106,6 +106,9 @@ public class NavigationActivity extends AppCompatActivity {
                         startActivity(new Intent(NavigationActivity.this, SearchMoviesActivity.class));
                         return true;
 
+                    case R.id.drawer_menu_info:
+                        startActivity(new Intent(NavigationActivity.this, AboutActivity.class));
+                        return true;
                     default:
                         Toast.makeText(NavigationActivity.this, "Something went terribly wrong", Toast.LENGTH_SHORT).show();
                         return true;

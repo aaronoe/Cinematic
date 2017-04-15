@@ -279,6 +279,7 @@ public class Utilities {
         int iterSize = knownForList.size() < 5 ? knownForList.size() : 5;
 
         for (int i = 0; i < iterSize; i++) {
+            if (knownForList.get(i).getTitle() == null) continue;
             result += knownForList.get(i).getTitle();
             if (i != iterSize -1) {
                 result += ", ";

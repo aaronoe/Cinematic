@@ -4,7 +4,7 @@
     <shortcut
         android:shortcutId="favorites"
         android:enabled="true"
-        android:icon="@drawable/ic_star_black_24dp"
+        android:icon="@drawable/ic_shortcut_star"
         android:shortcutShortLabel="@string/favorites_h2"
         android:shortcutLongLabel="@string/favorites_h1"
         android:shortcutDisabledMessage="@string/disabled"
@@ -26,7 +26,7 @@
     <shortcut
         android:shortcutId="search"
         android:enabled="true"
-        android:icon="@drawable/ic_search_grey_24dp"
+        android:icon="@drawable/ic_shortcut_search"
         android:shortcutShortLabel="@string/search_h1"
         android:shortcutLongLabel="@string/search_h1"
         android:shortcutDisabledMessage="@string/disabled"
