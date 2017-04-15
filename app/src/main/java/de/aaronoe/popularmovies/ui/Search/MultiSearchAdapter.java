@@ -23,17 +23,17 @@ import de.aaronoe.popularmovies.R;
  * Created by aaron on 14.04.17.
  */
 
-public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.MultiViewHolder> {
+class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.MultiViewHolder> {
 
     private List<SearchItem> itemList;
     private Context mContext;
     private MultiSearchItemOnClickHandler onClickHandler;
-    public static final String MEDIA_TYPE_TV = "tv";
-    public static final String MEDIA_TYPE_MOVIE = "movie";
-    public static final String MEDIA_TYPE_PERSON = "person";
+    static final String MEDIA_TYPE_TV = "tv";
+    static final String MEDIA_TYPE_MOVIE = "movie";
+    static final String MEDIA_TYPE_PERSON = "person";
 
 
-    public MultiSearchAdapter(Context context, MultiSearchItemOnClickHandler clickHandler) {
+    MultiSearchAdapter(Context context, MultiSearchItemOnClickHandler clickHandler) {
         mContext = context;
         onClickHandler = clickHandler;
     }
@@ -45,7 +45,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         return new MultiViewHolder(view);
     }
 
-    public interface MultiSearchItemOnClickHandler {
+    interface MultiSearchItemOnClickHandler {
         void onClick(int itemId, String itemType);
     }
 
@@ -64,7 +64,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                 holder.searchTypeTv.setText(R.string.type_person);
 
                 picturePath =  searchItem.getProfilePath();
-                pictureUrl = "http://image.tmdb.org/t/p/w140/" + picturePath;
+                pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
 
                 // use picasso to load the image into the view
                 Picasso.with(mContext)
@@ -82,7 +82,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                 holder.searchTypeTv.setText(R.string.type_movie);
 
                 picturePath =  searchItem.getPosterPath();
-                pictureUrl = "http://image.tmdb.org/t/p/w140/" + picturePath;
+                pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
                 // get a reference to this item's ImageView
                 // use picasso to load the image into the view
                 Picasso.with(mContext)
@@ -100,7 +100,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
                 holder.searchTypeTv.setText(R.string.type_tv);
 
                 picturePath =  searchItem.getPosterPath();
-                pictureUrl = "http://image.tmdb.org/t/p/w140/" + picturePath;
+                pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
                 // get a reference to this item's ImageView
                 // use picasso to load the image into the view
                 Picasso.with(mContext)
@@ -130,7 +130,7 @@ public class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.
         @BindView(R.id.multi_search_type_tv)
         TextView searchTypeTv;
 
-        public MultiViewHolder(View itemView) {
+        MultiViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);

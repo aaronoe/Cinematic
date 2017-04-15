@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 android:adjustViewBounds="true"
-                android:src="@drawable/walking_dead_backdro"
+                tools:src="@drawable/walking_dead_backdro"
                 app:layout_collapseMode="parallax"
                 android:contentDescription="@string/backdrop_description" />
 
@@ -41,7 +41,7 @@
 
         <ImageView
             android:id="@+id/tv_detail_profile"
-            android:src="@drawable/walking_dead_profile"
+            tools:src="@drawable/walking_dead_profile"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:layout_width="wrap_content"

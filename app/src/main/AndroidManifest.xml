@@ -85,15 +85,6 @@
                 android:value="de.aaronoe.popularmovies.ui.NavigationActivity" />
         </activity>
 
-        <activity
-            android:name=".ui.Search.SearchShowsActivity"
-            android:theme="@style/AppThemeWithActionbar"
-            android:parentActivityName=".ui.NavigationActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.NavigationActivity" />
-        </activity>
-
     </application>
 
 </manifest>

@@ -16,9 +16,9 @@ public class MultiSearchResponse implements Parcelable
     @SerializedName("page")
     @Expose
     private Integer page;
-    @SerializedName("searchItems")
+    @SerializedName("results")
     @Expose
-    private List<MultiSearchItem> searchItems = new ArrayList<MultiSearchItem>();
+    private List<SearchItem> results = new ArrayList<SearchItem>();
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;
@@ -34,7 +34,7 @@ public class MultiSearchResponse implements Parcelable
         public MultiSearchResponse createFromParcel(Parcel in) {
             MultiSearchResponse instance = new MultiSearchResponse();
             instance.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-            in.readList(instance.searchItems, (MultiSearchItem.class.getClassLoader()));
+            in.readList(instance.results, (SearchItem.class.getClassLoader()));
             instance.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
             instance.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
             return instance;
@@ -55,12 +55,12 @@ public class MultiSearchResponse implements Parcelable
         this.page = page;
     }
 
-    public List<MultiSearchItem> getSearchItems() {
-        return searchItems;
+    public List<SearchItem> getResults() {
+        return results;
     }
 
-    public void setSearchItems(List<MultiSearchItem> searchItems) {
-        this.searchItems = searchItems;
+    public void setResults(List<SearchItem> results) {
+        this.results = results;
     }
 
     public Integer getTotalResults() {
@@ -81,7 +81,7 @@ public class MultiSearchResponse implements Parcelable
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
-        dest.writeList(searchItems);
+        dest.writeList(results);
         dest.writeValue(totalResults);
         dest.writeValue(totalPages);
     }

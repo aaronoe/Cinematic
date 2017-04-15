@@ -30,6 +30,7 @@ import de.aaronoe.popularmovies.Data.ApiInterface;
 import de.aaronoe.popularmovies.Data.MultiSearch.MultiSearchResponse;
 import de.aaronoe.popularmovies.Data.MultiSearch.SearchItem;
 import de.aaronoe.popularmovies.Database.Utilities;
+import de.aaronoe.popularmovies.DetailPage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.popularmovies.DetailPage.DetailActivity;
 import de.aaronoe.popularmovies.R;
 import de.aaronoe.popularmovies.ui.TvShowDetailActivity;
@@ -66,6 +67,7 @@ public class SearchMoviesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+
         ButterKnife.bind(this);
 
         if (getSupportActionBar() != null) {
@@ -81,6 +83,7 @@ public class SearchMoviesActivity extends AppCompatActivity
         mRecyclerView.setAdapter(mMultiSearchAdapter);
 
         apiService = ApiClient.getClient().create(ApiInterface.class);
+
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -159,7 +162,8 @@ public class SearchMoviesActivity extends AppCompatActivity
         call.enqueue(new Callback<MultiSearchResponse>() {
             @Override
             public void onResponse(Call<MultiSearchResponse> call, Response<MultiSearchResponse> response) {
-                searchItemList = response.body().getSearchItems();
+                searchItemList = response.body().getResults();
+                Log.d(TAG, "onResponse: Items: " + response.body().getTotalResults());
 
                 searchProgressBar.setVisibility(View.INVISIBLE);
                 if (searchItemList != null) {
@@ -217,15 +221,6 @@ public class SearchMoviesActivity extends AppCompatActivity
     }
 
 
-    /*
-    @Override
-    public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(SearchMoviesActivity.this, DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
-        startActivity(intentToStartDetailActivity);
-    }
-    */
-
     @Override
     public void onClick(int itemId, String itemType) {
         switch (itemType) {
@@ -239,6 +234,10 @@ public class SearchMoviesActivity extends AppCompatActivity
                 intentToStartShowActivity.putExtra(getString(R.string.intent_key_tv_show), itemId);
                 startActivity(intentToStartShowActivity);
                 break;
+            case MultiSearchAdapter.MEDIA_TYPE_PERSON:
+                Intent intentPersonActivity = new Intent(this, ActorDetailsActivity.class);
+                intentPersonActivity.putExtra(getString(R.string.intent_key_cast_id), itemId);
+                startActivity(intentPersonActivity);
             default:
                 break;
         }

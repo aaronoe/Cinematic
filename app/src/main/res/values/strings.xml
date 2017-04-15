@@ -108,6 +108,9 @@
     <string name="type_person">PERSON</string>
     <string name="type_movie">MOVIE</string>
     <string name="type_tv">TV</string>
+    <string name="intent_key_cast_id">INTENT_KEY_CAST_ID</string>
+    <string name="item_picture">Item Picture</string>
+    <string name="tv_show_poster">Tv Show Poster</string>
 
 
 </resources>

@@ -8,74 +8,73 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.constraint.Guideline
-            android:layout_width="wrap_content"
-            android:id="@+id/guideline"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5"
-            android:layout_height="wrap_content" />
-
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:contentDescription="@string/item_picture"
+            android:src="@drawable/walking_dead_profile"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_margin="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/search_item_imageview" />
 
-        <TextView
-            android:id="@+id/search_item_title"
-            tools:text="Interstellar"
-            android:maxLines="2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/guideline"
-            android:textSize="17sp"
-            android:textColor="@color/primary_text"
-            app:layout_constraintLeft_toRightOf="@+id/search_item_imageview" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="6"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
-        <TextView
-            tools:text="2014-11-15"
-            android:id="@+id/search_item_subtitle"
-            android:layout_marginTop="4dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/guideline"
-            app:layout_constraintLeft_toLeftOf="@+id/search_item_title" />
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                app:cardCornerRadius="4dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                android:layout_height="wrap_content"
+                >
 
-        <android.support.v7.widget.CardView
-            android:layout_width="wrap_content"
-            app:cardCornerRadius="4dp"
-            app:cardBackgroundColor="@color/colorPrimary"
-            app:layout_constraintRight_toLeftOf="parent"
-            android:layout_marginEnd="@dimen/small_vertical_padding"
-            android:layout_marginRight="@dimen/small_vertical_padding"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/search_item_subtitle"
-            app:layout_constraintBottom_toBottomOf="@+id/search_item_subtitle">
+                <TextView
+                    android:id="@+id/multi_search_type_tv"
+                    tools:text="Movie"
+                    android:textSize="14sp"
+                    android:padding="2dp"
+                    android:paddingStart="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingEnd="8dp"
+                    android:textColor="@color/colorAccent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </android.support.v7.widget.CardView>
 
             <TextView
-                android:id="@+id/multi_search_type_tv"
-                tools:text="Movie"
-                android:textSize="16sp"
-                android:padding="4dp"
-                android:paddingStart="12dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingEnd="12dp"
-                android:textColor="@color/colorAccent"
+                android:id="@+id/search_item_title"
+                tools:text="Interstellar episode 1 and the stone of the gooch"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="17sp"
+                android:textColor="@color/primary_text"
+                />
 
-        </android.support.v7.widget.CardView>
+            <TextView
+                tools:text="2014-11-15"
+                android:id="@+id/search_item_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 />
 
-    </android.support.constraint.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </android.support.v7.widget.CardView>

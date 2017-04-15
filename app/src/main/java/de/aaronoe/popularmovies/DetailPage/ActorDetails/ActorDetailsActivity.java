@@ -23,7 +23,6 @@ import de.aaronoe.popularmovies.Data.ActorCredits.Actor;
 import de.aaronoe.popularmovies.Data.ActorCredits.ActorCredits;
 import de.aaronoe.popularmovies.Data.ApiClient;
 import de.aaronoe.popularmovies.Data.ApiInterface;
-import de.aaronoe.popularmovies.Data.Crew.Cast;
 import de.aaronoe.popularmovies.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -33,8 +32,8 @@ import retrofit2.Response;
 public class ActorDetailsActivity extends AppCompatActivity {
 
     CreditsAdapter creditsAdapter;
-    Cast thisCastItem;
     Actor thisActor;
+    int actorId;
     ApiInterface apiService;
     List<de.aaronoe.popularmovies.Data.ActorCredits.Cast> castList;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
@@ -64,19 +63,14 @@ public class ActorDetailsActivity extends AppCompatActivity {
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
-            if (intentThatStartedThisActivity.hasExtra("CAST_ITEM")) {
-                thisCastItem = intentThatStartedThisActivity.getParcelableExtra("CAST_ITEM");
-                if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(thisCastItem.getName());
-                }
+            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_cast_id))) {
+                actorId = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_cast_id), -1);
+
             }
         }
-
         apiService = ApiClient.getClient().create(ApiInterface.class);
 
-        int id = thisCastItem.getId();
-
-        downloadActorData(id);
+        downloadActorData(actorId);
 
         LinearLayoutManager linearLayoutManager =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -86,7 +80,7 @@ public class ActorDetailsActivity extends AppCompatActivity {
         creditsAdapter = new CreditsAdapter(this);
         actorCreditsRv.setAdapter(creditsAdapter);
 
-        downloadCredits(id);
+        downloadCredits(actorId);
 
     }
 
@@ -140,6 +134,9 @@ public class ActorDetailsActivity extends AppCompatActivity {
         String actorName = thisActor.getName();
         String actorBio = thisActor.getBiography();
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(actorName);
+        }
 
         actorDetailsName.setText(actorName);
         expandTextView.setText(actorBio);

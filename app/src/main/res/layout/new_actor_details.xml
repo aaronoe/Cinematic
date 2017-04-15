@@ -15,7 +15,6 @@
         android:layout_height="wrap_content">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:src="@drawable/walking_dead_profile"
             android:layout_width="140dp"
             android:layout_height="140dp"
             app:layout_constraintTop_toTopOf="parent"
