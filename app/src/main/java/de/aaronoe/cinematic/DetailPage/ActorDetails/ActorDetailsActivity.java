@@ -23,6 +23,7 @@ import de.aaronoe.cinematic.Data.ActorCredits.Actor;
 import de.aaronoe.cinematic.Data.ApiClient;
 import de.aaronoe.cinematic.Data.ApiInterface;
 import de.aaronoe.cinematic.Data.MovieAdapter;
+import de.aaronoe.cinematic.DetailPage.DetailActivity;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.MovieResponse;
 import de.aaronoe.cinematic.R;
@@ -172,6 +173,9 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
 
     @Override
     public void onClick(MovieItem movieItem) {
-
+        Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
+        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
+        startActivity(intentToStartDetailActivity);
     }
 }
