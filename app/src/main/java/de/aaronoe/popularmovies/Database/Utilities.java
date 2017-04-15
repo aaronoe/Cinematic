@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import de.aaronoe.popularmovies.Data.MultiSearch.KnownFor;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.Genre;
 import de.aaronoe.popularmovies.Data.TvShow.FullShow.TvShowFull;
 import de.aaronoe.popularmovies.Database.MoviesContract.MovieEntry;
@@ -268,6 +269,22 @@ public class Utilities {
         if (list.length() == 0) return mContext.getString(R.string.genre_not_available);
         return list.substring(0, list.length() - SEPARATOR.length());
 
+    }
+
+    public static String getKnownFor(List<KnownFor> knownForList) {
+
+        if (knownForList == null) return null;
+        String result = "";
+
+        int iterSize = knownForList.size() < 5 ? knownForList.size() : 5;
+
+        for (int i = 0; i < iterSize; i++) {
+            result += knownForList.get(i).getTitle();
+            if (i != iterSize -1) {
+                result += ", ";
+            }
+        }
+        return result;
     }
 
 
