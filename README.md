@@ -3,6 +3,9 @@
 Android App, which displays movie data, based on sorting criteria. It utilizes the [The Movie DB API](https://www.themoviedb.org/documentation/api) to query data using Retrofit as a REST-Client.
 The user can favorite movies, which are then stored with a Content-Provider backed by a SQLite Database.
 
+## Video
+![In-App Experience](https://github.com/aaronoe/screenshots/blob/master/Cinematic_long.gif?raw=true "In-App Experience")
+
 ## Screenshots
 
 ![Main Activity](https://github.com/aaronoe/screenshots/blob/master/rsz_2device-2017-03-07-144456.png "Main Activity") ![Detail Activity](https://github.com/aaronoe/screenshots/blob/master/rsz_11device-2017-03-07-144613.png "Detail Activity") ![Video Tab](https://github.com/aaronoe/screenshots/blob/master/rsz_device-2017-03-07-144649.png "Video Tab") ![Search Activity](https://github.com/aaronoe/screenshots/blob/master/rsz_1device-2017-03-07-144741.png "Search Activity")
