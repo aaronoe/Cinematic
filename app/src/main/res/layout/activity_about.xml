@@ -25,7 +25,7 @@
     <TextView
         android:text="@string/cinematic"
         android:textSize="26sp"
-        android:textColor="@color/primary_text"
+        android:textColor="@color/icons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/small_vertical_padding"
@@ -69,6 +69,7 @@
 
     <TextView
         android:text="Developer"
+        android:textColor="@color/icons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
@@ -115,6 +116,7 @@
          />
 
     <TextView
+        android:textColor="@color/icons"
         android:text="The Movie Database"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -149,6 +151,7 @@
         android:id="@+id/divider3" />
 
     <TextView
+        android:textColor="@color/icons"
         android:text="Copyright"
         android:textSize="16sp"
         android:layout_width="wrap_content"

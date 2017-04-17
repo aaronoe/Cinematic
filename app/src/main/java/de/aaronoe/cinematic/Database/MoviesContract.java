@@ -11,7 +11,7 @@ import android.provider.BaseColumns;
 public class MoviesContract {
 
     // Content Authority and Base URI to query data
-    static final String CONTENT_AUTHORITY = "de.aaronoe.popularmovies";
+    static final String CONTENT_AUTHORITY = "de.aaronoe.cinematic";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     static final String PATH_FAVORITE = "faves";
     static final String PATH_FAVORITE_SHOWS = "shows_faves";

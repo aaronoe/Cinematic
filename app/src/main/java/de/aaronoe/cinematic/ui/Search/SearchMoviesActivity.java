@@ -67,7 +67,7 @@ public class SearchMoviesActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.search_movies);
+            getSupportActionBar().setTitle(R.string.search);
         }
 
         gridLayout = new StaggeredGridLayoutManager
@@ -195,6 +195,11 @@ public class SearchMoviesActivity extends AppCompatActivity
 
         final MenuItem searchItem = menu.findItem(R.id.actionbar_search);
         final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(getString(R.string.search_hint));
+        searchView.setMaxWidth(100000);
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

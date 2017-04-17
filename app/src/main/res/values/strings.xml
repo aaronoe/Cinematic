@@ -115,6 +115,7 @@
     <string name="cinematic">Cinematic</string>
     <string name="version_0_1_beta">Version 0.1 (Beta)</string>
     <string name="about">About</string>
+    <string name="search_hint">Search for movies, shows and actors</string>
 
 
 </resources>

@@ -21,11 +21,6 @@
                 android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
 
-        <provider
-            android:name="de.aaronoe.cinematic.Database.MoviesContentProvider"
-            android:authorities="de.aaronoe.cinematic"
-            android:exported="false" />
-
         <activity
             android:name="de.aaronoe.cinematic.ui.Search.SearchMoviesActivity"
             android:parentActivityName="de.aaronoe.cinematic.ui.NavigationActivity"
@@ -55,6 +50,12 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
+
+        <provider
+            android:name="de.aaronoe.cinematic.Database.MoviesContentProvider"
+            android:authorities="de.aaronoe.cinematic"
+            android:exported="false" />
 
         <service
             android:name="de.aaronoe.cinematic.Database.MovieUpdateService"
