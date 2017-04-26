@@ -2,8 +2,12 @@ package de.aaronoe.cinematic;
 
 import android.app.Application;
 
-import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
+
+import de.aaronoe.cinematic.modules.AppModule;
+import de.aaronoe.cinematic.modules.DaggerNetComponent;
+import de.aaronoe.cinematic.modules.NetComponent;
+import de.aaronoe.cinematic.modules.NetModule;
 
 /**
  *
@@ -12,25 +16,19 @@ import com.squareup.leakcanary.LeakCanary;
 
 public class PopularMoviesApplication extends Application {
 
+    private static final String BASE_URL = "http://api.themoviedb.org/3/";
+
+    private NetComponent mNetComponent;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // Create an InitializerBuilder
-        Stetho.InitializerBuilder initializerBuilder =
-                Stetho.newInitializerBuilder(this);
-
-        // Enable Chrome DevTools
-        initializerBuilder.enableWebKitInspector(
-                Stetho.defaultInspectorModulesProvider(this)
-        );
-
-        // Use the InitializerBuilder to generate an Initializer
-        Stetho.Initializer initializer = initializerBuilder.build();
-
-
-        // Initialize Stetho with the Initializer
-        Stetho.initialize(initializer);
+        // Dagger%COMPONENT_NAME%
+        mNetComponent = DaggerNetComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule(BASE_URL))
+                .build();
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
@@ -39,4 +37,9 @@ public class PopularMoviesApplication extends Application {
         }
         LeakCanary.install(this);
     }
+
+    public NetComponent getNetComponent() {
+        return mNetComponent;
+    }
+
 }

@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import de.aaronoe.cinematic.Data.MultiSearch.KnownFor;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.Genre;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.TvShowFull;
+import de.aaronoe.cinematic.model.MultiSearch.KnownFor;
+import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
+import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.Database.MoviesContract.MovieEntry;
 import de.aaronoe.cinematic.Database.MoviesContract.ShowEntry;
 import de.aaronoe.cinematic.Movies.MovieItem;

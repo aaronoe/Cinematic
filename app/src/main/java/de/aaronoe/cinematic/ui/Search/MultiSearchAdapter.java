@@ -14,7 +14,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.aaronoe.cinematic.Data.MultiSearch.SearchItem;
+import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.R;
 

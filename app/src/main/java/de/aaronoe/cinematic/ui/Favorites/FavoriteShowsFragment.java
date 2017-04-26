@@ -21,7 +21,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.aaronoe.cinematic.Data.TvShow.TvShow;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.Database.MoviesContract;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.R;

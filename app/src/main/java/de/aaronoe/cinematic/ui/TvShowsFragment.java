@@ -26,12 +26,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.Data.ApiClient;
-import de.aaronoe.cinematic.Data.ApiInterface;
-import de.aaronoe.cinematic.Data.EndlessRecyclerViewScrollListener;
-import de.aaronoe.cinematic.Data.TvShow.ShowsResponse;
-import de.aaronoe.cinematic.Data.TvShow.TvShow;
-import de.aaronoe.cinematic.Data.TvShow.TvShowAdapter;
+import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
+import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
+import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.R;
 import retrofit2.Call;
@@ -289,6 +289,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show_update), showTitle);
+
         getActivity().startActivity(intentToStartDetailActivity);
     }
 

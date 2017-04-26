@@ -15,7 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.aaronoe.cinematic.Data.ActorCredits.Cast;
+import de.aaronoe.cinematic.model.ActorCredits.Cast;
 import de.aaronoe.cinematic.DetailPage.DetailActivity;
 import de.aaronoe.cinematic.R;
 

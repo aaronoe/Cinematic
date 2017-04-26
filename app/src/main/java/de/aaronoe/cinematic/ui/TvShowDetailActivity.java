@@ -27,13 +27,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.Data.ApiClient;
-import de.aaronoe.cinematic.Data.ApiInterface;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.CreatedBy;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.Genre;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.Season;
-import de.aaronoe.cinematic.Data.TvShow.FullShow.TvShowFull;
-import de.aaronoe.cinematic.Data.TvShow.SeasonAdapter;
+import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
+import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
+import de.aaronoe.cinematic.model.TvShow.FullShow.Season;
+import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
+import de.aaronoe.cinematic.model.TvShow.SeasonAdapter;
 import de.aaronoe.cinematic.Database.MovieUpdateService;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.R;
@@ -150,6 +150,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
         // Backdrop
         String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
+
         Picasso.with(this)
                 .load(pictureUrl)
                 .placeholder(R.drawable.poster_show_loading)

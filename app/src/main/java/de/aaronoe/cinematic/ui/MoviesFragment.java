@@ -23,21 +23,24 @@ import com.github.clans.fab.FloatingActionMenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.Data.ApiClient;
-import de.aaronoe.cinematic.Data.ApiInterface;
-import de.aaronoe.cinematic.Data.EndlessRecyclerViewScrollListener;
-import de.aaronoe.cinematic.Data.MovieAdapter;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.DetailPage.DetailActivity;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.MovieResponse;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
+import de.aaronoe.cinematic.model.MovieAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class MoviesFragment extends Fragment
@@ -62,6 +65,9 @@ public class MoviesFragment extends Fragment
     private EndlessRecyclerViewScrollListener scrollListener;
     private int scrollPosition = 1;
 
+    @Inject SharedPreferences sharedPref;
+    @Inject Retrofit retrofit;
+
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
     @BindView(R.id.fab_action_top_rated) FloatingActionButton fabButtonTopRated;
@@ -78,12 +84,13 @@ public class MoviesFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
 
         ButterKnife.bind(this, rootView);
 
         // Get last state
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         mCurrentSelection = sharedPref.getString(getString(R.string.SAVE_SELECTION_KEY), SELECTION_POPULAR);
 
         gridLayout = new StaggeredGridLayoutManager
@@ -113,7 +120,9 @@ public class MoviesFragment extends Fragment
             restorePosition();
         }
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+        // TODO dagger injections
+        //apiService = ApiClient.getClient().create(ApiInterface.class);
+        apiService = retrofit.create(ApiInterface.class);
 
         if (movieItemList == null || movieItemList.size() == 0) {
             downloadMovieData();

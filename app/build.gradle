@@ -7,8 +7,8 @@ android {
         applicationId "de.aaronoe.cinematic"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -42,7 +42,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'recyclerview-v7'
     }
 
-
+    compile "com.google.dagger:dagger:2.9"
+    annotationProcessor "com.google.dagger:dagger-compiler:2.9"
+    provided 'javax.annotation:jsr250-api:1.0'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.florent37:materialtextfield:1.0.7'
     compile 'com.makeramen:roundedimageview:2.2.1'

@@ -5,7 +5,6 @@
 
     <item
         android:id="@+id/actionbar_search"
-        android:icon="@drawable/ic_search_white_24dp"
         android:actionLayout="@layout/custom_searchview"
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"
