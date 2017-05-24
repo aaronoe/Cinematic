@@ -24,19 +24,21 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.Database.MovieUpdateService;
+import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Season;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.SeasonAdapter;
-import de.aaronoe.cinematic.Database.MovieUpdateService;
-import de.aaronoe.cinematic.Database.Utilities;
-import de.aaronoe.cinematic.R;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -91,11 +93,12 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
     int movieId;
     String showName;
-    ApiInterface apiInterface;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
     Context mContext;
     SeasonAdapter seasonAdapter;
+
+    @Inject ApiInterface apiInterface;
 
 
     @Override
@@ -105,7 +108,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         mContext = this;
 
-        apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
 
         Intent startIntent = getIntent();
         if (startIntent != null) {

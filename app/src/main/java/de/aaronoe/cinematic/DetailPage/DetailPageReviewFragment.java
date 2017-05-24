@@ -11,15 +11,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.ReviewItem;
 import de.aaronoe.cinematic.Movies.ReviewResponse;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,7 +39,7 @@ public class DetailPageReviewFragment extends android.support.v4.app.Fragment {
     @BindView(R.id.video_pb_loading_indicator) ProgressBar mProgressBar;
     @BindView(R.id.tv_no_items_available) TextView mNotAvailableTextView;
 
-    ApiInterface apiService;
+    @Inject ApiInterface apiService;
     MovieItem mMovieItem;
     ReviewAdapter mReviewAdapter;
 
@@ -47,6 +49,9 @@ public class DetailPageReviewFragment extends android.support.v4.app.Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_detail_page_videos, container, false);
         ButterKnife.bind(this, rootView);
+
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+
         mMovieItem = getArguments().getParcelable("thisMovie");
 
         LinearLayoutManager layoutManager =
@@ -56,7 +61,6 @@ public class DetailPageReviewFragment extends android.support.v4.app.Fragment {
         mReviewAdapter = new ReviewAdapter(getContext());
         mRecyclerView.setAdapter(mReviewAdapter);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
         downloadReviewData();
         return rootView;
     }
@@ -72,6 +76,10 @@ public class DetailPageReviewFragment extends android.support.v4.app.Fragment {
         call.enqueue(new Callback<ReviewResponse>() {
             @Override
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
 
                 List<ReviewItem> videoItems = response.body().getResults();
 

@@ -40,7 +40,6 @@ import de.aaronoe.cinematic.model.MovieAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 
 public class MoviesFragment extends Fragment
@@ -55,7 +54,7 @@ public class MoviesFragment extends Fragment
     final String SELECTION_UPCOMING = "upcoming";
     String mCurrentSelection;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
-    ApiInterface apiService;
+
     List<MovieItem> movieItemList;
     StaggeredGridLayoutManager gridLayout;
     private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
@@ -66,8 +65,7 @@ public class MoviesFragment extends Fragment
     private int scrollPosition = 1;
 
     @Inject SharedPreferences sharedPref;
-    @Inject Retrofit retrofit;
-
+    @Inject ApiInterface apiService;
 
     @BindView(R.id.fab_menu) FloatingActionMenu fabMenu;
     @BindView(R.id.fab_action_top_rated) FloatingActionButton fabButtonTopRated;
@@ -120,10 +118,6 @@ public class MoviesFragment extends Fragment
             restorePosition();
         }
 
-        // TODO dagger injections
-        //apiService = ApiClient.getClient().create(ApiInterface.class);
-        apiService = retrofit.create(ApiInterface.class);
-
         if (movieItemList == null || movieItemList.size() == 0) {
             downloadMovieData();
             mRecyclerView.addOnScrollListener(scrollListener);
@@ -169,6 +163,11 @@ public class MoviesFragment extends Fragment
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
+
                 List<MovieItem> newMovies = response.body().getResults();
 
                 if (newMovies != null) {
@@ -234,12 +233,17 @@ public class MoviesFragment extends Fragment
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
+
                 movieItemList = response.body().getResults();
 
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
                 if (movieItemList != null) {
-                    showMovieView();
                     mMovieAdapter.setMovieData(movieItemList);
+                    showMovieView();
                 } else {
                     showErrorMessage();
                 }
@@ -280,6 +284,8 @@ public class MoviesFragment extends Fragment
 
         scrollListener.resetState();
         mRecyclerView.addOnScrollListener(scrollListener);
+
+        mRecyclerView.smoothScrollToPosition(0);
     }
 
 

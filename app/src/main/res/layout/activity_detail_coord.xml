@@ -45,8 +45,6 @@
             android:layout_gravity="center_horizontal"
             android:elevation="8dp"
             android:contentDescription="@string/movie_image_main"
-            app:border_width="2dp"
-            app:border_color="#FFF"
             app:layout_scrollFlags="scroll"
             android:visibility="visible"
             />
@@ -106,8 +104,5 @@
         app:layout_scrollFlags="scroll"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         />
-
-
-
 
 </android.support.design.widget.CoordinatorLayout>

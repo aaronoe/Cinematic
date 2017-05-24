@@ -19,24 +19,27 @@ import android.widget.ToggleButton;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
-import de.aaronoe.cinematic.model.Crew.Cast;
-import de.aaronoe.cinematic.model.Crew.Credits;
-import de.aaronoe.cinematic.model.Crew.CrewAdapter;
 import de.aaronoe.cinematic.Database.MovieUpdateService;
 import de.aaronoe.cinematic.Database.MoviesContract;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.Movies.MovieItem;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.Crew.Cast;
+import de.aaronoe.cinematic.model.Crew.Credits;
+import de.aaronoe.cinematic.model.Crew.CrewAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
+ *
  * Created by aaron on 21.02.17.
  */
 
@@ -58,7 +61,7 @@ public class DetailPageInfoFragment extends Fragment {
     @BindView(R.id.movie_detail_fragment)
     NestedScrollView movieDetailFragment;
 
-    ApiInterface apiService;
+    @Inject ApiInterface apiService;
     List<Cast> castList;
     CrewAdapter crewAdapter;
 
@@ -72,6 +75,8 @@ public class DetailPageInfoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.detailpage_info, container, false);
 
         ButterKnife.bind(this, rootView);
+
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
 
         mMovieItem = getArguments().getParcelable("thisMovie");
 
@@ -103,7 +108,6 @@ public class DetailPageInfoFragment extends Fragment {
         crewAdapter = new CrewAdapter(getActivity());
         mActorRecyclerView.setAdapter(crewAdapter);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
         downloadCredits(mMovieItem.getId());
 
         return rootView;
@@ -205,7 +209,9 @@ public class DetailPageInfoFragment extends Fragment {
             @Override
             public void onResponse(Call<Credits> call, Response<Credits> response) {
 
-                if (response.body() == null) return;
+                if (response == null || response.body() == null || response.body().getCast() == null) {
+                    return;
+                }
 
                 castList = response.body().getCast();
                 mActorRecyclerView.setVisibility(View.VISIBLE);

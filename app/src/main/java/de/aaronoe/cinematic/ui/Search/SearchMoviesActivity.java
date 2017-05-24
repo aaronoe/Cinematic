@@ -19,17 +19,19 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
-import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
-import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.DetailPage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.cinematic.DetailPage.DetailActivity;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
+import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
 import de.aaronoe.cinematic.ui.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,8 +45,9 @@ public class SearchMoviesActivity extends AppCompatActivity
     List<SearchItem> searchItemList;
     public MultiSearchAdapter mMultiSearchAdapter;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
-    ApiInterface apiService;
     StaggeredGridLayoutManager gridLayout;
+
+    @Inject ApiInterface apiService;
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "BUNDLE_RECYCLER_LAYOUT";
     private static final String BUNDLE_MOVIE_LIST_KEY = "BUNDLE_MOVIE_LIST_KEY";
@@ -66,6 +69,8 @@ public class SearchMoviesActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
+        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.search);
         }
@@ -77,9 +82,6 @@ public class SearchMoviesActivity extends AppCompatActivity
         //mRecyclerView.hasFixedSize(true);
         mMultiSearchAdapter = new MultiSearchAdapter(this, this);
         mRecyclerView.setAdapter(mMultiSearchAdapter);
-
-        apiService = ApiClient.getClient().create(ApiInterface.class);
-
     }
 
 
@@ -107,6 +109,11 @@ public class SearchMoviesActivity extends AppCompatActivity
         call.enqueue(new Callback<MultiSearchResponse>() {
             @Override
             public void onResponse(Call<MultiSearchResponse> call, Response<MultiSearchResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
+
                 searchItemList = response.body().getResults();
                 Log.d(TAG, "onResponse: Items: " + response.body().getTotalResults());
 

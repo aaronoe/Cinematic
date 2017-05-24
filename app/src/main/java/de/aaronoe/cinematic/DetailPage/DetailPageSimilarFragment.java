@@ -13,16 +13,18 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
-import de.aaronoe.cinematic.model.MovieAdapter;
 import de.aaronoe.cinematic.Database.Utilities;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.MovieResponse;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.MovieAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,7 +45,7 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
     ProgressBar mProgressBar;
     @BindView(R.id.tv_no_items_available) TextView mNotAvailableTextView;
 
-    ApiInterface apiService;
+    @Inject ApiInterface apiService;
     MovieItem mMovieItem;
     StaggeredGridLayoutManager gridLayout;
     public MovieAdapter mMovieAdapter;
@@ -54,6 +56,9 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
 
         View rootView = inflater.inflate(R.layout.fragment_detail_page_videos, container, false);
         ButterKnife.bind(this, rootView);
+
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+
         mMovieItem = getArguments().getParcelable("thisMovie");
 
         gridLayout = new StaggeredGridLayoutManager
@@ -63,8 +68,6 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
         mRecyclerView.setLayoutManager(gridLayout);
         mMovieAdapter = new MovieAdapter(this, getActivity());
         mRecyclerView.setAdapter(mMovieAdapter);
-
-        apiService = ApiClient.getClient().create(ApiInterface.class);
 
         downloadSimilarMovieData(mMovieItem.getId());
 
@@ -81,6 +84,11 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
+
                 movieItemList = response.body().getResults();
 
                 mProgressBar.setVisibility(View.INVISIBLE);

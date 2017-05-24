@@ -23,17 +23,19 @@ import com.github.clans.fab.FloatingActionMenu;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
-import de.aaronoe.cinematic.Database.Utilities;
-import de.aaronoe.cinematic.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,12 +48,14 @@ import retrofit2.Response;
 public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAdapterOnClickHandler {
 
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
-    ApiInterface apiService;
     List<TvShow> tvShowList;
     GridLayoutManager linearLayout;
     TvShowAdapter tvShowAdapter;
     private Parcelable mLayoutManagerSavedState;
     EndlessRecyclerViewScrollListener scrollListener;
+
+    @Inject SharedPreferences sharedPref;
+    @Inject ApiInterface apiService;
 
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "tvshows.recycler.layout";
@@ -85,12 +89,15 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.activity_shows_list, container, false);
 
         ButterKnife.bind(this, rootView);
 
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+
         // Get last state
-        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
         mCurrentSelection = sharedPref.getString(getString(R.string.pref_key_shows), SELECTION_POPULAR);
 
         initializeFabMenu();
@@ -118,7 +125,6 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
         rvMainMovieList.addOnScrollListener(scrollListener);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
         if (tvShowList == null || tvShowList.size() == 0) {
             downloadShowData(1);
         }
@@ -136,6 +142,11 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
             public void onResponse(Call<ShowsResponse> call, Response<ShowsResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getTvShows() == null) {
+                    return;
+                }
+
                 tvShowList = response.body().getTvShows();
 
                 pbLoadingIndicator.setVisibility(View.INVISIBLE);
@@ -165,6 +176,11 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
             public void onResponse(Call<ShowsResponse> call, Response<ShowsResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getTvShows() == null) {
+                    return;
+                }
+
                 List<TvShow> newShows = response.body().getTvShows();
 
                 if (newShows != null) {
@@ -190,6 +206,8 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         tvErrorMessageDisplay.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
         rvMainMovieList.setVisibility(View.VISIBLE);
+
+        rvMainMovieList.smoothScrollToPosition(0);
     }
 
     private void showErrorMessage() {

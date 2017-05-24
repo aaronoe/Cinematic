@@ -16,17 +16,19 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ActorCredits.Actor;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
-import de.aaronoe.cinematic.model.MovieAdapter;
 import de.aaronoe.cinematic.DetailPage.DetailActivity;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.MovieResponse;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ActorCredits.Actor;
+import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.MovieAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +39,10 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
     MovieAdapter movieAdapter;
     Actor thisActor;
     int actorId;
-    ApiInterface apiService;
     List<MovieItem> movieItemList;
     private static final String SORT_ORDER = "popularity.desc";
+
+    @Inject ApiInterface apiService;
 
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     @BindView(R.id.actor_screen_profile)
@@ -65,6 +68,8 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
 
         ButterKnife.bind(this);
 
+        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+
         Intent intentThatStartedThisActivity = getIntent();
 
         if (intentThatStartedThisActivity != null) {
@@ -73,7 +78,6 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
 
             }
         }
-        apiService = ApiClient.getClient().create(ApiInterface.class);
 
         downloadActorData(actorId);
 
@@ -97,6 +101,11 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
         movieResponseCall.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
+
                 movieItemList = response.body().getResults();
 
                 if (movieItemList != null) {

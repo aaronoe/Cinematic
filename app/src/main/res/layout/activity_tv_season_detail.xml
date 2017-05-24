@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.v4.widget.NestedScrollView
+    android:id="@+id/season_detail_scrollview"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -7,9 +8,8 @@
 
 <LinearLayout
     android:orientation="vertical"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="de.aaronoe.cinematic.ui.TvSeasonDetailActivity">
 
     <include layout="@layout/season_detail_header" />
@@ -45,10 +45,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/single_season_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
 
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

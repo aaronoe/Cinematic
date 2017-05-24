@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import de.aaronoe.cinematic.model.ApiInterface;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -34,12 +35,12 @@ public class NetModule {
 
     @Provides
     @Singleton
-    Retrofit provideRetrofit() {
+    ApiInterface provideApiInterface() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(mBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit;
+        return retrofit.create(ApiInterface.class);
     }
 
 }

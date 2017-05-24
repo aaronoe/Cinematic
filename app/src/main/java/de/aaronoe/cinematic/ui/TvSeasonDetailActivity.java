@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,15 +14,17 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.EpisodeAdapter;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
-import de.aaronoe.cinematic.Database.Utilities;
-import de.aaronoe.cinematic.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,10 +38,10 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
     FullSeason mSeason;
     int selectedSeason;
     int showId;
-    ApiInterface apiInterface;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     EpisodeAdapter episodeAdapter;
 
+    @Inject ApiInterface apiInterface;
 
     @BindView(R.id.tv_detail_backdrop)
     ImageView tvDetailBackdrop;
@@ -69,6 +72,8 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_season_detail);
         ButterKnife.bind(this);
+
+        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
 
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity != null) {
@@ -104,7 +109,6 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
                 .into(tvDetailBackdrop);
 
 
-        apiInterface = ApiClient.getClient().create(ApiInterface.class);
         downloadSeasonDetails();
     }
 
@@ -113,9 +117,15 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
         Call<FullSeason> call = apiInterface.getTvSeasonDetails(showId, selectedSeason, API_KEY);
 
+
         call.enqueue(new Callback<FullSeason>() {
             @Override
             public void onResponse(Call<FullSeason> call, Response<FullSeason> response) {
+
+                if (response == null || response.body() == null) {
+                    return;
+                }
+
                 mSeason = response.body();
                 populateViewsWithData();
             }
@@ -149,12 +159,13 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
 
         LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         singleSeasonRecyclerView.setLayoutManager(linearLayoutManager);
         episodeAdapter = new EpisodeAdapter(this);
         singleSeasonRecyclerView.setAdapter(episodeAdapter);
         episodeAdapter.setEpisodeList(mSeason.getEpisodes());
-
+        Log.e(TAG, "populateViewsWithData: " + mSeason.getEpisodes().size() );
+        singleSeasonRecyclerView.setNestedScrollingEnabled(false);
     }
 
 }

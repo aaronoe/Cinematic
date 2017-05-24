@@ -13,15 +13,17 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
-import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.Movies.MovieItem;
 import de.aaronoe.cinematic.Movies.VideoItem;
 import de.aaronoe.cinematic.Movies.VideoResponse;
+import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.ApiInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,14 +38,18 @@ public class DetailPageVideosFragment extends Fragment {
     @BindView(R.id.video_tv_error_message_display) TextView mErrorMessageTextView;
     @BindView(R.id.video_pb_loading_indicator) ProgressBar mProgressBar;
     VideoAdapter mVideoAdapter;
-    ApiInterface apiService;
     MovieItem mMovieItem;
+
+    @Inject ApiInterface apiService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_detail_page_videos, container, false);
         ButterKnife.bind(this, rootView);
+
+        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+
         mMovieItem = getArguments().getParcelable("thisMovie");
 
         LinearLayoutManager layoutManager =
@@ -53,7 +59,6 @@ public class DetailPageVideosFragment extends Fragment {
         mVideoAdapter = new VideoAdapter(getActivity());
         mRecyclerView.setAdapter(mVideoAdapter);
 
-        apiService = ApiClient.getClient().create(ApiInterface.class);
         downloadVideoData();
         return rootView;
     }
@@ -70,7 +75,9 @@ public class DetailPageVideosFragment extends Fragment {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
 
-                if (response.body() == null) return;
+                if (response == null || response.body() == null || response.body().getResults() == null) {
+                    return;
+                }
 
                 List<VideoItem> videoItems = response.body().getResults();
 

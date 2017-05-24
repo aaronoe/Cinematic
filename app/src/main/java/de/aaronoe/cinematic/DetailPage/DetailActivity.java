@@ -15,14 +15,16 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.model.ApiClient;
+import de.aaronoe.cinematic.Movies.MovieItem;
+import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ApiInterface;
 import de.aaronoe.cinematic.model.FullMovie.FullMovie;
-import de.aaronoe.cinematic.Movies.MovieItem;
-import de.aaronoe.cinematic.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,8 +53,8 @@ public class DetailActivity extends AppCompatActivity
     MovieItem mMovieItem;
     FullMovie mFullMovie;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
-    ApiInterface apiService;
     int id;
+    @Inject ApiInterface apiService;
 
 
     @Override
@@ -61,7 +63,8 @@ public class DetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_detail_coord);
 
         ButterKnife.bind(this);
-        apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         mMaxScrollSize = mAppBarLayout.getTotalScrollRange();
@@ -107,6 +110,11 @@ public class DetailActivity extends AppCompatActivity
         call.enqueue(new Callback<FullMovie>() {
             @Override
             public void onResponse(Call<FullMovie> call, Response<FullMovie> response) {
+
+                if (response == null || response.body() == null) {
+                    return;
+                }
+
                 mFullMovie = response.body();
 
                 if (mMovieItem == null) {
