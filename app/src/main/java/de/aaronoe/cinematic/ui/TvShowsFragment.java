@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.PopularMoviesApplication;
 import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ApiInterface;

@@ -15,8 +15,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.aaronoe.cinematic.Database.Utilities;
-import de.aaronoe.cinematic.Movies.MovieItem;
+import de.aaronoe.cinematic.database.Utilities;
+import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.R;
 
 /**

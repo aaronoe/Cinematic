@@ -2,7 +2,7 @@ package de.aaronoe.cinematic;
 
 import org.junit.Test;
 
-import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.database.Utilities;
 
 import static org.junit.Assert.*;
 

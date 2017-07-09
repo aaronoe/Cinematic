@@ -16,7 +16,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="de.aaronoe.cinematic"
-            android:targetClass="de.aaronoe.cinematic.ui.FavoritesActivity" />
+            android:targetClass="de.aaronoe.cinematic.ui.favorites.FavoritesActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->
@@ -38,7 +38,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="de.aaronoe.cinematic"
-            android:targetClass="de.aaronoe.cinematic.ui.Search.SearchMoviesActivity" />
+            android:targetClass="de.aaronoe.cinematic.ui.search.SearchMoviesActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->

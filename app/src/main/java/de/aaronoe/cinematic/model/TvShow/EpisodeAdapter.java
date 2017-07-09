@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.Episode;
-import de.aaronoe.cinematic.Database.Utilities;
+import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.R;
 
 /**

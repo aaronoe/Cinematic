@@ -18,10 +18,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.ui.Search.SearchMoviesActivity;
+import de.aaronoe.cinematic.ui.favorites.FavoritesActivity;
+import de.aaronoe.cinematic.ui.login.LoginActivity;
+import de.aaronoe.cinematic.ui.search.SearchMoviesActivity;
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -106,8 +111,19 @@ public class NavigationActivity extends AppCompatActivity {
                         startActivity(new Intent(NavigationActivity.this, SearchMoviesActivity.class));
                         return true;
 
+                    case R.id.drawer_menu_account:
+                        startActivity(new Intent(NavigationActivity.this, LoginActivity.class));
+                        return true;
+
                     case R.id.drawer_menu_info:
-                        startActivity(new Intent(NavigationActivity.this, AboutActivity.class));
+                        new LibsBuilder()
+                                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                                .withActivityTitle("About & Licenses")
+                                .withAboutAppName(getString(R.string.app_name))
+                                .withAboutIconShown(true)
+                                .withAboutDescription("<br /> Developer: <br /> <h1>Aaron Oertel</h1> Data from the TMDb API <br /><br /> All copyrights belong to their respective owners <br /><br /> External libraries used:")
+                                .withAboutVersionShown(true)
+                                .start(NavigationActivity.this);
                         return true;
                     default:
                         Toast.makeText(NavigationActivity.this, "Something went terribly wrong", Toast.LENGTH_SHORT).show();

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.aaronoe.cinematic.DetailPage.DetailPageVideosFragment">
+    tools:context=".ui.detailpage.DetailPageVideosFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_videos"

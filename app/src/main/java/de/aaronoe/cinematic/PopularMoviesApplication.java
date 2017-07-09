@@ -17,6 +17,7 @@ import de.aaronoe.cinematic.modules.NetModule;
 public class PopularMoviesApplication extends Application {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
+    public static final String TMDB_REDIRECT_URI = "cinematic://tmdb_auth_callback";
 
     private NetComponent mNetComponent;
 

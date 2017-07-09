@@ -8,9 +8,11 @@ import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
-import de.aaronoe.cinematic.Movies.MovieResponse;
-import de.aaronoe.cinematic.Movies.ReviewResponse;
-import de.aaronoe.cinematic.Movies.VideoResponse;
+import de.aaronoe.cinematic.model.auth.RequestToken;
+import de.aaronoe.cinematic.model.auth.SessionSecret;
+import de.aaronoe.cinematic.movies.MovieResponse;
+import de.aaronoe.cinematic.movies.ReviewResponse;
+import de.aaronoe.cinematic.movies.VideoResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -82,5 +84,12 @@ public interface ApiInterface {
     Call<MovieResponse> discoverMoviesForActor(@Query("api_key") String apiKey,
                                                @Query("sort_by") String filter,
                                                @Query("with_cast") String actorId);
+
+    @GET("authentication/token/new")
+    Call<RequestToken> getRequestToken(@Query("api_key") String api_key);
+
+    @GET("authentication/session/new")
+    Call<SessionSecret> getSessionSecret(@Query("api_key") String api_key,
+                                         @Query("request_token") String requestToken);
 
 }
