@@ -21,9 +21,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.movies.MovieItem;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.FullMovie.FullMovie;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,7 +64,7 @@ public class DetailActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
         mAppBarLayout.addOnOffsetChangedListener(this);
         mMaxScrollSize = mAppBarLayout.getTotalScrollRange();

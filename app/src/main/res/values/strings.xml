@@ -118,6 +118,8 @@
     <string name="search_hint">Search for movies, shows and actors</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="my_profile">My Profile</string>
 
 
 </resources>

@@ -32,9 +32,9 @@ import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.movies.MovieResponse;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.MovieAdapter;
 import retrofit2.Call;
@@ -82,7 +82,7 @@ public class MoviesFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getActivity().getApplication()).getNetComponent().inject(this);
 
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
 

@@ -24,10 +24,10 @@ import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.movies.MovieResponse;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ActorCredits.Actor;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.MovieAdapter;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -68,7 +68,7 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
 
         ButterKnife.bind(this);
 
-        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
         Intent intentThatStartedThisActivity = getIntent();
 

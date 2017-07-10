@@ -3,6 +3,7 @@ package de.aaronoe.cinematic.modules;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import de.aaronoe.cinematic.auth.AuthManager;
 import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.ui.detailpage.DetailPageInfoFragment;
@@ -10,6 +11,7 @@ import de.aaronoe.cinematic.ui.detailpage.DetailPageReviewFragment;
 import de.aaronoe.cinematic.ui.detailpage.DetailPageSimilarFragment;
 import de.aaronoe.cinematic.ui.detailpage.DetailPageVideosFragment;
 import de.aaronoe.cinematic.ui.MoviesFragment;
+import de.aaronoe.cinematic.ui.login.LoginActivity;
 import de.aaronoe.cinematic.ui.search.SearchMoviesActivity;
 import de.aaronoe.cinematic.ui.TvSeasonDetailActivity;
 import de.aaronoe.cinematic.ui.TvShowDetailActivity;
@@ -37,5 +39,8 @@ public interface NetComponent {
     void inject(DetailPageReviewFragment activity);
     void inject(DetailPageSimilarFragment activity);
     void inject(DetailPageVideosFragment activity);
+
+    void inject(AuthManager authManager);
+    void inject(LoginActivity loginActivity);
 
 }

@@ -1,4 +1,4 @@
-package de.aaronoe.cinematic.model;
+package de.aaronoe.cinematic.model.remote;
 
 import de.aaronoe.cinematic.model.ActorCredits.Actor;
 import de.aaronoe.cinematic.model.ActorCredits.ActorCredits;
@@ -9,7 +9,7 @@ import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.auth.RequestToken;
-import de.aaronoe.cinematic.model.auth.SessionSecret;
+import de.aaronoe.cinematic.model.auth.AccessToken;
 import de.aaronoe.cinematic.movies.MovieResponse;
 import de.aaronoe.cinematic.movies.ReviewResponse;
 import de.aaronoe.cinematic.movies.VideoResponse;
@@ -85,11 +85,5 @@ public interface ApiInterface {
                                                @Query("sort_by") String filter,
                                                @Query("with_cast") String actorId);
 
-    @GET("authentication/token/new")
-    Call<RequestToken> getRequestToken(@Query("api_key") String api_key);
-
-    @GET("authentication/session/new")
-    Call<SessionSecret> getSessionSecret(@Query("api_key") String api_key,
-                                         @Query("request_token") String requestToken);
 
 }

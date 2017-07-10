@@ -31,9 +31,9 @@ import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.database.MovieUpdateService;
 import de.aaronoe.cinematic.database.Utilities;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Season;
@@ -108,7 +108,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         mContext = this;
 
-        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
         Intent startIntent = getIntent();
         if (startIntent != null) {

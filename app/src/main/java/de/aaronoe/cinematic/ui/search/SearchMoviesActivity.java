@@ -27,9 +27,9 @@ import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
 import de.aaronoe.cinematic.ui.TvShowDetailActivity;
@@ -69,7 +69,7 @@ public class SearchMoviesActivity extends AppCompatActivity
 
         ButterKnife.bind(this);
 
-        ((PopularMoviesApplication) getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.search);

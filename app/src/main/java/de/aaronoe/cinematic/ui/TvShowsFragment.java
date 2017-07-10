@@ -29,9 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.database.Utilities;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
@@ -94,7 +94,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
         ButterKnife.bind(this, rootView);
 
-        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getActivity().getApplication()).getNetComponent().inject(this);
 
         // Get last state
 

@@ -21,9 +21,9 @@ import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.movies.VideoItem;
 import de.aaronoe.cinematic.movies.VideoResponse;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,7 +48,7 @@ public class DetailPageVideosFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_detail_page_videos, container, false);
         ButterKnife.bind(this, rootView);
 
-        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getActivity().getApplication()).getNetComponent().inject(this);
 
         mMovieItem = getArguments().getParcelable("thisMovie");
 

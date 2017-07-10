@@ -28,9 +28,9 @@ import de.aaronoe.cinematic.database.MovieUpdateService;
 import de.aaronoe.cinematic.database.MoviesContract;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.movies.MovieItem;
-import de.aaronoe.cinematic.PopularMoviesApplication;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.ApiInterface;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.Crew.Cast;
 import de.aaronoe.cinematic.model.Crew.Credits;
 import de.aaronoe.cinematic.model.Crew.CrewAdapter;
@@ -76,7 +76,7 @@ public class DetailPageInfoFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        ((PopularMoviesApplication) getActivity().getApplication()).getNetComponent().inject(this);
+        ((CinematicApp) getActivity().getApplication()).getNetComponent().inject(this);
 
         mMovieItem = getArguments().getParcelable("thisMovie");
 
