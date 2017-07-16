@@ -3,6 +3,8 @@ package de.aaronoe.cinematic.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ import de.aaronoe.cinematic.database.MovieUpdateService;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
@@ -91,10 +95,11 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @BindView(R.id.show_detail_container)
     ScrollView showDetailContainer;
 
-    int movieId;
+    int showId;
     String showName;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
+    TvShow enterShow;
     Context mContext;
     SeasonAdapter seasonAdapter;
 
@@ -113,7 +118,8 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         Intent startIntent = getIntent();
         if (startIntent != null) {
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show))) {
-                movieId = startIntent.getIntExtra(getString(R.string.intent_key_tv_show), -1);
+                showId = startIntent.getIntExtra(getString(R.string.intent_key_tv_show), -1);
+                downloadShowDetails();
             }
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show_update))) {
                 showName = startIntent.getStringExtra(getString(R.string.intent_key_tv_show_update));
@@ -121,15 +127,61 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                     getSupportActionBar().setTitle(showName);
                 }
             }
+            if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
+                enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
+                initWithShow();
+            }
         }
+
+    }
+
+    private void initWithShow() {
+        // Backdrop
+        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.getBackdropPath();
+
+        Picasso.with(this)
+                .load(pictureUrl)
+                .placeholder(R.drawable.poster_show_loading)
+                .error(R.drawable.poster_show_not_available)
+                .into(tvDetailBackdrop);
+        supportPostponeEnterTransition();
+        String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
+
+        //TODO : Figure animations out
+        Picasso.with(this)
+                .load(posterUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                        tvDetailProfile.setImageBitmap(bitmap);
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable drawable) {
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable drawable) {
+
+                    }
+                });
+
+        tvDetailTitle.setText(enterShow.getName());
+        tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));
+
         downloadShowDetails();
 
     }
 
 
     public void downloadShowDetails() {
+        Log.d(TAG, "downloadShowDetails() called");
 
-        Call<TvShowFull> call = apiInterface.getTvShowDetails(movieId, API_KEY);
+        Call<TvShowFull> call = apiInterface.getTvShowDetails(showId == 0 ? enterShow.getId() : showId, API_KEY);
 
         call.enqueue(new Callback<TvShowFull>() {
             @Override
@@ -151,24 +203,31 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
     private void populateViewsWithData() {
 
-        // Backdrop
-        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
+        if (enterShow == null) {
 
-        Picasso.with(this)
-                .load(pictureUrl)
-                .placeholder(R.drawable.poster_show_loading)
-                .error(R.drawable.poster_show_not_available)
-                .into(tvDetailBackdrop);
+            // Backdrop
+            String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
 
-        String posterUrl = "http://image.tmdb.org/t/p/w185/" + thisShow.getPosterPath();
-        Picasso.with(this)
-                .load(posterUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
-                .into(tvDetailProfile);
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .placeholder(R.drawable.poster_show_loading)
+                    .error(R.drawable.poster_show_not_available)
+                    .into(tvDetailBackdrop);
 
-        tvDetailTitle.setText(thisShow.getName());
-        tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
+            String posterUrl = "http://image.tmdb.org/t/p/w185/" + thisShow.getPosterPath();
+            Picasso.with(this)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(tvDetailProfile);
+
+            tvDetailTitle.setText(thisShow.getName());
+            tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
+
+        }
+
+        Log.e(TAG, "populateViewsWithData() called");
+
         int numberOfSeasons = thisShow.getNumberOfSeasons();
         tvDetailAgeRating.setText(getResources().
                 getQuantityString(R.plurals.no_of_seasons, numberOfSeasons, numberOfSeasons));
@@ -351,7 +410,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 toggleFavoriteShowButton.setChecked(false);
                 //Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
 
-                MovieUpdateService.deleteTask(mContext, Utilities.buildShowUri(thisShow.getId()));
+                MovieUpdateService.deleteItem(mContext, Utilities.buildShowUri(thisShow.getId()));
             }
 
 }

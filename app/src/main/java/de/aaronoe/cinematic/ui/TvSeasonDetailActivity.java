@@ -13,6 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.Orientation;
+import com.yarolegovich.discretescrollview.transform.Pivot;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import javax.inject.Inject;
 
@@ -60,7 +64,7 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
     @BindView(R.id.season_overview_tv)
     TextView seasonOverviewTv;
     @BindView(R.id.single_season_recycler_view)
-    RecyclerView singleSeasonRecyclerView;
+    DiscreteScrollView singleSeasonRv;
     @BindView(R.id.episode_overview_textview)
     TextView overViewTV;
     @BindView(R.id.episode_overview_container)
@@ -158,14 +162,18 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
         seasonOverviewTv.setText(mSeason.getOverview());
 
 
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        singleSeasonRecyclerView.setLayoutManager(linearLayoutManager);
         episodeAdapter = new EpisodeAdapter(this);
-        singleSeasonRecyclerView.setAdapter(episodeAdapter);
+        singleSeasonRv.setAdapter(episodeAdapter);
+
+        singleSeasonRv.setItemTransformer(new ScaleTransformer.Builder()
+                .setMinScale(0.75f)
+                .build());
+
+        singleSeasonRv.setOrientation(Orientation.HORIZONTAL);
+
+
         episodeAdapter.setEpisodeList(mSeason.getEpisodes());
         Log.e(TAG, "populateViewsWithData: " + mSeason.getEpisodes().size() );
-        singleSeasonRecyclerView.setNestedScrollingEnabled(false);
     }
 
 }

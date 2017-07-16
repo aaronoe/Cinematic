@@ -192,7 +192,7 @@ public class DetailPageInfoFragment extends Fragment {
         Uri deleteUri = MoviesContract.MovieEntry.CONTENT_URI.buildUpon().
                 appendPath(Integer.toString(movieId)).build();
 
-        MovieUpdateService.deleteTask(getContext(), deleteUri);
+        MovieUpdateService.deleteItem(getContext(), deleteUri);
     }
 
 

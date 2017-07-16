@@ -38,7 +38,7 @@ public class MovieUpdateService extends IntentService {
         context.startService(intent);
     }
 
-    public static void deleteTask(Context context, Uri uri) {
+    public static void deleteItem(Context context, Uri uri) {
         Intent intent = new Intent(context, MovieUpdateService.class);
         intent.setAction(ACTION_DELETE);
         intent.setData(uri);

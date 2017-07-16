@@ -120,6 +120,8 @@
     <string name="register">Register</string>
     <string name="logout">Logout</string>
     <string name="my_profile">My Profile</string>
+    <string name="INTENT_KEY_TV_SHOW_ITEM">INTENT_KEY_TV_SHOW_ITEM</string>
+    <string name="transition_shared_key">LIST_ITEM_SHARED_ELEMENT</string>
 
 
 </resources>
