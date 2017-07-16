@@ -8,8 +8,9 @@ import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
-import de.aaronoe.cinematic.model.auth.RequestToken;
-import de.aaronoe.cinematic.model.auth.AccessToken;
+import de.aaronoe.cinematic.model.oldAuth.RequestTokenOld;
+import de.aaronoe.cinematic.model.oldAuth.SessionId;
+import de.aaronoe.cinematic.model.user.User;
 import de.aaronoe.cinematic.movies.MovieResponse;
 import de.aaronoe.cinematic.movies.ReviewResponse;
 import de.aaronoe.cinematic.movies.VideoResponse;
@@ -85,5 +86,15 @@ public interface ApiInterface {
                                                @Query("sort_by") String filter,
                                                @Query("with_cast") String actorId);
 
+    @GET("authentication/token/new")
+    Call<RequestTokenOld> getRequestToken(@Query("api_key") String apiKey);
+
+    @GET("authentication/session/new")
+    Call<SessionId> getSessionId(@Query("api_key") String apiKey,
+                                 @Query("request_token") String requestToken);
+
+    @GET("account")
+    Call<User> getUserInfo(@Query("api_key") String apiKey,
+                           @Query("session_id") String sessionId);
 
 }

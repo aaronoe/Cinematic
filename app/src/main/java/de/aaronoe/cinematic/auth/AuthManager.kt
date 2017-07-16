@@ -4,15 +4,21 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import de.aaronoe.cinematic.CinematicApp
+import de.aaronoe.cinematic.model.remote.ApiInterface
+import de.aaronoe.cinematic.model.user.User
+import javax.inject.Inject
 
 /**
  * Created by private on 7/9/17.
  *
  */
-class AuthManager(application : Application) {
+public class AuthManager(application : Application) {
+
+    @Inject
+    lateinit var apiService : ApiInterface
 
     var mSharedPreferences : SharedPreferences
-    var mAccessToken: String
+    var sessionId: String
     var mUsername : String
     var mName : String
     var mUserId : Int
@@ -31,7 +37,7 @@ class AuthManager(application : Application) {
 
     init {
         mSharedPreferences = application.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-        mAccessToken = mSharedPreferences.getString(KEY_ACCESS_TOKEN, NOT_SET)
+        sessionId = mSharedPreferences.getString(KEY_ACCESS_TOKEN, NOT_SET)
         mUsername = mSharedPreferences.getString(KEY_USERNAME, NOT_SET)
         mName = mSharedPreferences.getString(KEY_NAME, NOT_SET)
         mUserId = mSharedPreferences.getInt(KEY_USER_ID, ID_NOT_SET)
@@ -48,11 +54,27 @@ class AuthManager(application : Application) {
                 .putBoolean(KEY_LOGGED_IN, false)
                 .apply()
 
-        mAccessToken = NOT_SET
+        sessionId = NOT_SET
         mUsername = NOT_SET
         mName = NOT_SET
         mUserId = ID_NOT_SET
         loggedIn = false
+    }
+
+    fun login(sessionId: String, user: User) {
+        loggedIn = true
+        mUserId = user.id
+        mName = user.name
+        mUsername = user.username
+        this.sessionId = sessionId
+
+        mSharedPreferences.edit()
+                .putString(KEY_ACCESS_TOKEN, sessionId)
+                .putString(KEY_USERNAME, mUsername)
+                .putString(KEY_NAME, mName)
+                .putInt(KEY_USER_ID, mUserId)
+                .putBoolean(KEY_LOGGED_IN, true)
+                .apply()
     }
 
 }

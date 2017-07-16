@@ -2,24 +2,26 @@ package de.aaronoe.cinematic.ui.login
 
 import android.content.Intent
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import butterknife.ButterKnife
 import de.aaronoe.cinematic.CinematicApp
-
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.auth.AuthManager
 import de.aaronoe.cinematic.model.remote.ApiInterface
-import de.aaronoe.cinematic.model.remote.UserApi
+import de.aaronoe.cinematic.ui.NavigationActivity
 import de.aaronoe.cinematic.util.DisplayUtils
-import de.aaronoe.seek.util.bindView
+import de.aaronoe.cinematic.util.bindView
+import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity(), LoginContract.View {
@@ -32,7 +34,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     lateinit var authManager : AuthManager
     @Inject
-    lateinit var apiService : UserApi
+    lateinit var apiService : ApiInterface
     lateinit var presenter : LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,8 +54,18 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         if (authManager.loggedIn) {
             loginButton.text = getString(R.string.logout)
             registerButton.text = getString(R.string.my_profile)
+
+            loginButton.setOnClickListener {
+                authManager.logout()
+                finishLogin()
+            }
+
+            registerButton.setOnClickListener { toast("Coming soon") }
+
+        } else {
+            loginButton.setOnClickListener { presenter.getRequestToken() }
+            registerButton.visibility = View.INVISIBLE
         }
-        loginButton.setOnClickListener { presenter.getRequestToken() }
     }
 
     override fun showMessage(message: String) {
@@ -63,7 +75,6 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
         (snackbar.view.findViewById(android.support.design.R.id.snackbar_text) as TextView).setTextColor(Color.WHITE)
         snackbar.show()
     }
-
 
 
     public override fun onNewIntent(intent: Intent?) {
@@ -78,6 +89,13 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
             presenter.getAccessToken()
 
         }
+    }
+
+    override fun finishLogin() {
+        val intent = Intent(this, NavigationActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        finish()
+        startActivity(intent)
     }
 
 }

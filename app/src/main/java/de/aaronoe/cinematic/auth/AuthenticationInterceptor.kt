@@ -22,7 +22,7 @@ class AuthenticationInterceptor : Interceptor {
             // Private
             request = chain.request()
                     .newBuilder()
-                    .addHeader("Authorization", "Bearer " + CinematicApp.getInstance().mAuthManager.mAccessToken)
+                    .addHeader("Authorization", "Bearer " + CinematicApp.getInstance().mAuthManager.sessionId)
                     .addHeader("Content-Type" ,"application/json;charset=utf-8")
                     .build()
         } else {

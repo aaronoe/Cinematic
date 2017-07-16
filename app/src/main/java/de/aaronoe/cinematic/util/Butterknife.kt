@@ -1,4 +1,4 @@
-package de.aaronoe.seek.util
+package de.aaronoe.cinematic.util
 
 import android.app.Activity
 import android.app.Dialog
