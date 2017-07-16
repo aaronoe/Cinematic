@@ -8,6 +8,7 @@ public class LoginContract {
 
     interface View {
         fun showMessage(message : String)
+        fun finishLogin()
     }
 
     interface Presenter {

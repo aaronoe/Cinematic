@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import de.aaronoe.cinematic.BuildConfig
 import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.model.remote.ApiInterface
 import de.aaronoe.cinematic.model.oldAuth.RequestTokenOld
 import de.aaronoe.cinematic.model.oldAuth.SessionId
+import de.aaronoe.cinematic.model.user.User
 import org.jetbrains.anko.indeterminateProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
@@ -77,6 +79,7 @@ class LoginPresenter(val context: Context,
 
                 val sessionId = response.body()
                 Log.e("Login - Access Token: ", sessionId.sessionId)
+                getUserInfo(sessionId.sessionId)
 
             }
 
@@ -87,4 +90,23 @@ class LoginPresenter(val context: Context,
         })
 
     }
+
+    private fun getUserInfo(sessionId: String) {
+
+        apiService.getUserInfo(CinematicApp.TMDB_API_KEY, sessionId).enqueue(object : Callback<User> {
+            override fun onResponse(call: Call<User>?, response: Response<User>?) {
+                if (response == null || response.body() == null) {
+                    view.showMessage("Could not get your profile")
+                    return
+                }
+                CinematicApp.getInstance().mAuthManager.login(sessionId, response.body())
+                Toast.makeText(CinematicApp.getInstance(), "Welcome ${response.body().username}", Toast.LENGTH_SHORT).show()
+                view.finishLogin()
+            }
+
+            override fun onFailure(call: Call<User>?, throwable: Throwable?) {
+            }
+        })
+    }
+
 }

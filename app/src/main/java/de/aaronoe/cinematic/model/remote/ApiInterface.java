@@ -10,6 +10,7 @@ import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.oldAuth.RequestTokenOld;
 import de.aaronoe.cinematic.model.oldAuth.SessionId;
+import de.aaronoe.cinematic.model.user.User;
 import de.aaronoe.cinematic.movies.MovieResponse;
 import de.aaronoe.cinematic.movies.ReviewResponse;
 import de.aaronoe.cinematic.movies.VideoResponse;
@@ -91,5 +92,9 @@ public interface ApiInterface {
     @GET("authentication/session/new")
     Call<SessionId> getSessionId(@Query("api_key") String apiKey,
                                  @Query("request_token") String requestToken);
+
+    @GET("account")
+    Call<User> getUserInfo(@Query("api_key") String apiKey,
+                           @Query("session_id") String sessionId);
 
 }
