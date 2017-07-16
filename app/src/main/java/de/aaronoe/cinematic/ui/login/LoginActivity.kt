@@ -2,10 +2,10 @@ package de.aaronoe.cinematic.ui.login
 
 import android.content.Intent
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.widget.Button
@@ -13,13 +13,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import butterknife.ButterKnife
 import de.aaronoe.cinematic.CinematicApp
-
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.auth.AuthManager
 import de.aaronoe.cinematic.model.remote.ApiInterface
-import de.aaronoe.cinematic.model.remote.UserApi
 import de.aaronoe.cinematic.util.DisplayUtils
-import de.aaronoe.seek.util.bindView
+import de.aaronoe.cinematic.util.bindView
 import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity(), LoginContract.View {
@@ -32,7 +30,7 @@ class LoginActivity : AppCompatActivity(), LoginContract.View {
 
     lateinit var authManager : AuthManager
     @Inject
-    lateinit var apiService : UserApi
+    lateinit var apiService : ApiInterface
     lateinit var presenter : LoginContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {

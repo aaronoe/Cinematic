@@ -9,7 +9,7 @@ import de.aaronoe.cinematic.CinematicApp
  * Created by private on 7/9/17.
  *
  */
-class AuthManager(application : Application) {
+public class AuthManager(application : Application) {
 
     var mSharedPreferences : SharedPreferences
     var mAccessToken: String
