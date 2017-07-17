@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -94,6 +95,8 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     ToggleButton toggleFavoriteShowButton;
     @BindView(R.id.show_detail_container)
     ScrollView showDetailContainer;
+    @BindView(R.id.crew_meta_data_container)
+    RecyclerView crewMetaContainer;
 
     int showId;
     String showName;
@@ -139,23 +142,16 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         // Backdrop
         String pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.getBackdropPath();
 
+        supportPostponeEnterTransition();
+
         Picasso.with(this)
                 .load(pictureUrl)
                 .placeholder(R.drawable.poster_show_loading)
                 .error(R.drawable.poster_show_not_available)
-                .into(tvDetailBackdrop);
-        supportPostponeEnterTransition();
-        String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
-
-        //TODO : Figure animations out
-        Picasso.with(this)
-                .load(posterUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                        tvDetailProfile.setImageBitmap(bitmap);
+                        tvDetailBackdrop.setImageBitmap(bitmap);
                         supportStartPostponedEnterTransition();
                     }
 
@@ -170,8 +166,18 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                     }
                 });
 
+
+        String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
+
+        Picasso.with(this)
+                .load(posterUrl)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .into(tvDetailProfile);
+
         tvDetailTitle.setText(enterShow.getName());
         tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));
+        tvDetailOverview.setText(enterShow.getOverview());
+        tvDetailAgeRating.setText(enterShow.getVoteAverage().toString());
 
         downloadShowDetails();
 
@@ -223,15 +229,13 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
             tvDetailTitle.setText(thisShow.getName());
             tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
+            tvDetailOverview.setText(thisShow.getOverview());
+            tvDetailAgeRating.setText(enterShow.getVoteAverage().toString());
 
         }
 
+        crewMetaContainer.setVisibility(View.VISIBLE);
         Log.e(TAG, "populateViewsWithData() called");
-
-        int numberOfSeasons = thisShow.getNumberOfSeasons();
-        tvDetailAgeRating.setText(getResources().
-                getQuantityString(R.plurals.no_of_seasons, numberOfSeasons, numberOfSeasons));
-
 
         // Creator
         List<CreatedBy> createdByList = thisShow.getCreatedBy();
@@ -252,7 +256,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                     .into(detailShowCrewImage);
         }
 
-        tvDetailOverview.setText(thisShow.getOverview());
         showRuntimeStatus.setText(thisShow.getStatus());
         showRuntimeFirstAirDate.setText(Utilities.convertDate(thisShow.getFirstAirDate()));
         showRuntimeNrEpisodes.setText(String.valueOf(thisShow.getNumberOfEpisodes()));

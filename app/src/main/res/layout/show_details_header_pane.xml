@@ -102,6 +102,10 @@
              />
 
         <TextView
+            android:drawableEnd="@drawable/ic_star_grey"
+            android:drawableRight="@drawable/ic_star_grey"
+            android:drawablePadding="2dp"
+            android:gravity="center"
             android:id="@+id/tv_detail_age_rating"
             tools:text="18"
             android:textColor="@color/grey_500"
