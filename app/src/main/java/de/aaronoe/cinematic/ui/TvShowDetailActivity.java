@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -17,6 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -96,7 +99,13 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @BindView(R.id.show_detail_container)
     ScrollView showDetailContainer;
     @BindView(R.id.crew_meta_data_container)
-    RecyclerView crewMetaContainer;
+    ConstraintLayout crewMetaContainer;
+    @BindView(R.id.season_detail_pb)
+    ProgressBar seasonDetailPb;
+    @BindView(R.id.meta_show_container)
+    LinearLayout showMetaContainer;
+    @BindView(R.id.show_seasons_pane)
+    LinearLayout showSeasonsPane;
 
     int showId;
     String showName;
@@ -234,7 +243,11 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
         }
 
+        // TODO: Show loading and views
+        seasonDetailPb.setVisibility(View.INVISIBLE);
         crewMetaContainer.setVisibility(View.VISIBLE);
+        showMetaContainer.setVisibility(View.VISIBLE);
+        showSeasonsPane.setVisibility(View.VISIBLE);
         Log.e(TAG, "populateViewsWithData() called");
 
         // Creator

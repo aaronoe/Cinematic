@@ -38,6 +38,15 @@
             tools:text="Sheriff's deputy Rick Grimes awakens from a coma to find a post-apocalyptic world dominated by flesh-eating zombies. He sets out to find his family and encounters many other survivors along the way." />
 
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/season_detail_pb"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/crew_meta_data_container"
@@ -107,10 +116,13 @@
 
         </android.support.constraint.ConstraintLayout>
 
+        </FrameLayout>
 
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/meta_show_container"
+        android:visibility="gone"
         android:orientation="vertical"
         android:paddingBottom="16dp"
         android:layout_width="match_parent"
