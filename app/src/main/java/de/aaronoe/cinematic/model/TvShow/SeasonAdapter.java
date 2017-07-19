@@ -38,7 +38,7 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
     }
 
     public interface SeasonAdapterOnClickHandler {
-        void onClick(int seasonNumber);
+        void onClick(Season season, ImageView posterImageView);
     }
 
     @Override
@@ -110,7 +110,7 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
             Log.d(TAG, "onClick() called with: v = [" + v + "]");
             int adapterPosition = getAdapterPosition();
             Season item = seasonList.get(adapterPosition);
-            seasonAdapterOnClickHandler.onClick(item.getSeasonNumber());
+            seasonAdapterOnClickHandler.onClick(item, posterImageView);
         }
     }
 

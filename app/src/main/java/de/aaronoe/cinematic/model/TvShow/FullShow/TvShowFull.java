@@ -3,10 +3,12 @@ package de.aaronoe.cinematic.model.TvShow.FullShow;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.ArrayRes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TvShowFull implements Parcelable
@@ -17,16 +19,16 @@ public class TvShowFull implements Parcelable
     private String backdropPath;
     @SerializedName("created_by")
     @Expose
-    private List<CreatedBy> createdBy = null;
+    private List<CreatedBy> createdBy = new ArrayList<>();
     @SerializedName("episode_run_time")
     @Expose
-    private List<Integer> episodeRunTime = null;
+    private List<Integer> episodeRunTime = new ArrayList<>();
     @SerializedName("first_air_date")
     @Expose
     private String firstAirDate;
     @SerializedName("genres")
     @Expose
-    private List<Genre> genres = null;
+    private List<Genre> genres = new ArrayList<>();
     @SerializedName("homepage")
     @Expose
     private String homepage;
@@ -38,7 +40,7 @@ public class TvShowFull implements Parcelable
     private Boolean inProduction;
     @SerializedName("languages")
     @Expose
-    private List<String> languages = null;
+    private List<String> languages = new ArrayList<>();
     @SerializedName("last_air_date")
     @Expose
     private String lastAirDate;
@@ -47,7 +49,7 @@ public class TvShowFull implements Parcelable
     private String name;
     @SerializedName("networks")
     @Expose
-    private List<Network> networks = null;
+    private List<Network> networks = new ArrayList<>();
     @SerializedName("number_of_episodes")
     @Expose
     private Integer numberOfEpisodes;
@@ -56,7 +58,7 @@ public class TvShowFull implements Parcelable
     private Integer numberOfSeasons;
     @SerializedName("origin_country")
     @Expose
-    private List<String> originCountry = null;
+    private List<String> originCountry = new ArrayList<>();
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
@@ -74,10 +76,10 @@ public class TvShowFull implements Parcelable
     private String posterPath;
     @SerializedName("production_companies")
     @Expose
-    private List<ProductionCompany> productionCompanies = null;
+    private List<ProductionCompany> productionCompanies = new ArrayList<>();
     @SerializedName("seasons")
     @Expose
-    private List<Season> seasons = null;
+    private List<Season> seasons = new ArrayList<>();
     @SerializedName("status")
     @Expose
     private String status;

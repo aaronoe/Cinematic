@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -15,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -137,10 +140,15 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 showName = startIntent.getStringExtra(getString(R.string.intent_key_tv_show_update));
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(showName);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 }
             }
             if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
                 enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(enterShow.getName());
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
                 initWithShow();
             }
         }
@@ -239,7 +247,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
             tvDetailTitle.setText(thisShow.getName());
             tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
             tvDetailOverview.setText(thisShow.getOverview());
-            tvDetailAgeRating.setText(enterShow.getVoteAverage().toString());
+            tvDetailAgeRating.setText(thisShow.getVoteAverage().toString());
 
         }
 
@@ -333,14 +341,21 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onClick(int seasonNumber) {
-        Log.d(TAG, "onClick() called with: seasonNumber = [" + seasonNumber + "]");
+    public void onClick(Season season, ImageView posterImageView) {
+        Log.d(TAG, "onClick() called with: seasonNumber = [" + season + "]");
+
         Intent intent = new Intent(mContext, TvSeasonDetailActivity.class);
-        intent.putExtra(getString(R.string.intent_key_tvshow), thisShow.getName());
-        intent.putExtra(getString(R.string.intent_key_season_id), thisShow.getId());
-        intent.putExtra(getString(R.string.intent_key_selected_season), seasonNumber);
-        intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
-        mContext.startActivity(intent);
+        intent.putExtra(getString(R.string.intent_key_tvshow), thisShow);
+        intent.putExtra(getString(R.string.intent_key_selected_season), season);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, posterImageView, getString(R.string.TRANSITION_KEY_TV_SEASON));
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -370,6 +385,16 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

@@ -44,6 +44,7 @@
             tools:src="@drawable/walking_dead_profile"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
+            android:transitionName="@string/TRANSITION_KEY_TV_SEASON"
             android:layout_width="wrap_content"
             android:layout_height="140dp"
             android:layout_marginTop="-70dp"

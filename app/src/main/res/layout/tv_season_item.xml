@@ -10,7 +10,7 @@
         android:id="@+id/cv"
         android:elevation="8dp"
         style="@style/CardViewStyle"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -20,7 +20,8 @@
 
             <ImageView
                 android:contentDescription="@string/season_poster"
-                android:layout_width="match_parent"
+                android:transitionName="@string/TRANSITION_KEY_TV_SEASON"
+                android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:scaleType="fitStart"
                 android:adjustViewBounds="true"
@@ -33,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/poster_imageview"
                 android:background="@color/backgroundPrimary"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent" >
+                android:layout_width="120dp" >
 
                 <TextView
                     android:id="@+id/season_number"

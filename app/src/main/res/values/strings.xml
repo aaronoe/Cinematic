@@ -122,6 +122,7 @@
     <string name="my_profile">My Profile</string>
     <string name="INTENT_KEY_TV_SHOW_ITEM">INTENT_KEY_TV_SHOW_ITEM</string>
     <string name="transition_shared_key">LIST_ITEM_SHARED_ELEMENT</string>
+    <string name="TRANSITION_KEY_TV_SEASON">TRANSITION_TV_SEASON_POSTER</string>
 
 
 </resources>
