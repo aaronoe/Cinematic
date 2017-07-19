@@ -43,28 +43,14 @@
             android:layout_height="96dp"
             android:layout_marginTop="-48dp"
             android:layout_gravity="center_horizontal"
-            android:elevation="8dp"
             android:contentDescription="@string/movie_image_main"
             app:layout_scrollFlags="scroll"
             android:visibility="visible"
             />
 
 
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/detailpage.toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?colorPrimary"
-            android:layout_marginTop="-48dp"
-            app:theme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
-            />
-
-
-
         <LinearLayout
+            android:layout_margin="8dp"
             android:id="@+id/detailpage.title_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

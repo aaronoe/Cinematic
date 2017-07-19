@@ -1,6 +1,7 @@
 package de.aaronoe.cinematic.model.TvShow;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,7 +92,9 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         public EpisodeViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            episodeTextScrollview.setNestedScrollingEnabled(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                episodeTextScrollview.setNestedScrollingEnabled(true);
+            }
         }
     }
 

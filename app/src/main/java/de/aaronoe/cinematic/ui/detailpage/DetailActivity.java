@@ -47,7 +47,6 @@ public class DetailActivity extends AppCompatActivity
     @BindView(R.id.detailpage_tabs) TabLayout mTabLayout;
     @BindView(R.id.detailpage_viewpager) ViewPager mViewPager;
     @BindView(R.id.detailpage_appbar) AppBarLayout mAppBarLayout;
-    @BindView(R.id.detailpage_toolbar) Toolbar mToolBar;
 
     String movieName;
     MovieItem mMovieItem;
@@ -168,8 +167,6 @@ public class DetailActivity extends AppCompatActivity
         String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picturePath;
         Picasso.with(this)
                 .load(pictureUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
                 .into(mProfileImageView);
 
         // Set Movie Backdrop
