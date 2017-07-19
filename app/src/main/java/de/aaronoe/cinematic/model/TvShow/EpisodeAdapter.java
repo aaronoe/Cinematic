@@ -1,11 +1,13 @@
 package de.aaronoe.cinematic.model.TvShow;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -84,10 +86,15 @@ public class EpisodeAdapter extends RecyclerView.Adapter<EpisodeAdapter.EpisodeV
         TextView episodeReleaseTextView;
         @BindView(R.id.episode_overview)
         TextView episodeOverviewTextView;
+        @BindView(R.id.episode_tv_scrollview)
+        ScrollView episodeTextScrollview;
 
         public EpisodeViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                episodeTextScrollview.setNestedScrollingEnabled(true);
+            }
         }
     }
 

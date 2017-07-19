@@ -3,9 +3,11 @@ package de.aaronoe.cinematic.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -303,12 +306,17 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     }
 
     @Override
-    public void onClick(int movieId, String showTitle) {
+    public void onClick(TvShow tvshow, ImageView v) {
         Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show_update), showTitle);
+        intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM), tvshow);
 
-        getActivity().startActivity(intentToStartDetailActivity);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(), v, getString(R.string.transition_shared_key));
+            getActivity().startActivity(intentToStartDetailActivity, options.toBundle());
+        } else {
+            getActivity().startActivity(intentToStartDetailActivity);
+        }
     }
 
     @Override

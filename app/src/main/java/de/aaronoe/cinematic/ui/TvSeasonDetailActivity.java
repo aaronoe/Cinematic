@@ -1,11 +1,16 @@
 package de.aaronoe.cinematic.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+import com.yarolegovich.discretescrollview.Orientation;
+import com.yarolegovich.discretescrollview.transform.Pivot;
+import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import javax.inject.Inject;
 
@@ -22,6 +32,8 @@ import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.TvShow.FullShow.Season;
+import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.EpisodeAdapter;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
@@ -33,10 +45,10 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "TvSeasonDetailActivity";
 
-    String showName;
     String showBackdropPath;
+    TvShowFull mTvShow;
     FullSeason mSeason;
-    int selectedSeason;
+    Season selectedSeason;
     int showId;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     EpisodeAdapter episodeAdapter;
@@ -60,7 +72,7 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
     @BindView(R.id.season_overview_tv)
     TextView seasonOverviewTv;
     @BindView(R.id.single_season_recycler_view)
-    RecyclerView singleSeasonRecyclerView;
+    DiscreteScrollView singleSeasonRv;
     @BindView(R.id.episode_overview_textview)
     TextView overViewTV;
     @BindView(R.id.episode_overview_container)
@@ -78,25 +90,23 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
         Intent intentThatStartedThisActivity = getIntent();
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_tvshow))) {
-                showName = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_tvshow));
-                seasonDetailTitle.setText(showName);
+                mTvShow = intentThatStartedThisActivity.getParcelableExtra(getString(R.string.intent_key_tvshow));
+                showId = mTvShow.getId();
+                seasonDetailTitle.setText(mTvShow.getName());
+                showBackdropPath = mTvShow.getBackdropPath();
                 if (getSupportActionBar() != null) {
-                    getSupportActionBar().setTitle(showName);
+                    getSupportActionBar().setTitle(mTvShow.getName());
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                 }
             }
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_selected_season))) {
-                selectedSeason = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_selected_season), -1);
-                if (selectedSeason == 0) {
+                selectedSeason = intentThatStartedThisActivity.getParcelableExtra(getString(R.string.intent_key_selected_season));
+                if (selectedSeason.getSeasonNumber() == 0) {
                     tvDetailTitle.setText(getString(R.string.extras_and_year));
                 } else {
-                    tvDetailTitle.setText(getString(R.string.season_x, selectedSeason));
+                    tvDetailTitle.setText(getString(R.string.season_x, selectedSeason.getSeasonNumber()));
                 }
-            }
-            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_backdrop))) {
-                showBackdropPath = intentThatStartedThisActivity.getStringExtra(getString(R.string.intent_key_backdrop));
-            }
-            if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_season_id))) {
-                showId = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_season_id), -1);
             }
         }
 
@@ -109,13 +119,59 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
                 .into(tvDetailBackdrop);
 
 
-        downloadSeasonDetails();
+        if (selectedSeason != null && mTvShow != null) {
+
+            downloadSeasonDetails();
+            initViewsEnter();
+
+        }
+    }
+
+
+    private void initViewsEnter() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            supportPostponeEnterTransition();
+        }
+
+        String creatorProfileUrl = "http://image.tmdb.org/t/p/w185/" + selectedSeason.getPosterPath();
+        Picasso.with(this)
+                .load(creatorProfileUrl)
+                .placeholder(R.drawable.placeholder)
+                .error(R.drawable.error)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                        Log.d(TAG, "onBitmapLoaded() called with: bitmap = [" + bitmap + "], loadedFrom = [" + loadedFrom + "]");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            supportStartPostponedEnterTransition();
+                        }
+                        tvDetailProfile.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable drawable) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            supportStartPostponedEnterTransition();
+                        }
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable drawable) {
+
+                    }
+                });
+
+        tvDetailYear.setText(Utilities.convertDateToYear(selectedSeason.getAirDate()));
+
+        tvDetailAgeRating.setText(getString(R.string.nr_episodes, selectedSeason.getEpisodeCount()));
+
     }
 
 
     private void downloadSeasonDetails() {
 
-        Call<FullSeason> call = apiInterface.getTvSeasonDetails(showId, selectedSeason, API_KEY);
+        Call<FullSeason> call = apiInterface.getTvSeasonDetails(showId, selectedSeason.getSeasonNumber(), API_KEY);
 
 
         call.enqueue(new Callback<FullSeason>() {
@@ -140,17 +196,6 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
     private void populateViewsWithData() {
 
-        String creatorProfileUrl = "http://image.tmdb.org/t/p/w185/" + mSeason.getPosterPath();
-        Picasso.with(this)
-                .load(creatorProfileUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
-                .into(tvDetailProfile);
-
-        tvDetailYear.setText(Utilities.convertDateToYear(mSeason.getAirDate()));
-
-        tvDetailAgeRating.setText(getString(R.string.nr_episodes, mSeason.getEpisodes().size()));
-
         if (mSeason.getOverview() == null || mSeason.getOverview().equals("")) {
             episodeOverviewContainer.setVisibility(View.GONE);
         }
@@ -158,14 +203,28 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
         seasonOverviewTv.setText(mSeason.getOverview());
 
 
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        singleSeasonRecyclerView.setLayoutManager(linearLayoutManager);
         episodeAdapter = new EpisodeAdapter(this);
-        singleSeasonRecyclerView.setAdapter(episodeAdapter);
+        singleSeasonRv.setAdapter(episodeAdapter);
+
+        singleSeasonRv.setItemTransformer(new ScaleTransformer.Builder()
+                .setMinScale(0.75f)
+                .build());
+
+        singleSeasonRv.setOrientation(Orientation.HORIZONTAL);
+        singleSeasonRv.setOffscreenItems(3);
+
+
         episodeAdapter.setEpisodeList(mSeason.getEpisodes());
         Log.e(TAG, "populateViewsWithData: " + mSeason.getEpisodes().size() );
-        singleSeasonRecyclerView.setNestedScrollingEnabled(false);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

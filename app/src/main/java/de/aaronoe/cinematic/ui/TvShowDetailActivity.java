@@ -3,8 +3,13 @@ package de.aaronoe.cinematic.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -12,15 +17,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -33,6 +43,7 @@ import de.aaronoe.cinematic.database.MovieUpdateService;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
@@ -90,11 +101,20 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     ToggleButton toggleFavoriteShowButton;
     @BindView(R.id.show_detail_container)
     ScrollView showDetailContainer;
+    @BindView(R.id.crew_meta_data_container)
+    ConstraintLayout crewMetaContainer;
+    @BindView(R.id.season_detail_pb)
+    ProgressBar seasonDetailPb;
+    @BindView(R.id.meta_show_container)
+    LinearLayout showMetaContainer;
+    @BindView(R.id.show_seasons_pane)
+    LinearLayout showSeasonsPane;
 
-    int movieId;
+    int showId;
     String showName;
     private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
+    TvShow enterShow;
     Context mContext;
     SeasonAdapter seasonAdapter;
 
@@ -113,23 +133,78 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         Intent startIntent = getIntent();
         if (startIntent != null) {
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show))) {
-                movieId = startIntent.getIntExtra(getString(R.string.intent_key_tv_show), -1);
+                showId = startIntent.getIntExtra(getString(R.string.intent_key_tv_show), -1);
+                downloadShowDetails();
             }
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show_update))) {
                 showName = startIntent.getStringExtra(getString(R.string.intent_key_tv_show_update));
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(showName);
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 }
             }
+            if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
+                enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(enterShow.getName());
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                }
+                initWithShow();
+            }
         }
+
+    }
+
+    private void initWithShow() {
+        // Backdrop
+        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.getBackdropPath();
+
+        supportPostponeEnterTransition();
+
+        Picasso.with(this)
+                .load(pictureUrl)
+                .placeholder(R.drawable.poster_show_loading)
+                .error(R.drawable.poster_show_not_available)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                        tvDetailBackdrop.setImageBitmap(bitmap);
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable drawable) {
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable drawable) {
+
+                    }
+                });
+
+
+        String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
+
+        Picasso.with(this)
+                .load(posterUrl)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .into(tvDetailProfile);
+
+        tvDetailTitle.setText(enterShow.getName());
+        tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));
+        tvDetailOverview.setText(enterShow.getOverview());
+        tvDetailAgeRating.setText(enterShow.getVoteAverage().toString());
+
         downloadShowDetails();
 
     }
 
 
     public void downloadShowDetails() {
+        Log.d(TAG, "downloadShowDetails() called");
 
-        Call<TvShowFull> call = apiInterface.getTvShowDetails(movieId, API_KEY);
+        Call<TvShowFull> call = apiInterface.getTvShowDetails(showId == 0 ? enterShow.getId() : showId, API_KEY);
 
         call.enqueue(new Callback<TvShowFull>() {
             @Override
@@ -151,28 +226,37 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
     private void populateViewsWithData() {
 
-        // Backdrop
-        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
+        if (enterShow == null) {
 
-        Picasso.with(this)
-                .load(pictureUrl)
-                .placeholder(R.drawable.poster_show_loading)
-                .error(R.drawable.poster_show_not_available)
-                .into(tvDetailBackdrop);
+            // Backdrop
+            String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
 
-        String posterUrl = "http://image.tmdb.org/t/p/w185/" + thisShow.getPosterPath();
-        Picasso.with(this)
-                .load(posterUrl)
-                .placeholder(R.drawable.placeholder)
-                .error(R.drawable.error)
-                .into(tvDetailProfile);
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .placeholder(R.drawable.poster_show_loading)
+                    .error(R.drawable.poster_show_not_available)
+                    .into(tvDetailBackdrop);
 
-        tvDetailTitle.setText(thisShow.getName());
-        tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
-        int numberOfSeasons = thisShow.getNumberOfSeasons();
-        tvDetailAgeRating.setText(getResources().
-                getQuantityString(R.plurals.no_of_seasons, numberOfSeasons, numberOfSeasons));
+            String posterUrl = "http://image.tmdb.org/t/p/w185/" + thisShow.getPosterPath();
+            Picasso.with(this)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(tvDetailProfile);
 
+            tvDetailTitle.setText(thisShow.getName());
+            tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
+            tvDetailOverview.setText(thisShow.getOverview());
+            tvDetailAgeRating.setText(thisShow.getVoteAverage().toString());
+
+        }
+
+        // TODO: Show loading and views
+        seasonDetailPb.setVisibility(View.INVISIBLE);
+        crewMetaContainer.setVisibility(View.VISIBLE);
+        showMetaContainer.setVisibility(View.VISIBLE);
+        showSeasonsPane.setVisibility(View.VISIBLE);
+        Log.e(TAG, "populateViewsWithData() called");
 
         // Creator
         List<CreatedBy> createdByList = thisShow.getCreatedBy();
@@ -193,7 +277,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                     .into(detailShowCrewImage);
         }
 
-        tvDetailOverview.setText(thisShow.getOverview());
         showRuntimeStatus.setText(thisShow.getStatus());
         showRuntimeFirstAirDate.setText(Utilities.convertDate(thisShow.getFirstAirDate()));
         showRuntimeNrEpisodes.setText(String.valueOf(thisShow.getNumberOfEpisodes()));
@@ -258,14 +341,21 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onClick(int seasonNumber) {
-        Log.d(TAG, "onClick() called with: seasonNumber = [" + seasonNumber + "]");
+    public void onClick(Season season, ImageView posterImageView) {
+        Log.d(TAG, "onClick() called with: seasonNumber = [" + season + "]");
+
         Intent intent = new Intent(mContext, TvSeasonDetailActivity.class);
-        intent.putExtra(getString(R.string.intent_key_tvshow), thisShow.getName());
-        intent.putExtra(getString(R.string.intent_key_season_id), thisShow.getId());
-        intent.putExtra(getString(R.string.intent_key_selected_season), seasonNumber);
-        intent.putExtra(getString(R.string.intent_key_backdrop), thisShow.getBackdropPath());
-        mContext.startActivity(intent);
+        intent.putExtra(getString(R.string.intent_key_tvshow), thisShow);
+        intent.putExtra(getString(R.string.intent_key_selected_season), season);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, posterImageView, getString(R.string.TRANSITION_KEY_TV_SEASON));
+            startActivity(intent, options.toBundle());
+        } else {
+            startActivity(intent);
+        }
+
     }
 
     @Override
@@ -295,6 +385,16 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -351,7 +451,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 toggleFavoriteShowButton.setChecked(false);
                 //Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
 
-                MovieUpdateService.deleteTask(mContext, Utilities.buildShowUri(thisShow.getId()));
+                MovieUpdateService.deleteItem(mContext, Utilities.buildShowUri(thisShow.getId()));
             }
 
 }

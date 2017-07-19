@@ -61,19 +61,11 @@
 
         <activity
             android:name=".ui.TvShowDetailActivity"
-            android:parentActivityName=".ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
         <activity
             android:name=".ui.TvSeasonDetailActivity"
-            android:parentActivityName=".ui.NavigationActivity"
             android:theme="@style/AppThemeWithActionbar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.aaronoe.cinematic.ui.NavigationActivity" />
         </activity>
         <activity
             android:name=".ui.favorites.FavoritesActivity"

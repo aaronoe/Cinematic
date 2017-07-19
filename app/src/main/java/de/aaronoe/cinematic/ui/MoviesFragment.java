@@ -266,6 +266,9 @@ public class MoviesFragment extends Fragment
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
+
+
+
         startActivity(intentToStartDetailActivity);
     }
 

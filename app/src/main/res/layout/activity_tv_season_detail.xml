@@ -42,12 +42,13 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:background="#e6e6e6"
         android:id="@+id/single_season_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v7.widget.RecyclerView>
+    </com.yarolegovich.discretescrollview.DiscreteScrollView>
 
 </LinearLayout>
 
