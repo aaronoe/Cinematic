@@ -1,6 +1,9 @@
 package de.aaronoe.cinematic.ui.detailpage;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
@@ -36,6 +40,8 @@ import retrofit2.Response;
 
 public class DetailActivity extends AppCompatActivity
         implements AppBarLayout.OnOffsetChangedListener{
+
+    private static final String TAG = "DetailActivity";
 
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
     private boolean mIsAvatarShown = true;
@@ -75,6 +81,9 @@ public class DetailActivity extends AppCompatActivity
                 mMovieItem = intentThatStartedThisActivity.getParcelableExtra("MovieItem");
                 id = mMovieItem.getId();
                 Log.e(DetailActivity.class.getSimpleName(), ""+id);
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle(mMovieItem.getTitle());
+                }
                 populateViewsWithData();
                 setUpViewPager();
             }
@@ -169,6 +178,10 @@ public class DetailActivity extends AppCompatActivity
                 .load(pictureUrl)
                 .into(mProfileImageView);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            supportPostponeEnterTransition();
+        }
+
         // Set Movie Backdrop
         String backdropPath = mMovieItem.getBackdropPath();
         // put the picture URL together
@@ -177,7 +190,28 @@ public class DetailActivity extends AppCompatActivity
                 .load(backdropUrl)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
-                .into(mBackDropImageView);
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                        Log.d(TAG, "onBitmapLoaded() called with: bitmap = [" + bitmap + "], loadedFrom = [" + loadedFrom + "]");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            supportStartPostponedEnterTransition();
+                        }
+                        mBackDropImageView.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable drawable) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            supportStartPostponedEnterTransition();
+                        }
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable drawable) {
+
+                    }
+                });
 
     }
 

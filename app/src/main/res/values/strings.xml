@@ -123,6 +123,7 @@
     <string name="INTENT_KEY_TV_SHOW_ITEM">INTENT_KEY_TV_SHOW_ITEM</string>
     <string name="transition_shared_key">LIST_ITEM_SHARED_ELEMENT</string>
     <string name="TRANSITION_KEY_TV_SEASON">TRANSITION_TV_SEASON_POSTER</string>
+    <string name="intent_key_movie">INTENT_KEY_MOVIE</string>
 
 
 </resources>

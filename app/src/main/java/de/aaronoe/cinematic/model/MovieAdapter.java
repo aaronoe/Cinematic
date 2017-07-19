@@ -40,7 +40,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     public interface MovieAdapterOnClickHandler {
-        void onClick(MovieItem movieItem);
+        void onClick(MovieItem movieItem, ImageView backdropImageView);
     }
 
 
@@ -66,7 +66,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             MovieItem thisMovie = mMovieList.get(adapterPosition);
-            mClickHandler.onClick(thisMovie);
+            mClickHandler.onClick(thisMovie, backdropImageView);
         }
     }
 

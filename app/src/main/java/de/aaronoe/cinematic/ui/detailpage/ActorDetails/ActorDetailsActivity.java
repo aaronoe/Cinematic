@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,7 +76,6 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
         if (intentThatStartedThisActivity != null) {
             if (intentThatStartedThisActivity.hasExtra(getString(R.string.intent_key_cast_id))) {
                 actorId = intentThatStartedThisActivity.getIntExtra(getString(R.string.intent_key_cast_id), -1);
-
             }
         }
 
@@ -181,7 +181,7 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
     }
 
     @Override
-    public void onClick(MovieItem movieItem) {
+    public void onClick(MovieItem movieItem, ImageView backdropImageView) {
         Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());

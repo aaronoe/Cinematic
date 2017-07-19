@@ -130,6 +130,10 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
         ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         Intent startIntent = getIntent();
         if (startIntent != null) {
             if (startIntent.hasExtra(getString(R.string.intent_key_tv_show))) {
@@ -140,14 +144,12 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 showName = startIntent.getStringExtra(getString(R.string.intent_key_tv_show_update));
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(showName);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 }
             }
             if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
                 enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(enterShow.getName());
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 }
                 initWithShow();
             }

@@ -1,13 +1,16 @@
 package de.aaronoe.cinematic.ui.detailpage;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -135,10 +138,16 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
 
 
     @Override
-    public void onClick(MovieItem movieItem) {
+    public void onClick(MovieItem movieItem, ImageView backdropImageView) {
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
-        startActivity(intentToStartDetailActivity);
+        intentToStartDetailActivity.putExtra("MovieItem", movieItem);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(), backdropImageView, getString(R.string.transition_shared_key));
+            getActivity().startActivity(intentToStartDetailActivity, options.toBundle());
+        } else {
+            getActivity().startActivity(intentToStartDetailActivity);
+        }
     }
 }
