@@ -15,15 +15,15 @@
         android:layout_gravity="center">
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:contentDescription="@string/season_poster"
                 android:transitionName="@string/TRANSITION_KEY_TV_SEASON"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:scaleType="fitStart"
+                android:layout_width="wrap_content"
+                android:layout_height="160dp"
+                android:scaleType="fitCenter"
                 android:adjustViewBounds="true"
                 tools:src="@drawable/error"
                 android:id="@+id/poster_imageview" />
@@ -31,16 +31,18 @@
             <android.support.constraint.ConstraintLayout
                 android:padding="4dp"
                 app:layout_constraintLeft_toLeftOf="@+id/poster_imageview"
+                app:layout_constraintRight_toRightOf="@+id/poster_imageview"
                 app:layout_constraintBottom_toBottomOf="@+id/poster_imageview"
                 android:background="@color/backgroundPrimary"
                 android:layout_height="wrap_content"
-                android:layout_width="120dp" >
+                android:layout_width="0dp" >
 
                 <TextView
                     android:id="@+id/season_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#fff"
+                    android:textSize="12sp"
                     tools:text="@string/season_and_year"
                     app:layout_constraintBottom_toTopOf="@+id/episode_count_tv"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -50,6 +52,7 @@
                     android:id="@+id/episode_count_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="12sp"
                     tools:text="10 Episodes"
                     android:textColor="#fff"
                     android:layout_marginBottom="@dimen/smaller_vertical_padding"

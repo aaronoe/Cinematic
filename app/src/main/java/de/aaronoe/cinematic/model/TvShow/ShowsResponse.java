@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShowsResponse implements Parcelable
@@ -17,7 +18,7 @@ public class ShowsResponse implements Parcelable
     private Integer page;
     @SerializedName("results")
     @Expose
-    private List<TvShow> tvShows = null;
+    private List<TvShow> tvShows = new ArrayList<>();
     @SerializedName("total_results")
     @Expose
     private Integer totalResults;

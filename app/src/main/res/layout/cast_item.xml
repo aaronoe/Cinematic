@@ -9,7 +9,7 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cv"
         style="@style/CardViewStyle"
-        android:layout_width="180dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
@@ -22,7 +22,7 @@
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/actor_iv"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="140dp"
                 android:scaleType="centerCrop"
                 android:contentDescription="@string/actor_image_description"
                 app:riv_corner_radius_bottom_left="0dp"
@@ -32,10 +32,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="64dp"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="4dp">
 
                 <TextView
                     android:id="@+id/actor_name"
@@ -44,15 +44,17 @@
                     android:maxLines="2"
                     tools:text="Logan / Wolverin"
                     android:textColor="@color/grey_700"
-                    android:textSize="18sp" />
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/character_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     tools:text="Hugh Jackman Linner Man Blabla"
                     android:textColor="@color/grey_500"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
