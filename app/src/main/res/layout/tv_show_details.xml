@@ -119,18 +119,22 @@
 
     <LinearLayout
         android:id="@+id/meta_show_container"
-        android:visibility="gone"
         android:orientation="vertical"
-        android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <include layout="@layout/cast_section" />
+
+        <include layout="@layout/seasons_pane" />
+
         <include layout="@layout/show_meta_data_pane" />
 
+        <include layout="@layout/similar_shows_section" />
 
-        </LinearLayout>
 
-    <include layout="@layout/seasons_pane" />
+
+    </LinearLayout>
+
 
     </LinearLayout>
 

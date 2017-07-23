@@ -125,6 +125,7 @@
     <string name="TRANSITION_KEY_TV_SEASON">TRANSITION_TV_SEASON_POSTER</string>
     <string name="cast">Cast</string>
     <string name="you_might_also_like">You might also like</string>
+    <string name="transition_key_show_poster">TRANSITION_SHOW_POSTER</string>
 
 
 </resources>

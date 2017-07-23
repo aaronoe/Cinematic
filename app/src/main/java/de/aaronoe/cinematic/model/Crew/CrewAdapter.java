@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -35,7 +36,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
     @Override
     public CrewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.cast_item;
+        int layoutIdForListItem = R.layout.tv_season_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
@@ -51,19 +52,18 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
         String characterName = castItem.getCharacter();
         String actorName = castItem.getName();
         String picPath = castItem.getProfilePath();
-        String pictureUrl = "http://image.tmdb.org/t/p/w342/" + picPath;
+        String pictureUrl = "http://image.tmdb.org/t/p/w185/" + picPath;
 
         holder.actorNameTextView.setText(actorName);
         holder.characterNameTextView.setText(characterName);
-        RoundedImageView actorIv = holder.actorImageView;
 
         Picasso.with(mContext)
                 .load(pictureUrl)
                 .placeholder(R.drawable.placeholder)
                 .error(R.drawable.error)
-                .into(actorIv);
+                .into(holder.actorImageView);
 
-        actorIv.setOnClickListener(new View.OnClickListener() {
+        holder.actorImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentToStartActorDetailActivity = new Intent(mContext, ActorDetailsActivity.class);
@@ -89,9 +89,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
 
     class CrewViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.actor_iv) RoundedImageView actorImageView;
-        @BindView(R.id.actor_name) TextView actorNameTextView;
-        @BindView(R.id.character_name) TextView characterNameTextView;
+        @BindView(R.id.poster_imageview) ImageView actorImageView;
+        @BindView(R.id.season_number) TextView actorNameTextView;
+        @BindView(R.id.episode_count_tv) TextView characterNameTextView;
 
         public CrewViewHolder(View itemView) {
             super(itemView);

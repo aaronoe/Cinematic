@@ -1,4 +1,4 @@
-package de.aaronoe.cinematic.ui;
+package de.aaronoe.cinematic.ui.showdetail;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -25,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.squareup.picasso.NetworkPolicy;
@@ -38,25 +38,26 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.database.MovieUpdateService;
-import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.TvShow.TvShow;
-import de.aaronoe.cinematic.model.remote.ApiInterface;
+import de.aaronoe.cinematic.database.MovieUpdateService;
+import de.aaronoe.cinematic.database.Utilities;
+import de.aaronoe.cinematic.model.Crew.Credits;
+import de.aaronoe.cinematic.model.Crew.CrewAdapter;
 import de.aaronoe.cinematic.model.TvShow.FullShow.CreatedBy;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Season;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.SeasonAdapter;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
+import de.aaronoe.cinematic.ui.TvSeasonDetailActivity;
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class TvShowDetailActivity extends AppCompatActivity implements
-        SeasonAdapter.SeasonAdapterOnClickHandler, LoaderManager.LoaderCallbacks<Cursor> {
+        SeasonAdapter.SeasonAdapterOnClickHandler,
+        ShowDetailContract.View,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "TvShowDetailActivity";
     private static final int CHECK_FAVE_LOADER_ID = 609;
@@ -105,18 +106,26 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     ConstraintLayout crewMetaContainer;
     @BindView(R.id.season_detail_pb)
     ProgressBar seasonDetailPb;
+
     @BindView(R.id.meta_show_container)
     LinearLayout showMetaContainer;
     @BindView(R.id.show_seasons_pane)
     LinearLayout showSeasonsPane;
 
+    @BindView(R.id.cast_section_container) LinearLayout castSectionContainer;
+    @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
+
+    @BindView(R.id.similar_shows_section_container) LinearLayout similarSectionContainer;
+    @BindView(R.id.similar_shows_recycler_view) RecyclerView similarRecyclerView;
+
+
     int showId;
     String showName;
-    private final static String API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     TvShowFull thisShow;
     TvShow enterShow;
     Context mContext;
     SeasonAdapter seasonAdapter;
+    ShowDetailPresenterImpl presenter;
 
     @Inject ApiInterface apiInterface;
 
@@ -127,6 +136,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         setContentView(R.layout.tv_show_details);
         ButterKnife.bind(this);
         mContext = this;
+        presenter = new ShowDetailPresenterImpl(this);
 
         ((CinematicApp) getApplication()).getNetComponent().inject(this);
 
@@ -145,6 +155,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
             }
             if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
                 enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
+                showId = enterShow.getId();
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(enterShow.getName());
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -184,12 +195,28 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 });
 
 
+        supportPostponeEnterTransition();
         String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
 
         Picasso.with(this)
                 .load(posterUrl)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
-                .into(tvDetailProfile);
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                        tvDetailProfile.setImageBitmap(bitmap);
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable drawable) {
+                        supportStartPostponedEnterTransition();
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable drawable) {
+
+                    }
+                });
 
         tvDetailTitle.setText(enterShow.getName());
         tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));
@@ -202,141 +229,9 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
 
     public void downloadShowDetails() {
-        Log.d(TAG, "downloadShowDetails() called");
-
-        Call<TvShowFull> call = apiInterface.getTvShowDetails(showId == 0 ? enterShow.getId() : showId, API_KEY);
-
-        call.enqueue(new Callback<TvShowFull>() {
-            @Override
-            public void onResponse(Call<TvShowFull> call, Response<TvShowFull> response) {
-                thisShow = response.body();
-                if (thisShow != null) {
-                    Log.d(TAG, "onResponse: " + thisShow.getOverview());
-                    populateViewsWithData();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TvShowFull> call, Throwable t) {
-                Toast.makeText(TvShowDetailActivity.this, "Downloading Data has failed", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-
-    private void populateViewsWithData() {
-
-        if (enterShow == null) {
-
-            // Backdrop
-            String pictureUrl = "http://image.tmdb.org/t/p/w500/" + thisShow.getBackdropPath();
-
-            Picasso.with(this)
-                    .load(pictureUrl)
-                    .placeholder(R.drawable.poster_show_loading)
-                    .error(R.drawable.poster_show_not_available)
-                    .into(tvDetailBackdrop);
-
-            String posterUrl = "http://image.tmdb.org/t/p/w185/" + thisShow.getPosterPath();
-            Picasso.with(this)
-                    .load(posterUrl)
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(tvDetailProfile);
-
-            tvDetailTitle.setText(thisShow.getName());
-            tvDetailYear.setText(Utilities.convertDateToYear(thisShow.getFirstAirDate()));
-            tvDetailOverview.setText(thisShow.getOverview());
-            tvDetailAgeRating.setText(thisShow.getVoteAverage().toString());
-
-        }
-
-        // TODO: Show loading and views
-        seasonDetailPb.setVisibility(View.INVISIBLE);
-        crewMetaContainer.setVisibility(View.VISIBLE);
-        showMetaContainer.setVisibility(View.VISIBLE);
-        showSeasonsPane.setVisibility(View.VISIBLE);
-        Log.e(TAG, "populateViewsWithData() called");
-
-        // Creator
-        List<CreatedBy> createdByList = thisShow.getCreatedBy();
-        if (createdByList == null || createdByList.size() == 0) {
-            // remove views
-            detailShowCrewImage.setVisibility(View.INVISIBLE);
-            detailShowCrewName.setVisibility(View.INVISIBLE);
-            detailShowCrewTitle.setVisibility(View.INVISIBLE);
-        } else {
-            CreatedBy firstEntry = createdByList.get(0);
-            detailShowCrewName.setText(firstEntry.getName());
-
-            String creatorProfileUrl = "http://image.tmdb.org/t/p/w185/" + firstEntry.getProfilePath();
-            Picasso.with(this)
-                    .load(creatorProfileUrl)
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.error)
-                    .into(detailShowCrewImage);
-        }
-
-        showRuntimeStatus.setText(thisShow.getStatus());
-        showRuntimeFirstAirDate.setText(Utilities.convertDate(thisShow.getFirstAirDate()));
-        showRuntimeNrEpisodes.setText(String.valueOf(thisShow.getNumberOfEpisodes()));
-        showRuntimeNrSeasons.setText(String.valueOf(thisShow.getNumberOfSeasons()));
-
-        int diff = (int) Utilities.computeDifferenceInDays(thisShow.getLastAirDate());
-        String lastRuntime = Utilities.convertDate(thisShow.getLastAirDate());
-
-
-        if (diff <= 0) {
-            String daysDifference;
-            if (diff < 0) {
-                daysDifference = getResources()
-                        .getQuantityString(R.plurals.x_days_ago_plurals, Math.abs(diff), Math.abs(diff));
-            } else {
-                daysDifference = getString(R.string.today_show);
-            }
-            lastRuntime += " " + daysDifference;
-        }
-
-        showRuntimeLastAirDate.setText(lastRuntime);
-        Log.d(TAG, "populateViewsWithData: " + diff);
-
-        List<Integer> runtime = thisShow.getEpisodeRunTime();
-        String runtimeString = "";
-        for (int i = 0; i < runtime.size(); i++) {
-            if (i != 0) {
-                runtimeString += ", ";
-            }
-            runtimeString += runtime.get(i);
-        }
-        runtimeString += " " + getString(R.string.runtime_minutes);
-
-        showRuntimeMinutes.setText(runtimeString);
-
-        List<Genre> genreList = thisShow.getGenres();
-        String genreString = "";
-        for (int i = 0; i < genreList.size(); i++) {
-            if (i != 0) {
-                genreString += ", ";
-            }
-            genreString += genreList.get(i).getName();
-        }
-        showRuntimeGenres.setText(genreString);
-
-
-        List<Season> seasonList = thisShow.getSeasons();
-
-        // new season pane
-        LinearLayoutManager linearLayoutManager =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        seasonRecylcerView.setLayoutManager(linearLayoutManager);
-        seasonRecylcerView.setNestedScrollingEnabled(false);
-        seasonAdapter = new SeasonAdapter(this, this);
-        seasonRecylcerView.setAdapter(seasonAdapter);
-        seasonAdapter.setSeasonList(seasonList);
-
-        Log.d(TAG, "populateViewsWithData: " + Utilities.buildShowUri(thisShow.getId()));
-        getSupportLoaderManager().initLoader(CHECK_FAVE_LOADER_ID, null, this);
-
+        presenter.downloadCast(showId);
+        presenter.downloadInfo(showId);
+        presenter.downloadSimilar(showId);
     }
 
 
@@ -357,6 +252,171 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         }
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter = null;
+    }
+
+    @Override
+    public void showInfo(@NonNull TvShowFull showData) {
+
+        thisShow = showData;
+
+        if (enterShow == null) {
+
+            // Backdrop
+            String pictureUrl = "http://image.tmdb.org/t/p/w500/" + showData.getBackdropPath();
+
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .placeholder(R.drawable.poster_show_loading)
+                    .error(R.drawable.poster_show_not_available)
+                    .into(tvDetailBackdrop);
+
+            String posterUrl = "http://image.tmdb.org/t/p/w185/" + showData.getPosterPath();
+            Picasso.with(this)
+                    .load(posterUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(tvDetailProfile);
+
+            tvDetailTitle.setText(showData.getName());
+            tvDetailYear.setText(Utilities.convertDateToYear(showData.getFirstAirDate()));
+            tvDetailOverview.setText(showData.getOverview());
+            tvDetailAgeRating.setText(showData.getVoteAverage().toString());
+
+        }
+
+        seasonDetailPb.setVisibility(View.INVISIBLE);
+        crewMetaContainer.setVisibility(View.VISIBLE);
+        showMetaContainer.setVisibility(View.VISIBLE);
+        showSeasonsPane.setVisibility(View.VISIBLE);
+        Log.e(TAG, "populateViewsWithData() called");
+
+        // Creator
+        List<CreatedBy> createdByList = showData.getCreatedBy();
+        if (createdByList == null || createdByList.size() == 0) {
+            // remove views
+            detailShowCrewImage.setVisibility(View.INVISIBLE);
+            detailShowCrewName.setVisibility(View.INVISIBLE);
+            detailShowCrewTitle.setVisibility(View.INVISIBLE);
+        } else {
+            CreatedBy firstEntry = createdByList.get(0);
+            detailShowCrewName.setText(firstEntry.getName());
+
+            String creatorProfileUrl = "http://image.tmdb.org/t/p/w185/" + firstEntry.getProfilePath();
+            Picasso.with(this)
+                    .load(creatorProfileUrl)
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .into(detailShowCrewImage);
+        }
+
+        showRuntimeStatus.setText(showData.getStatus());
+        showRuntimeFirstAirDate.setText(Utilities.convertDate(showData.getFirstAirDate()));
+        showRuntimeNrEpisodes.setText(String.valueOf(showData.getNumberOfEpisodes()));
+        showRuntimeNrSeasons.setText(String.valueOf(showData.getNumberOfSeasons()));
+
+        int diff = (int) Utilities.computeDifferenceInDays(showData.getLastAirDate());
+        String lastRuntime = Utilities.convertDate(showData.getLastAirDate());
+
+
+        if (diff <= 0) {
+            String daysDifference;
+            if (diff < 0) {
+                daysDifference = getResources()
+                        .getQuantityString(R.plurals.x_days_ago_plurals, Math.abs(diff), Math.abs(diff));
+            } else {
+                daysDifference = getString(R.string.today_show);
+            }
+            lastRuntime += " " + daysDifference;
+        }
+
+        showRuntimeLastAirDate.setText(lastRuntime);
+        Log.d(TAG, "populateViewsWithData: " + diff);
+
+        List<Integer> runtime = showData.getEpisodeRunTime();
+        String runtimeString = "";
+        for (int i = 0; i < runtime.size(); i++) {
+            if (i != 0) {
+                runtimeString += ", ";
+            }
+            runtimeString += runtime.get(i);
+        }
+        runtimeString += " " + getString(R.string.runtime_minutes);
+
+        showRuntimeMinutes.setText(runtimeString);
+
+        List<Genre> genreList = showData.getGenres();
+        String genreString = "";
+        for (int i = 0; i < genreList.size(); i++) {
+            if (i != 0) {
+                genreString += ", ";
+            }
+            genreString += genreList.get(i).getName();
+        }
+        showRuntimeGenres.setText(genreString);
+
+
+        List<Season> seasonList = showData.getSeasons();
+
+        // new season pane
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        seasonRecylcerView.setLayoutManager(linearLayoutManager);
+        seasonRecylcerView.setNestedScrollingEnabled(false);
+        seasonAdapter = new SeasonAdapter(this, this);
+        seasonRecylcerView.setAdapter(seasonAdapter);
+        seasonAdapter.setSeasonList(seasonList);
+
+        Log.d(TAG, "populateViewsWithData: " + Utilities.buildShowUri(showData.getId()));
+
+        // Todo: Here as well
+        getSupportLoaderManager().initLoader(CHECK_FAVE_LOADER_ID, null, this);
+
+    }
+
+    @Override
+    public void showCast(@NonNull Credits castData) {
+        castSectionContainer.setVisibility(View.VISIBLE);
+        CrewAdapter creditsAdapter = new CrewAdapter(this);
+        creditsAdapter.setCastData(castData.getCast());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        castRecyclerView.setLayoutManager(layoutManager);
+        castRecyclerView.setAdapter(creditsAdapter);
+    }
+
+    @Override
+    public void showSimilar(@NonNull List<TvShow> similarList) {
+        similarSectionContainer.setVisibility(View.VISIBLE);
+        SimilarMoviesAdapter similarMoviesAdapter = new SimilarMoviesAdapter(this);
+        similarMoviesAdapter.setShowData(similarList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        similarRecyclerView.setLayoutManager(layoutManager);
+        similarRecyclerView.setAdapter(similarMoviesAdapter);
+    }
+
+    @Override
+    public void showErrorInfo() {
+
+    }
+
+    @Override
+    public void showErrorCast() {
+        castSectionContainer.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showErrorSimilar() {
+
+    }
+
+
+
+
+    // Todo: Get rid of this at some point
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

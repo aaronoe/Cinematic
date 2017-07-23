@@ -3,15 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/similar_shows_section_container"
     android:orientation="vertical"
+    android:visibility="gone"
+    android:background="@drawable/detail_screen_gradient"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
     >
 
     <TextView
         android:text="@string/you_might_also_like"
-        android:padding="12dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         style="@style/DetailSectionHeaders"
         />
 

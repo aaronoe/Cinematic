@@ -39,6 +39,7 @@ import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
+import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

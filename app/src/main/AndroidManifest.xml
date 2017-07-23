@@ -60,7 +60,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.TvShowDetailActivity"
+            android:name=".ui.showdetail.TvShowDetailActivity"
             android:theme="@style/AppThemeWithActionbar">
         </activity>
         <activity
