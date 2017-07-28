@@ -111,9 +111,11 @@ public class NavigationActivity extends AppCompatActivity {
                         startActivity(new Intent(NavigationActivity.this, SearchMoviesActivity.class));
                         return true;
 
+                    /*
                     case R.id.drawer_menu_account:
                         startActivity(new Intent(NavigationActivity.this, LoginActivity.class));
                         return true;
+                        */
 
                     case R.id.drawer_menu_info:
                         new LibsBuilder()

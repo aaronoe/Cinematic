@@ -97,4 +97,11 @@ public interface ApiInterface {
     Call<User> getUserInfo(@Query("api_key") String apiKey,
                            @Query("session_id") String sessionId);
 
+    @GET("tv/{tv_id}/credits")
+    Call<Credits> getTvShowCredits(@Path("tv_id") int showId,
+                                   @Query("api_key") String apiKey);
+
+    @GET("tv/{tv_id}/similar")
+    Call<ShowsResponse> getSimilarTvShows(@Path("tv_id") int showId,
+                                          @Query("api_key") String apiKey);
 }

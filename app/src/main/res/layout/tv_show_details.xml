@@ -22,12 +22,9 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/small_vertical_padding"
+            style="@style/DetailSectionHeaders"
             android:text="@string/overview"
-            android:textColor="#fff"
-            android:textSize="18sp" />
+            />
 
         <TextView
             android:id="@+id/tv_detail_overview"
@@ -122,18 +119,22 @@
 
     <LinearLayout
         android:id="@+id/meta_show_container"
-        android:visibility="gone"
         android:orientation="vertical"
-        android:paddingBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <include layout="@layout/cast_section" />
+
+        <include layout="@layout/seasons_pane" />
+
         <include layout="@layout/show_meta_data_pane" />
 
+        <include layout="@layout/similar_shows_section" />
 
-        </LinearLayout>
 
-    <include layout="@layout/seasons_pane" />
+
+    </LinearLayout>
+
 
     </LinearLayout>
 

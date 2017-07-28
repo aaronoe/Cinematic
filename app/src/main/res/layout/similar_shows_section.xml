@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/show_seasons_pane"
+    android:id="@+id/similar_shows_section_container"
     android:orientation="vertical"
     android:visibility="gone"
+    android:background="@drawable/detail_screen_gradient"
     android:paddingTop="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_horizontal_margin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/detail_screen_gradient"
     >
 
     <TextView
-        android:text="@string/seasons_h1"
-        style="@style/DetailSectionHeaders"
+        android:text="@string/you_might_also_like"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
+        style="@style/DetailSectionHeaders"
         />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/seasons_recycler_view"
+        android:id="@+id/similar_shows_recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

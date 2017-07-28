@@ -25,7 +25,7 @@ import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.database.MoviesContract;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.ui.TvShowDetailActivity;
+import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 
 /**
  *

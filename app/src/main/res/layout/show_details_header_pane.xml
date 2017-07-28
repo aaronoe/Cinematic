@@ -41,7 +41,6 @@
     </android.support.design.widget.CollapsingToolbarLayout>
 
 
-
         <ImageView
             android:contentDescription="@string/tv_show_poster"
             android:id="@+id/tv_detail_profile"
@@ -49,6 +48,7 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:layout_width="wrap_content"
+            android:transitionName="@string/transition_key_show_poster"
             android:layout_height="140dp"
             android:layout_marginTop="-70dp"
             android:layout_marginLeft="16dp"

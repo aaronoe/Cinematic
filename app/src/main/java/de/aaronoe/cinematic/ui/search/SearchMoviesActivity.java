@@ -32,7 +32,7 @@ import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
-import de.aaronoe.cinematic.ui.TvShowDetailActivity;
+import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
