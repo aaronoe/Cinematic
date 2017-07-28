@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -18,8 +16,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
+import de.aaronoe.cinematic.util.Constants;
 
 /**
  * Created by private on 7/23/17.
@@ -68,7 +66,8 @@ public class SimilarMoviesAdapter extends RecyclerView.Adapter<SimilarMoviesAdap
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, TvShowDetailActivity.class);
                 intent.putExtra(mContext.getString(R.string.INTENT_KEY_TV_SHOW_ITEM), tvShow);
-                mContext.startActivity(intent);
+                intent.putExtra(mContext.getString(R.string.intent_transition_enter_mode), Constants.POSTER_ENTER);
+
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptionsCompat options = ActivityOptionsCompat.

@@ -126,6 +126,7 @@
     <string name="cast">Cast</string>
     <string name="you_might_also_like">You might also like</string>
     <string name="transition_key_show_poster">TRANSITION_SHOW_POSTER</string>
+    <string name="intent_transition_enter_mode">INTENT_KEY_ENTER_MODE</string>
 
 
 </resources>

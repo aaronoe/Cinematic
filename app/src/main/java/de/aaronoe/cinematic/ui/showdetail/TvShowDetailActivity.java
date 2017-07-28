@@ -52,6 +52,7 @@ import de.aaronoe.cinematic.model.TvShow.SeasonAdapter;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.ui.TvSeasonDetailActivity;
+import de.aaronoe.cinematic.util.Constants;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TvShowDetailActivity extends AppCompatActivity implements
@@ -120,6 +121,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
 
 
     int showId;
+    int enterMode;
     String showName;
     TvShowFull thisShow;
     TvShow enterShow;
@@ -155,6 +157,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
             }
             if (startIntent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
                 enterShow = startIntent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM));
+                enterMode = startIntent.getIntExtra(getString(R.string.intent_transition_enter_mode), Constants.NONE);
                 showId = enterShow.getId();
                 if (getSupportActionBar() != null) {
                     getSupportActionBar().setTitle(enterShow.getName());
@@ -169,54 +172,68 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     private void initWithShow() {
         // Backdrop
         String pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.getBackdropPath();
-
-        supportPostponeEnterTransition();
-
-        Picasso.with(this)
-                .load(pictureUrl)
-                .placeholder(R.drawable.poster_show_loading)
-                .error(R.drawable.poster_show_not_available)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                        tvDetailBackdrop.setImageBitmap(bitmap);
-                        supportStartPostponedEnterTransition();
-                    }
-
-                    @Override
-                    public void onBitmapFailed(Drawable drawable) {
-                        supportStartPostponedEnterTransition();
-                    }
-
-                    @Override
-                    public void onPrepareLoad(Drawable drawable) {
-
-                    }
-                });
-
-
-        supportPostponeEnterTransition();
         String posterUrl = "http://image.tmdb.org/t/p/w185/" + enterShow.getPosterPath();
 
-        Picasso.with(this)
-                .load(posterUrl)
-                .into(new Target() {
-                    @Override
-                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                        tvDetailProfile.setImageBitmap(bitmap);
-                        supportStartPostponedEnterTransition();
-                    }
+        supportPostponeEnterTransition();
 
-                    @Override
-                    public void onBitmapFailed(Drawable drawable) {
-                        supportStartPostponedEnterTransition();
-                    }
+        switch (enterMode) {
+            case Constants.BACKDROP_ENTER :
+                Picasso.with(this)
+                        .load(pictureUrl)
+                        .placeholder(R.drawable.poster_show_loading)
+                        .error(R.drawable.poster_show_not_available)
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                                tvDetailBackdrop.setImageBitmap(bitmap);
+                                supportStartPostponedEnterTransition();
+                            }
 
-                    @Override
-                    public void onPrepareLoad(Drawable drawable) {
+                            @Override
+                            public void onBitmapFailed(Drawable drawable) {
+                                supportStartPostponedEnterTransition();
+                            }
 
-                    }
-                });
+                            @Override
+                            public void onPrepareLoad(Drawable drawable) {
+
+                            }
+                        });
+
+                Picasso.with(this)
+                        .load(posterUrl)
+                        .into(tvDetailProfile);
+
+                break;
+            case Constants.POSTER_ENTER:
+                Picasso.with(this)
+                        .load(posterUrl)
+                        .into(new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                                tvDetailProfile.setImageBitmap(bitmap);
+                                supportStartPostponedEnterTransition();
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Drawable drawable) {
+                                supportStartPostponedEnterTransition();
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable drawable) {
+
+                            }
+                        });
+                Picasso.with(this)
+                        .load(pictureUrl)
+                        .placeholder(R.drawable.poster_show_loading)
+                        .error(R.drawable.poster_show_not_available)
+                        .into(tvDetailBackdrop);
+                break;
+        }
+
+
 
         tvDetailTitle.setText(enterShow.getName());
         tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));

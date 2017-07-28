@@ -61,6 +61,7 @@
 
         <activity
             android:name=".ui.showdetail.TvShowDetailActivity"
+            android:launchMode="standard"
             android:theme="@style/AppThemeWithActionbar">
         </activity>
         <activity
