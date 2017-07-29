@@ -127,6 +127,13 @@
     <string name="you_might_also_like">You might also like</string>
     <string name="transition_key_show_poster">TRANSITION_SHOW_POSTER</string>
     <string name="intent_transition_enter_mode">INTENT_KEY_ENTER_MODE</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="original_title">Original Title:</string>
+    <string name="type">Type:</string>
+    <string name="production">Production:</string>
+    <string name="premiere">Premiere:</string>
+    <string name="duration">Duration:</string>
+    <string name="seasons_meta">Seasons</string>
 
 
 </resources>

@@ -39,6 +39,7 @@ import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
+import de.aaronoe.cinematic.ui.redesign.showdetail.ShowDetailActivity;
 import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import de.aaronoe.cinematic.util.Constants;
 import retrofit2.Call;
@@ -309,7 +310,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
     @Override
     public void onClick(TvShow tvshow, ImageView v) {
-        Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
+        Intent intentToStartDetailActivity = new Intent(getContext(), ShowDetailActivity.class);
         intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM), tvshow);
         intentToStartDetailActivity.putExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER);
 

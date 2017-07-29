@@ -62,12 +62,10 @@
         <activity
             android:name=".ui.showdetail.TvShowDetailActivity"
             android:launchMode="standard"
-            android:theme="@style/AppThemeWithActionbar">
-        </activity>
+            android:theme="@style/AppThemeWithActionbar"></activity>
         <activity
             android:name=".ui.TvSeasonDetailActivity"
-            android:theme="@style/AppThemeWithActionbar">
-        </activity>
+            android:theme="@style/AppThemeWithActionbar"></activity>
         <activity
             android:name=".ui.favorites.FavoritesActivity"
             android:parentActivityName=".ui.NavigationActivity"
@@ -89,8 +87,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-
         </activity>
+        <activity android:name=".ui.redesign.showdetail.ShowDetailActivity"></activity>
     </application>
 
 </manifest>

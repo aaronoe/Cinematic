@@ -25,7 +25,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            tools:text="About"
+            android:text="@string/about"
             android:textAllCaps="true"
             android:textSize="12sp"
             android:layout_marginBottom="16dp"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Original Title:"
+                android:text="@string/original_title"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -50,6 +50,7 @@
 
             <TextView
                 tools:text="The Walking Dead"
+                android:id="@+id/meta_title_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -65,7 +66,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Type:"
+                android:text="@string/type"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -74,6 +75,7 @@
 
             <TextView
                 tools:text="Family, Fantasy and Adventure"
+                android:id="@+id/meta_category_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -89,7 +91,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Production:"
+                android:text="@string/production"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -114,7 +116,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Premiere:"
+                android:text="@string/premiere"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -123,6 +125,7 @@
 
             <TextView
                 tools:text="October 31, 2014"
+                android:id="@+id/meta_release_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -139,7 +142,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Duration:"
+                android:text="@string/duration"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -148,6 +151,7 @@
 
             <TextView
                 tools:text="42, 60 and 45 Minutes"
+                android:id="@+id/meta_duration_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -163,7 +167,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                tools:text="Seasons:"
+                android:text="@string/seasons_meta"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -172,6 +176,7 @@
 
             <TextView
                 tools:text="7 Seasons and 67 Episodes"
+                android:id="@+id/meta_seasons_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"

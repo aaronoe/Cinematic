@@ -2,9 +2,11 @@ package de.aaronoe.cinematic.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -16,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import de.aaronoe.cinematic.model.MultiSearch.KnownFor;
@@ -38,6 +41,7 @@ public class Utilities {
 
 
     static HashMap<Integer, String> movieGenres = new HashMap<>();
+    static HashMap<Integer, String> map = new HashMap<>(25);
 
 
 
@@ -229,9 +233,7 @@ public class Utilities {
         return Uri.withAppendedPath(ShowEntry.CONTENT_URI, String.valueOf(showId));
     }
 
-
-    public static String extractMovieGenres(List<Integer> genres, Context mContext) {
-
+    static {
         movieGenres = new HashMap<>();
         movieGenres.put(28, "Action");
         movieGenres.put(12, "Adventure");
@@ -250,6 +252,46 @@ public class Utilities {
         movieGenres.put(878, "Science Fiction");
         movieGenres.put(10770, "TV Movie");
         movieGenres.put(53, "Thriller");
+
+        map.put(10759, "Action & Adventure");
+        map.put(16, "Animation");
+        map.put(35, "Comedy");
+        map.put(80, "Crime");
+        map.put(99, "Documentary");
+        map.put(18, "Drama");
+        map.put(10751, "Family");
+        map.put(10752, "Kids");
+        map.put(9648, "Mystery");
+        map.put(10763, "News");
+        map.put(10764, "Reality");
+        map.put(10765, "Sci-Fi & Fantasy");
+        map.put(10766, "Soap");
+        map.put(10767, "Talk");
+        map.put(10768, "War & Politics");
+        map.put(37, "Western");
+    }
+
+
+
+    public static List<String> extractGenreList(List<Integer> genres) {
+
+        List<String> resultList = new ArrayList<>(4);
+
+        if (genres == null || genres.size() == 0) return resultList;
+
+        for (Integer genre : genres) {
+            if (!map.containsKey(genre)) continue;
+            Log.d(TAG, "extractGenreList() called with: genres = [" + genres + "]");
+            resultList.add(map.get(genre));
+        }
+
+        Log.d(TAG, "extractGenreList() returned: " + resultList);
+        return resultList;
+
+    }
+
+    public static String extractMovieGenres(List<Integer> genres, Context mContext) {
+
 
         final String SEPARATOR = ", ";
         if (genres == null || genres.size() == 0) return null;

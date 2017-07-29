@@ -1,5 +1,6 @@
 package de.aaronoe.cinematic.ui.showdetail
 
+import android.app.Activity
 import de.aaronoe.cinematic.BuildConfig
 import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.model.Crew.Credits
@@ -23,7 +24,7 @@ class ShowDetailPresenterImpl(var view : ShowDetailContract.View) : ShowDetailCo
     val API_KEY = BuildConfig.MOVIE_DB_API_KEY
 
     init {
-        ((view as TvShowDetailActivity).application as CinematicApp).netComponent.inject(this)
+        ((view as Activity).application as CinematicApp).netComponent.inject(this)
     }
 
     override fun downloadInfo(showId: Int) {
