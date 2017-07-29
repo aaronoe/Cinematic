@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <ImageView
+        tools:src="@drawable/walking_dead_backdro"
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:src="#cc222128"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            tools:text="About"
+            android:textAllCaps="true"
+            android:textSize="12sp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/justWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Original Title:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="The Walking Dead"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Type:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="Family, Fantasy and Adventure"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Production:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="United Kingdom, USA"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Premiere:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="October 31, 2014"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Duration:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="42, 60 and 45 Minutes"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                tools:text="Seasons:"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="7 Seasons and 67 Episodes"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</FrameLayout>

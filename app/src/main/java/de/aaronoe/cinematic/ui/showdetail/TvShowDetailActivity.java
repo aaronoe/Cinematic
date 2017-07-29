@@ -15,6 +15,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -410,7 +411,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         similarSectionContainer.setVisibility(View.VISIBLE);
         SimilarMoviesAdapter similarMoviesAdapter = new SimilarMoviesAdapter(this);
         similarMoviesAdapter.setShowData(similarList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false);
         similarRecyclerView.setLayoutManager(layoutManager);
         similarRecyclerView.setAdapter(similarMoviesAdapter);
     }
