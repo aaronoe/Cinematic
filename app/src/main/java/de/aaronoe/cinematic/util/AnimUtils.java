@@ -108,11 +108,11 @@ public class AnimUtils {
     }
 
     public static void animShow(View v) {
-        animShow(v, 300, 0, 1);
+        animShow(v, 600, 0, 1);
     }
 
     public static void animShow(View v, int duration, float from, float to) {
-        if (v.getVisibility() == View.GONE) {
+        if (v.getVisibility() == View.GONE || v.getVisibility() == View.INVISIBLE) {
             v.setVisibility(View.VISIBLE);
         }
         v.clearAnimation();

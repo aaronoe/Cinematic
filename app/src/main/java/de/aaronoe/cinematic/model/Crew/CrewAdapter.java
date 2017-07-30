@@ -36,7 +36,7 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
     @Override
     public CrewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.tv_season_item;
+        int layoutIdForListItem = R.layout.detail_episode_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
@@ -89,9 +89,9 @@ public class CrewAdapter extends RecyclerView.Adapter<CrewAdapter.CrewViewHolder
 
     class CrewViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.poster_imageview) ImageView actorImageView;
-        @BindView(R.id.season_number) TextView actorNameTextView;
-        @BindView(R.id.episode_count_tv) TextView characterNameTextView;
+        @BindView(R.id.actor_item_iv) ImageView actorImageView;
+        @BindView(R.id.actor_name_tv) TextView actorNameTextView;
+        @BindView(R.id.actor_character_name) TextView characterNameTextView;
 
         public CrewViewHolder(View itemView) {
             super(itemView);

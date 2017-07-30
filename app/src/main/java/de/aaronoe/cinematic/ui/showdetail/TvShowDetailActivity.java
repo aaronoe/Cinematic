@@ -340,7 +340,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         int diff = (int) Utilities.computeDifferenceInDays(showData.getLastAirDate());
         String lastRuntime = Utilities.convertDate(showData.getLastAirDate());
 
-
         if (diff <= 0) {
             String daysDifference;
             if (diff < 0) {

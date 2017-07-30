@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
-                    android:minHeight="240dp" />
+                    android:minHeight="260dp" />
 
                 <ImageView
                     android:id="@+id/backdrop_overlay_iv"
@@ -56,22 +56,7 @@
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="240dp">
-
-                    <TextView
-                        tools:text="2h 13m"
-                        android:textSize="12sp"
-                        android:textColor="@color/justWhite"
-                        android:drawableLeft="@drawable/ic_access_time_black_12dp"
-                        android:drawablePadding="4dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginStart="16dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        android:id="@+id/runtime_textview" />
+                    android:layout_height="260dp">
 
                     <TextView
                         tools:text="The Walking Dead"
@@ -80,8 +65,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        app:layout_constraintBottom_toTopOf="@+id/runtime_textview"
-                        app:layout_constraintLeft_toLeftOf="@+id/runtime_textview"
+                        app:layout_constraintBottom_toTopOf="@+id/category_bubble_one"
+                        app:layout_constraintLeft_toLeftOf="@+id/category_bubble_one"
                         android:id="@+id/detail_title_textview" />
 
                     <TextView
@@ -91,7 +76,7 @@
                         android:background="@drawable/rounded_shape"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintLeft_toLeftOf="@+id/runtime_textview"
+                        app:layout_constraintLeft_toLeftOf="@+id/category_bubble_one"
                         android:layout_marginBottom="12dp"
                         app:layout_constraintBottom_toTopOf="@+id/detail_title_textview"
                         android:id="@+id/detail_year_textview" />
@@ -115,11 +100,11 @@
                         android:background="@drawable/rounded_shape_neutral"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:id="@+id/category_bubble_one"
                         android:layout_marginLeft="16dp"
-                        app:layout_constraintLeft_toRightOf="@+id/runtime_textview"
-                        app:layout_constraintBottom_toBottomOf="@+id/runtime_textview"
-                        app:layout_constraintTop_toTopOf="@+id/runtime_textview"
-                        android:id="@+id/category_bubble_one" />
+                        android:layout_marginBottom="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent" />
 
                     <TextView
                         android:id="@+id/category_bubble_two"
@@ -130,8 +115,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/runtime_textview"
-                        app:layout_constraintTop_toTopOf="@+id/runtime_textview"
+                        app:layout_constraintBottom_toBottomOf="@+id/category_bubble_one"
+                        app:layout_constraintTop_toTopOf="@+id/category_bubble_one"
                         app:layout_constraintLeft_toRightOf="@+id/category_bubble_one" />
 
                     <TextView
@@ -142,8 +127,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
-                        app:layout_constraintBottom_toBottomOf="@+id/runtime_textview"
-                        app:layout_constraintTop_toTopOf="@+id/runtime_textview"
+                        app:layout_constraintBottom_toBottomOf="@+id/category_bubble_one"
+                        app:layout_constraintTop_toTopOf="@+id/category_bubble_one"
                         app:layout_constraintLeft_toRightOf="@+id/category_bubble_two"
                         android:id="@+id/category_bubble_three" />
 
@@ -175,7 +160,7 @@
                 android:textColor="@color/justWhite"
                 android:layout_marginTop="4dp"
                 android:textSize="12sp"
-                android:maxLines="5"
+                android:maxLines="8"
                 android:ellipsize="end"
                 tools:text="Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond."
                 android:layout_width="wrap_content"
@@ -183,11 +168,33 @@
 
         </LinearLayout>
 
-        <include layout="@layout/new_cast_section" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <include layout="@layout/show_new_meta_section" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <include layout="@layout/new_suggestion_section" />
+                <include layout="@layout/new_cast_section" />
+
+                <include layout="@layout/show_new_meta_section" />
+
+                <include layout="@layout/seasons_pane" />
+
+                <include layout="@layout/new_suggestion_section" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/content_loading_pb"
+                android:layout_marginTop="40dp"
+                android:layout_gravity="top|center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

@@ -1,77 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="110dp"
+    android:layout_height="160dp"
+    android:layout_marginRight="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/small_vertical_padding"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    >
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cv"
-        android:elevation="8dp"
-        style="@style/CardViewStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
+    <ImageView
+        tools:src="@drawable/walking_dead_profile"
+        android:id="@+id/seasons_poster_iv"
+        android:transitionName="@string/TRANSITION_KEY_TV_SEASON"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        />
 
-        <android.support.constraint.ConstraintLayout
+
+    <ImageView
+        android:src="@drawable/overlay_gradient_weak"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textColor="@color/justWhite"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:text="Tyrion Lannister"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/seasons_name_tv"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            app:layout_constraintBottom_toTopOf="@+id/season_detail_tv"
+            app:layout_constraintLeft_toLeftOf="@+id/season_detail_tv" />
 
-            <ImageView
-                android:contentDescription="@string/season_poster"
-                android:transitionName="@string/TRANSITION_KEY_TV_SEASON"
-                android:layout_width="110dp"
-                android:layout_height="160dp"
-                android:scaleType="centerCrop"
-                android:adjustViewBounds="true"
-                tools:src="@drawable/error"
-                android:id="@+id/poster_imageview" />
+        <TextView
+            tools:text="Peter Dinklage"
+            android:textColor="@color/grey_500"
+            android:gravity="center"
+            android:drawablePadding="2dp"
+            android:drawableLeft="@drawable/ic_confirmation_number_black_12dp"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:maxLines="2"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="6dp"
+            android:id="@+id/season_detail_tv" />
 
-            <android.support.constraint.ConstraintLayout
-                android:padding="2dp"
-                app:layout_constraintLeft_toLeftOf="@+id/poster_imageview"
-                app:layout_constraintRight_toRightOf="@+id/poster_imageview"
-                app:layout_constraintBottom_toBottomOf="@+id/poster_imageview"
-                android:background="@color/backgroundPrimary"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp" >
-
-                <TextView
-                    android:id="@+id/season_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:textColor="#fff"
-                    android:textSize="13sp"
-                    tools:text="@string/season_and_year"
-                    app:layout_constraintBottom_toTopOf="@+id/episode_count_tv"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-
-                <TextView
-                    android:id="@+id/episode_count_tv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="10 Episodes"
-                    android:textColor="#fff"
-                    android:layout_marginBottom="@dimen/smaller_vertical_padding"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
-
-            </android.support.constraint.ConstraintLayout>
-
-
-
-        </android.support.constraint.ConstraintLayout>
-
-
-    </android.support.v7.widget.CardView>
+    </android.support.constraint.ConstraintLayout>
 
 
 </FrameLayout>

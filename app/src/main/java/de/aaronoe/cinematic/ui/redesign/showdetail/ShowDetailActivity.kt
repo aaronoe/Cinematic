@@ -1,35 +1,50 @@
 package de.aaronoe.cinematic.ui.redesign.showdetail
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toolbar
+import android.widget.*
 import butterknife.ButterKnife
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.database.Utilities
 import de.aaronoe.cinematic.model.Crew.Credits
+import de.aaronoe.cinematic.model.Crew.CrewAdapter
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull
+import de.aaronoe.cinematic.model.TvShow.SeasonAdapter
 import de.aaronoe.cinematic.model.TvShow.TvShow
+import de.aaronoe.cinematic.model.TvShow.TvShowAdapter
+import de.aaronoe.cinematic.ui.TvSeasonDetailActivity
 import de.aaronoe.cinematic.ui.showdetail.ShowDetailContract
 import de.aaronoe.cinematic.ui.showdetail.ShowDetailPresenterImpl
+import de.aaronoe.cinematic.ui.showdetail.SimilarMoviesAdapter
 import de.aaronoe.cinematic.util.AnimUtils
 import de.aaronoe.cinematic.util.bindView
 import org.jetbrains.anko.collections.forEachWithIndex
 
 class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
+    val seasonsRecyclerView: RecyclerView by bindView(R.id.seasons_recycler_view)
+    val showSeasonsPane: LinearLayout by bindView(R.id.show_seasons_pane)
+    val newCastSectionContainer: LinearLayout by bindView(R.id.new_cast_section_container)
+    val newMetaContainer: FrameLayout by bindView(R.id.new_meta_container)
+    val newSuggestionContainer: LinearLayout by bindView(R.id.new_suggestion_container)
+    val contentLoadingPb: ProgressBar by bindView(R.id.content_loading_pb)
+    val metaBackdropIv: ImageView by bindView(R.id.meta_backdrop_iv)
+    val metaLatestEpisode: TextView by bindView(R.id.meta_latest_episode)
     val backdropOverlayIv: ImageView by bindView(R.id.backdrop_overlay_iv)
     val toolbar: Toolbar by bindView(R.id.toolbar)
     val detailBackdropImageview: ImageView by bindView(R.id.detail_backdrop_imageview)
-    val runtimeTextview: TextView by bindView(R.id.runtime_textview)
     val detailTitleTextview: TextView by bindView(R.id.detail_title_textview)
     val detailYearTextview: TextView by bindView(R.id.detail_year_textview)
     val detailRatingTextview: TextView by bindView(R.id.detail_rating_textview)
@@ -74,8 +89,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
         supportPostponeEnterTransition()
         Picasso.with(this)
                 .load(pictureUrl)
-                .placeholder(R.drawable.poster_show_loading)
-                .error(R.drawable.poster_show_not_available)
                 .into(object : Target {
                     override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
                         detailBackdropImageview.setImageBitmap(bitmap)
@@ -96,7 +109,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
         detailRatingTextview.text = String.format("%.1f", enterShow.voteAverage)
         detailYearTextview.text = Utilities.convertDateToYear(enterShow.firstAirDate)
         detailOverviewTextview.text = enterShow.overview
-        runtimeTextview.text = enterShow.voteCount.toString()
 
         val genreList = Utilities.extractGenreList(enterShow.genreIds)
         when (genreList.size) {
@@ -116,21 +128,119 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
             }
         }
 
+        downloadShowDetails()
+
+    }
+
+    fun downloadShowDetails() {
+        presenter.downloadCast(enterShow.id)
+        presenter.downloadInfo(enterShow.id)
+        presenter.downloadSimilar(enterShow.id)
     }
 
     override fun showInfo(showFull: TvShowFull?) {
+        AnimUtils.animShow(newMetaContainer)
+        contentLoadingPb.visibility = View.INVISIBLE
+
+        metaTitleTv.text = showFull?.name
+        metaReleaseTv.text = Utilities.convertDate(showFull?.firstAirDate)
+
+        if (showFull?.backdropPath != enterShow.backdropPath) {
+            val pictureUrl = "http://image.tmdb.org/t/p/w500/" + showFull?.backdropPath
+            Picasso.with(this).load(pictureUrl).into(metaBackdropIv)
+        }
+
+        val genreList = showFull?.genres
+        var genreString = ""
+        if (genreList != null) {
+            for (i in genreList.indices) {
+                if (i != 0) {
+                    genreString += ", "
+                }
+                genreString += genreList[i].name
+            }
+            metaCategoryTv.text = genreString
+        }
+
+        val runtime = showFull?.episodeRunTime
+        var runtimeString = ""
+        if (runtime != null) {
+            for (i in runtime.indices) {
+                if (i != 0) {
+                    runtimeString += ", "
+                }
+                runtimeString += runtime[i]
+            }
+            runtimeString += " " + getString(R.string.runtime_minutes)
+        }
+        metaDurationTv.text = runtimeString
+
+        metaSeasonsTv.text = "${showFull?.numberOfSeasons} Seasons and ${showFull?.numberOfEpisodes} Episodes"
+
+        val diff = Utilities.computeDifferenceInDays(showFull?.lastAirDate).toInt()
+        var lastRuntime: String = Utilities.convertDate(showFull?.lastAirDate)
+
+        if (diff <= 0) {
+            val daysDifference: String
+            if (diff < 0) {
+                daysDifference = resources
+                        .getQuantityString(R.plurals.x_days_ago_plurals, Math.abs(diff), Math.abs(diff))
+            } else {
+                daysDifference = getString(R.string.today_show)
+            }
+            lastRuntime += " " + daysDifference
+        }
+        metaLatestEpisode.text = lastRuntime
+
+        val seasonList = showFull?.seasons
+
+        AnimUtils.animShow(showSeasonsPane)
+        // new season pane
+        val linearLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        seasonsRecyclerView.layoutManager = linearLayoutManager
+        seasonsRecyclerView.isNestedScrollingEnabled = false
+        val seasonAdapter = SeasonAdapter(this, { season, view ->
+            val intent = Intent(this, TvSeasonDetailActivity::class.java)
+            intent.putExtra(getString(R.string.intent_key_tvshow), showFull)
+            intent.putExtra(getString(R.string.intent_key_selected_season), season)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, getString(R.string.TRANSITION_KEY_TV_SEASON))
+                startActivity(intent, options.toBundle())
+            } else {
+                startActivity(intent)
+            }
+        })
+        seasonsRecyclerView.adapter = seasonAdapter
+        seasonAdapter.setSeasonList(seasonList)
     }
 
     override fun showCast(credits: Credits?) {
+        contentLoadingPb.visibility = View.GONE
+        AnimUtils.animShow(newCastSectionContainer)
+        val creditsAdapter = CrewAdapter(this)
+        creditsAdapter.setCastData(credits?.cast?.sortedBy { it.order })
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        castRecyclerView.layoutManager = layoutManager
+        castRecyclerView.adapter = creditsAdapter
     }
 
     override fun showSimilar(similarList: MutableList<TvShow>?) {
+        contentLoadingPb.visibility = View.GONE
+        AnimUtils.animShow(newSuggestionContainer)
+
+        val similarMoviesAdapter = SimilarMoviesAdapter(this)
+        similarMoviesAdapter.setShowData(similarList)
+        val layoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+        detailSuggestionRv.layoutManager = layoutManager
+        detailSuggestionRv.adapter = similarMoviesAdapter
     }
 
     override fun showErrorInfo() {
     }
 
     override fun showErrorCast() {
+
     }
 
     override fun showErrorSimilar() {

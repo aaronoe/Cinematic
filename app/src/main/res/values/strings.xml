@@ -134,6 +134,7 @@
     <string name="premiere">Premiere:</string>
     <string name="duration">Duration:</string>
     <string name="seasons_meta">Seasons</string>
+    <string name="latest_episode_meta">Latest Episode:</string>
 
 
 </resources>

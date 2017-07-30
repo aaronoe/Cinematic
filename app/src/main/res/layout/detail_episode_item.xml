@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="130dp"
-    android:layout_height="180dp"
+    android:layout_width="120dp"
+    android:layout_height="160dp"
+    android:layout_marginRight="8dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
     <ImageView
         tools:src="@drawable/test_actorimg"
+        android:id="@+id/actor_item_iv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
@@ -48,6 +50,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            android:maxLines="2"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="6dp"
             android:id="@+id/actor_character_name" />

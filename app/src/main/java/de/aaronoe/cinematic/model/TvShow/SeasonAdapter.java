@@ -92,11 +92,11 @@ public class SeasonAdapter extends RecyclerView.Adapter<SeasonAdapter.SeasonView
 
     class SeasonViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.poster_imageview)
+        @BindView(R.id.seasons_poster_iv)
         ImageView posterImageView;
-        @BindView(R.id.season_number)
+        @BindView(R.id.seasons_name_tv)
         TextView seasonNumberTextView;
-        @BindView(R.id.episode_count_tv)
+        @BindView(R.id.season_detail_tv)
         TextView episodeCountTextView;
 
         SeasonViewHolder(View itemView) {

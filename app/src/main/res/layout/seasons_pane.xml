@@ -1,25 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/show_seasons_pane"
     android:orientation="vertical"
-    android:visibility="gone"
-    android:paddingTop="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:visibility="invisible"
+    tools:visibility="visible"
+    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/detail_screen_gradient"
+    android:background="@color/colorPrimary"
     >
 
     <TextView
         android:text="@string/seasons_h1"
-        style="@style/DetailSectionHeaders"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
+        android:textSize="12sp"
+        android:textColor="@color/justWhite"
         />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/seasons_recycler_view"
+        android:layout_marginTop="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

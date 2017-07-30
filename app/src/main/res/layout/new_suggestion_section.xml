@@ -2,13 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/new_suggestion_container"
+    android:visibility="invisible"
+    tools:visibility="visible"
     android:paddingTop="16dp"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
-        tools:text="You might also like"
+        android:text="@string/you_might_also_like"
         android:textAllCaps="true"
         android:textSize="12sp"
         android:paddingStart="16dp"
@@ -19,7 +22,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/detail_suggestion_rv"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
