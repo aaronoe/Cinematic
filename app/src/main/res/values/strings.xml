@@ -135,6 +135,14 @@
     <string name="duration">Duration:</string>
     <string name="seasons_meta">Seasons</string>
     <string name="latest_episode_meta">Latest Episode:</string>
+    <string name="INTENT_KEY_MOVIE">INTENT_KEY_MOVIE</string>
+    <string name="meta_status">Status:</string>
+    <string name="runtime_meta">Runtime:</string>
+    <string name="budgetmeta">Budget:</string>
+    <string name="revenue_meta">Revenue:</string>
+    <string name="meta_homepage">Homepage:</string>
+    <string name="runtime_min">%dm</string>
+    <string name="runtime_full">%1$dh %2$dm</string>
 
 
 </resources>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:id="@+id/new_suggestion_container"
-    android:visibility="invisible"
+    android:visibility="gone"
     tools:visibility="visible"
     android:paddingTop="16dp"
     android:background="@color/colorPrimaryDark"
@@ -22,7 +22,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/detail_suggestion_rv"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

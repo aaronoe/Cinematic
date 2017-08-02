@@ -60,6 +60,20 @@
                     tools:text="2014" />
 
                 <TextView
+                    android:visibility="gone"
+                    android:id="@+id/detail_runtime_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/rounded_shape"
+                    android:textColor="@color/justWhite"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_title_textview"
+                    app:layout_constraintLeft_toRightOf="@+id/detail_year_textview"
+                    tools:text="1h 34m" />
+
+                <TextView
                     android:id="@+id/detail_rating_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -157,9 +171,7 @@
 
                 <include layout="@layout/new_cast_section" />
 
-                <include layout="@layout/show_new_meta_section" />
-
-                <include layout="@layout/seasons_pane" />
+                <include layout="@layout/movie_meta_section" />
 
                 <include layout="@layout/new_suggestion_section" />
 

@@ -29,7 +29,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -408,11 +407,11 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @Override
     public void showSimilar(@NonNull List<TvShow> similarList) {
         similarSectionContainer.setVisibility(View.VISIBLE);
-        SimilarMoviesAdapter similarMoviesAdapter = new SimilarMoviesAdapter(this);
-        similarMoviesAdapter.setShowData(similarList);
+        SimilarShowsAdapter similarShowsAdapter = new SimilarShowsAdapter(this);
+        similarShowsAdapter.setShowData(similarList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false);
         similarRecyclerView.setLayoutManager(layoutManager);
-        similarRecyclerView.setAdapter(similarMoviesAdapter);
+        similarRecyclerView.setAdapter(similarShowsAdapter);
     }
 
     @Override

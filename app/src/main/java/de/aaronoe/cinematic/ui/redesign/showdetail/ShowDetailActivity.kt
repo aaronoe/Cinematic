@@ -4,13 +4,15 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.CollapsingToolbarLayout
+import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityOptionsCompat
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.transition.Slide
+import android.util.Log
 import android.view.View
 import android.widget.*
 import butterknife.ButterKnife
@@ -23,12 +25,12 @@ import de.aaronoe.cinematic.model.Crew.CrewAdapter
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull
 import de.aaronoe.cinematic.model.TvShow.SeasonAdapter
 import de.aaronoe.cinematic.model.TvShow.TvShow
-import de.aaronoe.cinematic.model.TvShow.TvShowAdapter
 import de.aaronoe.cinematic.ui.TvSeasonDetailActivity
 import de.aaronoe.cinematic.ui.showdetail.ShowDetailContract
 import de.aaronoe.cinematic.ui.showdetail.ShowDetailPresenterImpl
-import de.aaronoe.cinematic.ui.showdetail.SimilarMoviesAdapter
+import de.aaronoe.cinematic.ui.showdetail.SimilarShowsAdapter
 import de.aaronoe.cinematic.util.AnimUtils
+import de.aaronoe.cinematic.util.Constants
 import de.aaronoe.cinematic.util.bindView
 import org.jetbrains.anko.collections.forEachWithIndex
 
@@ -43,7 +45,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     val metaBackdropIv: ImageView by bindView(R.id.meta_backdrop_iv)
     val metaLatestEpisode: TextView by bindView(R.id.meta_latest_episode)
     val backdropOverlayIv: ImageView by bindView(R.id.backdrop_overlay_iv)
-    val toolbar: Toolbar by bindView(R.id.toolbar)
     val detailBackdropImageview: ImageView by bindView(R.id.detail_backdrop_imageview)
     val detailTitleTextview: TextView by bindView(R.id.detail_title_textview)
     val detailYearTextview: TextView by bindView(R.id.detail_year_textview)
@@ -51,7 +52,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     val categoryBubbleOne: TextView by bindView(R.id.category_bubble_one)
     val categoryBubbleTwo: TextView by bindView(R.id.category_bubble_two)
     val categoryBubbleThree: TextView by bindView(R.id.category_bubble_three)
-    val collapsingToolbar: CollapsingToolbarLayout by bindView(R.id.collapsing_toolbar)
     val detailOverviewTextview: TextView by bindView(R.id.detail_overview_textview)
     val castRecyclerView: RecyclerView by bindView(R.id.cast_recycler_view)
     val metaTitleTv: TextView by bindView(R.id.meta_title_tv)
@@ -61,6 +61,7 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     val metaSeasonsTv: TextView by bindView(R.id.meta_seasons_tv)
     val detailSuggestionRv: RecyclerView by bindView(R.id.detail_suggestion_rv)
 
+    var showTransition : Boolean = true
     lateinit var presenter : ShowDetailPresenterImpl
     lateinit var enterShow : TvShow
 
@@ -71,12 +72,12 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
         presenter = ShowDetailPresenterImpl(this)
 
+        if (intent.hasExtra(getString(R.string.intent_transition_enter_mode))) {
+            showTransition = intent.getIntExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER) != Constants.NONE
+        }
+
         if (intent.hasExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))) {
             enterShow = intent.getParcelableExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM))
-            if (supportActionBar != null) {
-                supportActionBar!!.title = enterShow.name
-                supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            }
             initViews()
         }
     }
@@ -85,22 +86,22 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     private fun initViews() {
 
         val pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.backdropPath
-
-        supportPostponeEnterTransition()
+        Log.e("Test: ", showTransition.toString())
+        if (showTransition) supportPostponeEnterTransition()
         Picasso.with(this)
                 .load(pictureUrl)
                 .into(object : Target {
                     override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
                         detailBackdropImageview.setImageBitmap(bitmap)
                         AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
-                        supportStartPostponedEnterTransition()
+                        if (showTransition) supportStartPostponedEnterTransition()
                     }
 
                     override fun onBitmapFailed(drawable: Drawable) {
-                        supportStartPostponedEnterTransition()
+                        if (showTransition) supportStartPostponedEnterTransition()
                     }
 
-                    override fun onPrepareLoad(drawable: Drawable) {
+                    override fun onPrepareLoad(drawable: Drawable?) {
 
                     }
                 })
@@ -130,6 +131,13 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
         downloadShowDetails()
 
+    }
+
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private fun setupWindowAnimations() {
+        val slide = Slide()
+        slide.duration = 1000
+        window.enterTransition = slide
     }
 
     fun downloadShowDetails() {
@@ -216,8 +224,9 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     }
 
     override fun showCast(credits: Credits?) {
-        contentLoadingPb.visibility = View.GONE
         AnimUtils.animShow(newCastSectionContainer)
+        contentLoadingPb.visibility = View.INVISIBLE
+
         val creditsAdapter = CrewAdapter(this)
         creditsAdapter.setCastData(credits?.cast?.sortedBy { it.order })
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -226,10 +235,10 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     }
 
     override fun showSimilar(similarList: MutableList<TvShow>?) {
-        contentLoadingPb.visibility = View.GONE
         AnimUtils.animShow(newSuggestionContainer)
+        contentLoadingPb.visibility = View.INVISIBLE
 
-        val similarMoviesAdapter = SimilarMoviesAdapter(this)
+        val similarMoviesAdapter = SimilarShowsAdapter(this)
         similarMoviesAdapter.setShowData(similarList)
         val layoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
         detailSuggestionRv.layoutManager = layoutManager
@@ -240,7 +249,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     }
 
     override fun showErrorCast() {
-
     }
 
     override fun showErrorSimilar() {

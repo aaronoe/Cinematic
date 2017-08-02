@@ -5,7 +5,7 @@
     android:id="@+id/new_cast_section_container"
     android:background="@color/colorPrimary"
     android:padding="16dp"
-    android:visibility="invisible"
+    android:visibility="gone"
     tools:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

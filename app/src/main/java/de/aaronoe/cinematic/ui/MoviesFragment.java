@@ -3,9 +3,11 @@ package de.aaronoe.cinematic.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +32,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
 import de.aaronoe.cinematic.database.Utilities;
-import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.movies.MovieResponse;
 import de.aaronoe.cinematic.CinematicApp;
@@ -37,6 +39,8 @@ import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.MovieAdapter;
+import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailActivity;
+import de.aaronoe.cinematic.util.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -262,14 +266,20 @@ public class MoviesFragment extends Fragment
     }
 
     @Override
-    public void onClick(MovieItem movieItem) {
-        Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
+    public void onClick(MovieItem movieItem, ImageView backdropImageView) {
+        Intent intentToStartDetailActivity = new Intent(getActivity(), MovieDetailActivity.class);
+        intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_MOVIE), movieItem);
 
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(), backdropImageView, getString(R.string.transition_shared_key));
+            getActivity().startActivity(intentToStartDetailActivity, options.toBundle());
+        } else {
+            getActivity().startActivity(intentToStartDetailActivity);
+        }
 
-        startActivity(intentToStartDetailActivity);
     }
 
     /**

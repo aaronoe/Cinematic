@@ -8,6 +8,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -135,7 +136,7 @@ public class DetailPageSimilarFragment extends Fragment implements MovieAdapter.
 
 
     @Override
-    public void onClick(MovieItem movieItem) {
+    public void onClick(MovieItem movieItem, ImageView backdropImageView) {
         Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
         intentToStartDetailActivity.putExtra("MovieId", movieItem.getId());
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());

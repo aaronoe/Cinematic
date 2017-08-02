@@ -12,6 +12,7 @@ import de.aaronoe.cinematic.ui.detailpage.DetailPageSimilarFragment;
 import de.aaronoe.cinematic.ui.detailpage.DetailPageVideosFragment;
 import de.aaronoe.cinematic.ui.MoviesFragment;
 import de.aaronoe.cinematic.ui.login.LoginActivity;
+import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailPresenterImpl;
 import de.aaronoe.cinematic.ui.search.SearchMoviesActivity;
 import de.aaronoe.cinematic.ui.TvSeasonDetailActivity;
 import de.aaronoe.cinematic.ui.showdetail.ShowDetailPresenterImpl;
@@ -44,5 +45,6 @@ public interface NetComponent {
     void inject(AuthManager authManager);
     void inject(LoginActivity loginActivity);
     void inject(ShowDetailPresenterImpl presenter);
+    void inject(MovieDetailPresenterImpl presenter);
 
 }

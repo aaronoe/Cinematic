@@ -290,6 +290,36 @@ public class Utilities {
 
     }
 
+    public static List<String> extractMovieGenres(List<Integer> genres) {
+
+        List<String> resultList = new ArrayList<>(4);
+
+        if (genres == null || genres.size() == 0) return resultList;
+
+        for (Integer genre : genres) {
+            if (!movieGenres.containsKey(genre)) continue;
+            Log.d(TAG, "extractMovieGenres() called with: genres = [" + genres + "]");
+            resultList.add(movieGenres.get(genre));
+        }
+
+        Log.d(TAG, "extractGenreList() returned: " + resultList);
+        return resultList;
+
+    }
+
+    public static String getRuntimeString(Context context, int runtime) {
+
+        int hours = runtime / 60;
+        int minutes = runtime % 60;
+
+        if (hours == 0) {
+            return context.getString(R.string.runtime_min, runtime);
+        } else {
+            return context.getString(R.string.runtime_full, hours, minutes);
+        }
+
+    }
+
     public static String extractMovieGenres(List<Integer> genres, Context mContext) {
 
 

@@ -70,7 +70,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/type"
+                android:text="@string/meta_status"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -78,8 +78,8 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                tools:text="Family, Fantasy and Adventure"
-                android:id="@+id/meta_category_tv"
+                tools:text="In Production"
+                android:id="@+id/meta_status"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/latest_episode_meta"
+                android:text="@string/runtime_meta"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -103,8 +103,8 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                tools:text="United Kingdom, USA"
-                android:id="@+id/meta_latest_episode"
+                tools:text="1h 30m"
+                android:id="@+id/meta_runtime"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -147,7 +147,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/duration"
+                android:text="@string/budgetmeta"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -155,8 +155,8 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                tools:text="42, 60 and 45 Minutes"
-                android:id="@+id/meta_duration_tv"
+                tools:text="74,000,000$"
+                android:id="@+id/meta_budget_tv"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
@@ -172,7 +172,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/seasons_meta"
+                android:text="@string/revenue_meta"
                 android:textSize="12sp"
                 android:textColor="@color/grey_500"
                 android:layout_width="0dp"
@@ -180,8 +180,33 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                tools:text="7 Seasons and 67 Episodes"
-                android:id="@+id/meta_seasons_tv"
+                tools:text="74,000,000$"
+                android:id="@+id/meta_revenue"
+                android:textSize="12sp"
+                android:textColor="@color/justWhite"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/meta_homepage"
+                android:textSize="12sp"
+                android:textColor="@color/grey_500"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                tools:text="www.gooch.com"
+                android:id="@+id/meta_homepage"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
                 android:layout_width="0dp"
