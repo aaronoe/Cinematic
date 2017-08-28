@@ -1,9 +1,12 @@
 package de.aaronoe.cinematic.ui.redesign.moviedetail
 
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,19 +16,18 @@ import android.widget.*
 import butterknife.ButterKnife
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.database.Utilities
 import de.aaronoe.cinematic.model.Crew.Credits
 import de.aaronoe.cinematic.model.Crew.CrewAdapter
 import de.aaronoe.cinematic.model.FullMovie.FullMovie
 import de.aaronoe.cinematic.movies.MovieItem
-import de.aaronoe.cinematic.ui.showdetail.SimilarShowsAdapter
+import de.aaronoe.cinematic.ui.detailpage.DetailActivity
 import de.aaronoe.cinematic.util.AnimUtils
 import de.aaronoe.cinematic.util.Constants
 import de.aaronoe.cinematic.util.bindView
 import org.jetbrains.anko.collections.forEachWithIndex
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.defaultSharedPreferences
 import java.text.NumberFormat
 
 class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
@@ -65,7 +67,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
-
         ButterKnife.bind(this)
 
         if (intent.hasExtra(getString(R.string.intent_transition_enter_mode))) {
@@ -83,7 +84,6 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
     private fun initViews() {
 
         val pictureUrl = "http://image.tmdb.org/t/p/w500" + enterMovie.backdropPath
-        toast(pictureUrl)
         if (showTransition) supportPostponeEnterTransition()
 
         Picasso.with(this)
