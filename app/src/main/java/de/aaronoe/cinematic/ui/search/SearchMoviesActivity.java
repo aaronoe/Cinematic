@@ -1,5 +1,6 @@
 package de.aaronoe.cinematic.ui.search;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -24,14 +25,18 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.database.Utilities;
-import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
-import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.remote.ApiInterface;
+import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.MultiSearch.SearchItem;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
+import de.aaronoe.cinematic.movies.MovieItem;
+import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
+import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
+import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailActivity;
+import de.aaronoe.cinematic.ui.redesign.showdetail.ShowDetailActivity;
 import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -174,25 +179,51 @@ public class SearchMoviesActivity extends AppCompatActivity
 
 
     @Override
-    public void onClick(int itemId, String itemType) {
-        switch (itemType) {
+    public void onClick(SearchItem searchItem) {
+        switch (searchItem.getMediaType()) {
             case MultiSearchAdapter.MEDIA_TYPE_MOVIE:
-                Intent intentToStartDetailActivity = new Intent(this, DetailActivity.class);
-                intentToStartDetailActivity.putExtra("MovieId", itemId);
-                startActivity(intentToStartDetailActivity);
+                goToMovieDetailPage(searchItem);
                 break;
             case MultiSearchAdapter.MEDIA_TYPE_TV:
-                Intent intentToStartShowActivity = new Intent(this, TvShowDetailActivity.class);
-                intentToStartShowActivity.putExtra(getString(R.string.intent_key_tv_show), itemId);
-                startActivity(intentToStartShowActivity);
+                goToShowDetailPage(searchItem);
                 break;
             case MultiSearchAdapter.MEDIA_TYPE_PERSON:
                 Intent intentPersonActivity = new Intent(this, ActorDetailsActivity.class);
-                intentPersonActivity.putExtra(getString(R.string.intent_key_cast_id), itemId);
+                intentPersonActivity.putExtra(getString(R.string.intent_key_cast_id), searchItem.getId());
                 startActivity(intentPersonActivity);
             default:
                 break;
         }
+    }
+
+    private void goToMovieDetailPage(SearchItem searchItem) {
+        MovieItem movieItem = new MovieItem();
+        movieItem.setId(searchItem.getId());
+        movieItem.setOverview(searchItem.getOverview());
+        movieItem.setBackdropPath(searchItem.getBackdropPath());
+        movieItem.setTitle(searchItem.getTitle());
+        movieItem.setVoteAverage(searchItem.getVoteAverage());
+        movieItem.setReleaseDate(searchItem.getReleaseDate());
+        movieItem.setGenreIds(searchItem.getGenreIds());
+
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(getString(R.string.INTENT_KEY_MOVIE), movieItem);
+        startActivity(intent);
+    }
+
+    private void goToShowDetailPage(SearchItem searchItem) {
+        TvShow tvShow = new TvShow();
+        tvShow.setId(searchItem.getId());
+        tvShow.setOverview(searchItem.getOverview());
+        tvShow.setBackdropPath(searchItem.getBackdropPath());
+        tvShow.setName(searchItem.getName());
+        tvShow.setVoteAverage(searchItem.getVoteAverage());
+        tvShow.setFirstAirDate(searchItem.getFirstAirDate());
+        tvShow.setGenreIds(searchItem.getGenreIds());
+
+        Intent intent = new Intent(this, ShowDetailActivity.class);
+        intent.putExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM), tvShow);
+        startActivity(intent);
     }
 
     @Override

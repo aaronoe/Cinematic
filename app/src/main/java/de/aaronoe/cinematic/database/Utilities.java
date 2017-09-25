@@ -2,11 +2,9 @@ package de.aaronoe.cinematic.database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.util.ArrayMap;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -18,16 +16,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.database.MoviesContract.MovieEntry;
+import de.aaronoe.cinematic.database.MoviesContract.ShowEntry;
 import de.aaronoe.cinematic.model.MultiSearch.KnownFor;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
-import de.aaronoe.cinematic.database.MoviesContract.MovieEntry;
-import de.aaronoe.cinematic.database.MoviesContract.ShowEntry;
 import de.aaronoe.cinematic.movies.MovieItem;
-import de.aaronoe.cinematic.R;
 
 import static android.content.ContentValues.TAG;
 

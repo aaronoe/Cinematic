@@ -1,7 +1,6 @@
 package de.aaronoe.cinematic.ui.redesign.moviedetail
 
 import android.app.Activity
-import android.os.Build
 import de.aaronoe.cinematic.BuildConfig
 import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.model.Crew.Credits

@@ -1,8 +1,5 @@
 package de.aaronoe.cinematic.ui.redesign.moviedetail
 
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -23,12 +20,10 @@ import de.aaronoe.cinematic.model.Crew.Credits
 import de.aaronoe.cinematic.model.Crew.CrewAdapter
 import de.aaronoe.cinematic.model.FullMovie.FullMovie
 import de.aaronoe.cinematic.movies.MovieItem
-import de.aaronoe.cinematic.ui.detailpage.DetailActivity
 import de.aaronoe.cinematic.util.AnimUtils
 import de.aaronoe.cinematic.util.Constants
 import de.aaronoe.cinematic.util.bindView
 import org.jetbrains.anko.collections.forEachWithIndex
-import org.jetbrains.anko.defaultSharedPreferences
 import java.text.NumberFormat
 
 class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
@@ -85,27 +80,41 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
     private fun initViews() {
 
         val pictureUrl = CinematicApp.PICTURE_URL_500 + enterMovie.backdropPath
-        if (showTransition) supportPostponeEnterTransition()
 
-        Picasso.with(this)
-                .load(pictureUrl)
-                .into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
-                        Log.e("MovieDetail", bitmap.toString())
-                        detailBackdropImageview.setImageBitmap(bitmap)
-                        AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
-                        if (showTransition) supportStartPostponedEnterTransition()
-                    }
+        if (showTransition) {
+            supportPostponeEnterTransition()
 
-                    override fun onBitmapFailed(drawable: Drawable) {
-                        Log.e("MovieDetail", drawable.toString())
-                        if (showTransition) supportStartPostponedEnterTransition()
-                    }
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .into(object : Target {
+                        override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
+                            Log.e("MovieDetail", bitmap.toString())
+                            detailBackdropImageview.setImageBitmap(bitmap)
+                            AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
+                            supportStartPostponedEnterTransition()
+                        }
 
-                    override fun onPrepareLoad(drawable: Drawable?) {
+                        override fun onBitmapFailed(drawable: Drawable) {
+                            Log.e("MovieDetail", drawable.toString())
+                            supportStartPostponedEnterTransition()
+                        }
 
-                    }
-                })
+                        override fun onPrepareLoad(drawable: Drawable?) {
+
+                        }
+                    })
+        } else {
+
+            // For some reason Picasso does not load the without a transition
+
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .into(detailBackdropImageview)
+
+            AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
+        }
+
+
 
         detailTitleTextview.text = enterMovie.title
         detailRatingTextview.text = String.format("%.1f", enterMovie.voteAverage)

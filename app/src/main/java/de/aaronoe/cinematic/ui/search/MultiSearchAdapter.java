@@ -46,7 +46,7 @@ class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.MultiVi
     }
 
     interface MultiSearchItemOnClickHandler {
-        void onClick(int itemId, String itemType);
+        void onClick(SearchItem searchItem);
     }
 
     @Override
@@ -145,7 +145,7 @@ class MultiSearchAdapter extends RecyclerView.Adapter<MultiSearchAdapter.MultiVi
         public void onClick(View v) {
             int adapterPosition = getAdapterPosition();
             SearchItem searchItem = itemList.get(adapterPosition);
-            onClickHandler.onClick(searchItem.getId(), searchItem.getMediaType());
+            onClickHandler.onClick(searchItem);
         }
     }
 
