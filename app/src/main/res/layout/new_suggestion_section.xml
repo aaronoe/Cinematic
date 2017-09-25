@@ -6,7 +6,7 @@
     android:visibility="gone"
     tools:visibility="visible"
     android:paddingTop="16dp"
-    android:background="@color/colorPrimaryDark"
+    android:background="@color/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

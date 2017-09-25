@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.R;
@@ -115,7 +116,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         // retrieve the poster picture path
         String picturePath = thisMovieItem.getBackdropPath();
         // put the picture URL together
-        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + picturePath;
+        String pictureUrl = CinematicApp.PICTURE_URL_500 + picturePath;
         // get a reference to this item's ImageView
         ImageView currentImageView = holder.backdropImageView;
         // use picasso to load the image into the view

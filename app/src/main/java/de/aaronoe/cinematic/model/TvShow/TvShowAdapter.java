@@ -18,6 +18,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.R;
 
@@ -90,7 +91,7 @@ public class TvShowAdapter extends RecyclerView.Adapter<TvShowAdapter.TvShowView
 
         String picturePath = thisItem.getBackdropPath();
 
-        String pictureUrl = "http://image.tmdb.org/t/p/w500/" + picturePath;
+        String pictureUrl = CinematicApp.PICTURE_URL_500 + picturePath;
 
 
         Picasso.with(mContext)

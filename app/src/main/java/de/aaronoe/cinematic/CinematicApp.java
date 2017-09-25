@@ -19,6 +19,7 @@ public class CinematicApp extends Application {
     private static final String BASE_URL_V4 = "https://api.themoviedb.org/4/";
     public static final String TMDB_LOGIN_CALLBACK = "tmdb-auth-callback";
     public static final String TMDB_REDIRECT_URI = "cinematic://tmdb-auth-callback";
+    public static final String PICTURE_URL_500 = "http://image.tmdb.org/t/p/w500";
     public static final String TMDB_API_KEY = BuildConfig.MOVIE_DB_API_KEY;
     public static final String TMDB_PUBLIC_ACCESS_TOKEN = BuildConfig.TmdbPublicAccessToken;
 

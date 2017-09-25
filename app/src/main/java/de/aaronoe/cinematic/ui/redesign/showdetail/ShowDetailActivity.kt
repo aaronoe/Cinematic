@@ -18,6 +18,7 @@ import android.widget.*
 import butterknife.ButterKnife
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.database.Utilities
 import de.aaronoe.cinematic.model.Crew.Credits
@@ -61,7 +62,7 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     val metaSeasonsTv: TextView by bindView(R.id.meta_seasons_tv)
     val detailSuggestionRv: RecyclerView by bindView(R.id.detail_suggestion_rv)
 
-    var showTransition : Boolean = true
+    var showTransition : Boolean = false
     lateinit var presenter : ShowDetailPresenterImpl
     lateinit var enterShow : TvShow
 
@@ -85,9 +86,11 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
     private fun initViews() {
 
-        val pictureUrl = "http://image.tmdb.org/t/p/w500/" + enterShow.backdropPath
+        val pictureUrl = CinematicApp.PICTURE_URL_500 + enterShow.backdropPath
         Log.e("Test: ", showTransition.toString())
+        Log.e("Test: ", pictureUrl)
         if (showTransition) supportPostponeEnterTransition()
+
         Picasso.with(this)
                 .load(pictureUrl)
                 .into(object : Target {
@@ -105,6 +108,8 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
                     }
                 })
+
+
 
         detailTitleTextview.text = enterShow.name
         detailRatingTextview.text = String.format("%.1f", enterShow.voteAverage)
@@ -133,12 +138,6 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setupWindowAnimations() {
-        val slide = Slide()
-        slide.duration = 1000
-        window.enterTransition = slide
-    }
 
     fun downloadShowDetails() {
         presenter.downloadCast(enterShow.id)
@@ -154,7 +153,7 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
         metaReleaseTv.text = Utilities.convertDate(showFull?.firstAirDate)
 
         if (showFull?.backdropPath != enterShow.backdropPath) {
-            val pictureUrl = "http://image.tmdb.org/t/p/w500/" + showFull?.backdropPath
+            val pictureUrl = CinematicApp.PICTURE_URL_500 + showFull?.backdropPath
             Picasso.with(this).load(pictureUrl).into(metaBackdropIv)
         }
 

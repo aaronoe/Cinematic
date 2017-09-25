@@ -16,6 +16,7 @@ import android.widget.*
 import butterknife.ButterKnife
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
+import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.R
 import de.aaronoe.cinematic.database.Utilities
 import de.aaronoe.cinematic.model.Crew.Credits
@@ -62,7 +63,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
 
     lateinit var enterMovie : MovieItem
     lateinit var presenter : MovieDetailPresenterImpl
-    var showTransition = true
+    var showTransition = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +71,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
         ButterKnife.bind(this)
 
         if (intent.hasExtra(getString(R.string.intent_transition_enter_mode))) {
-            showTransition = intent.getIntExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER) != Constants.NONE
+            showTransition = (intent.getIntExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER) != Constants.NONE)
         }
 
         if (intent.hasExtra(getString(R.string.INTENT_KEY_MOVIE))) {
@@ -83,7 +84,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
 
     private fun initViews() {
 
-        val pictureUrl = "http://image.tmdb.org/t/p/w500" + enterMovie.backdropPath
+        val pictureUrl = CinematicApp.PICTURE_URL_500 + enterMovie.backdropPath
         if (showTransition) supportPostponeEnterTransition()
 
         Picasso.with(this)
