@@ -210,7 +210,8 @@
                 android:id="@+id/meta_homepage"
                 android:textSize="12sp"
                 android:textColor="@color/justWhite"
-                android:linksClickable="true"
+                android:autoLink="web"
+                android:textColorLink="@color/colorAccent"
                 android:layout_width="0dp"
                 android:layout_weight="5"
                 android:layout_height="wrap_content" />
