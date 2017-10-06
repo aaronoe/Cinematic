@@ -78,8 +78,10 @@ class LoginPresenter(val context: Context,
                 }
 
                 val sessionId = response.body()
-                Log.e("Login - Access Token: ", sessionId.sessionId)
-                getUserInfo(sessionId.sessionId)
+                Log.e("Login - Access Token: ", sessionId?.sessionId)
+                if (sessionId != null) {
+                    getUserInfo(sessionId.sessionId)
+                }
 
             }
 
@@ -99,8 +101,8 @@ class LoginPresenter(val context: Context,
                     view.showMessage("Could not get your profile")
                     return
                 }
-                CinematicApp.getInstance().mAuthManager.login(sessionId, response.body())
-                Toast.makeText(CinematicApp.getInstance(), "Welcome ${response.body().username}", Toast.LENGTH_SHORT).show()
+                CinematicApp.getInstance().mAuthManager.login(sessionId, response.body() as User)
+                Toast.makeText(CinematicApp.getInstance(), "Welcome ${(response.body() as User).username}", Toast.LENGTH_SHORT).show()
                 view.finishLogin()
             }
 

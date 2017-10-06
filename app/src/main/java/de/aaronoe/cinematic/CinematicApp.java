@@ -1,7 +1,6 @@
 package de.aaronoe.cinematic;
 
 import android.app.Application;
-
 import de.aaronoe.cinematic.auth.AuthManager;
 import de.aaronoe.cinematic.modules.AppModule;
 import de.aaronoe.cinematic.modules.DaggerNetComponent;
