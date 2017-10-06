@@ -35,7 +35,7 @@ class MovieDetailPresenterImpl(val movieId : Int, val view : MovieDetailContract
                     view.showErrorLoading()
                     return
                 }
-                view.showDetails(response.body())
+                view.showDetails(response.body() as FullMovie)
             }
 
             override fun onFailure(p0: Call<FullMovie>?, p1: Throwable?) {
@@ -55,7 +55,7 @@ class MovieDetailPresenterImpl(val movieId : Int, val view : MovieDetailContract
                     view.showErrorLoading()
                     return
                 }
-                view.showCast(response.body())
+                view.showCast(response.body() as Credits)
             }
 
             override fun onFailure(p0: Call<Credits>?, p1: Throwable?) {
@@ -76,7 +76,7 @@ class MovieDetailPresenterImpl(val movieId : Int, val view : MovieDetailContract
                     view.showErrorLoading()
                     return
                 }
-                view.showSimilar(response.body().results)
+                view.showSimilar((response.body() as MovieResponse).results)
             }
 
             override fun onFailure(p0: Call<MovieResponse>?, p1: Throwable?) {

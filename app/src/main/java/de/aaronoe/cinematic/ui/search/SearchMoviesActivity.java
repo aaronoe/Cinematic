@@ -1,6 +1,5 @@
 package de.aaronoe.cinematic.ui.search;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,10 +33,8 @@ import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
-import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailActivity;
 import de.aaronoe.cinematic.ui.redesign.showdetail.ShowDetailActivity;
-import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

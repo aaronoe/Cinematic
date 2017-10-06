@@ -68,11 +68,11 @@ class ShowDetailPresenterImpl(var view : ShowDetailContract.View) : ShowDetailCo
 
         call.enqueue(object : Callback<ShowsResponse> {
             override fun onResponse(call: Call<ShowsResponse>?, response: Response<ShowsResponse>?) {
-                if (response == null || response.body() == null || response.body().tvShows == null || response.body().tvShows.size == 0) {
+                if (response == null || response.body() == null || (response.body() as ShowsResponse).tvShows == null || (response.body() as ShowsResponse).tvShows.size == 0) {
                     view.showErrorSimilar()
                     return
                 }
-                view.showSimilar(response.body().tvShows)
+                view.showSimilar((response.body() as ShowsResponse).tvShows)
             }
 
             override fun onFailure(call: Call<ShowsResponse>?, p1: Throwable?) {
