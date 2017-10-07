@@ -11,6 +11,7 @@ import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.oldAuth.RequestTokenOld;
 import de.aaronoe.cinematic.model.oldAuth.SessionId;
 import de.aaronoe.cinematic.model.user.User;
+import de.aaronoe.cinematic.movies.MovieItem;
 import de.aaronoe.cinematic.movies.MovieResponse;
 import de.aaronoe.cinematic.movies.ReviewResponse;
 import de.aaronoe.cinematic.movies.VideoResponse;
@@ -104,4 +105,11 @@ public interface ApiInterface {
     @GET("tv/{tv_id}/similar")
     Call<ShowsResponse> getSimilarTvShows(@Path("tv_id") int showId,
                                           @Query("api_key") String apiKey);
+
+
+    // Migration Only
+
+    @GET("movie/{id}")
+    Call<MovieItem> getMovieDetailsAsMovieItem( @Path("id") int movieId,
+                                                @Query("api_key") String apiKey);
 }

@@ -39,6 +39,7 @@ import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.MovieAdapter;
+import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailActivity;
 import de.aaronoe.cinematic.util.Constants;
 import retrofit2.Call;
@@ -267,9 +268,13 @@ public class MoviesFragment extends Fragment
 
     @Override
     public void onClick(MovieItem movieItem, ImageView backdropImageView) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra("MovieItem", movieItem);
+        startActivity(intent);
+
+        /*
         Intent intentToStartDetailActivity = new Intent(getActivity(), MovieDetailActivity.class);
         intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_MOVIE), movieItem);
-
         intentToStartDetailActivity.putExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -279,7 +284,7 @@ public class MoviesFragment extends Fragment
         } else {
             getActivity().startActivity(intentToStartDetailActivity);
         }
-
+        */
     }
 
     /**

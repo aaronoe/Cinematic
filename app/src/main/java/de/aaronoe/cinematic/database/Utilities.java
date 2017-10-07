@@ -21,10 +21,12 @@ import java.util.concurrent.TimeUnit;
 import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.database.MoviesContract.MovieEntry;
 import de.aaronoe.cinematic.database.MoviesContract.ShowEntry;
+import de.aaronoe.cinematic.database.RealmHelpers.RealmInt;
 import de.aaronoe.cinematic.model.MultiSearch.KnownFor;
 import de.aaronoe.cinematic.model.TvShow.FullShow.Genre;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.movies.MovieItem;
+import io.realm.RealmList;
 
 import static android.content.ContentValues.TAG;
 
@@ -304,6 +306,23 @@ public class Utilities {
 
     }
 
+    public static List<String> extractMovieGenres(RealmList<RealmInt> genres) {
+
+        List<String> resultList = new ArrayList<>(4);
+
+        if (genres == null || genres.size() == 0) return resultList;
+
+        for (RealmInt genre : genres) {
+            if (!movieGenres.containsKey(genre.value)) continue;
+            Log.d(TAG, "extractMovieGenres() called with: genres = [" + genres + "]");
+            resultList.add(movieGenres.get(genre.value));
+        }
+
+        Log.d(TAG, "extractGenreList() returned: " + resultList);
+        return resultList;
+
+    }
+
     public static String getRuntimeString(Context context, int runtime) {
 
         int hours = runtime / 60;
@@ -319,7 +338,6 @@ public class Utilities {
 
     public static String extractMovieGenres(List<Integer> genres, Context mContext) {
 
-
         final String SEPARATOR = ", ";
         if (genres == null || genres.size() == 0) return null;
 
@@ -328,6 +346,34 @@ public class Utilities {
         for (int id : genres) {
             if (movieGenres.containsKey(id)) {
                 result.add(movieGenres.get(id));
+            } else {
+                Log.d(TAG, "extractGenres: " + id);
+            }
+        }
+
+        StringBuilder resBuilder = new StringBuilder();
+
+        for (String item : result) {
+            resBuilder.append(item);
+            resBuilder.append(SEPARATOR);
+        }
+
+        String list = resBuilder.toString();
+        if (list.length() == 0) return mContext.getString(R.string.genre_not_available);
+        return list.substring(0, list.length() - SEPARATOR.length());
+
+    }
+
+    public static String extractMovieGenres(RealmList<RealmInt> genres, Context mContext) {
+
+        final String SEPARATOR = ", ";
+        if (genres == null || genres.size() == 0) return null;
+
+        List<String> result = new ArrayList<>();
+
+        for (RealmInt id : genres) {
+            if (movieGenres.containsKey(id.value)) {
+                result.add(movieGenres.get(id.value));
             } else {
                 Log.d(TAG, "extractGenres: " + id);
             }

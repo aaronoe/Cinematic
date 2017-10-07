@@ -58,6 +58,7 @@
         <service
             android:name=".database.MovieUpdateService"
             android:exported="false" />
+        <service android:name=".migration.RealmMigrationService"/>
 
         <activity
             android:name=".ui.showdetail.TvShowDetailActivity"

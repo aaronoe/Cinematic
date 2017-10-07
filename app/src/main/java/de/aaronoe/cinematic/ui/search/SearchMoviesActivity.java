@@ -201,7 +201,7 @@ public class SearchMoviesActivity extends AppCompatActivity
         movieItem.setTitle(searchItem.getTitle());
         movieItem.setVoteAverage(searchItem.getVoteAverage());
         movieItem.setReleaseDate(searchItem.getReleaseDate());
-        movieItem.setGenreIds(searchItem.getGenreIds());
+        //movieItem.setGenreIds(searchItem.getGenreIds());
 
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra(getString(R.string.INTENT_KEY_MOVIE), movieItem);

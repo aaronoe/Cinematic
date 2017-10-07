@@ -2,10 +2,12 @@ package de.aaronoe.cinematic;
 
 import android.app.Application;
 import de.aaronoe.cinematic.auth.AuthManager;
+import de.aaronoe.cinematic.migration.RealmMigrationService;
 import de.aaronoe.cinematic.modules.AppModule;
 import de.aaronoe.cinematic.modules.DaggerNetComponent;
 import de.aaronoe.cinematic.modules.NetComponent;
 import de.aaronoe.cinematic.modules.NetModule;
+import io.realm.Realm;
 
 /**
  *
@@ -40,6 +42,10 @@ public class CinematicApp extends Application {
         mAuthManager = new AuthManager(this);
 
         instance = this;
+
+        Realm.init(this);
+
+        RealmMigrationService.Companion.migrateMovies(this);
     }
 
     public NetComponent getNetComponent() {

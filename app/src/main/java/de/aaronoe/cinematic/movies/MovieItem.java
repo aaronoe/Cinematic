@@ -9,54 +9,77 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.aaronoe.cinematic.database.RealmHelpers.RealmInt;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Class to hold information on an individual movie
  * Created by aaron on 21.01.17.
  */
 
-public class MovieItem implements Parcelable {
+public class MovieItem extends RealmObject implements Parcelable {
+
     @SerializedName("poster_path")
     @Expose
     private String posterPath;
+
     @SerializedName("adult")
     @Expose
     private Boolean adult;
+
     @SerializedName("overview")
     @Expose
     private String overview;
+
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
+
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private List<Integer> genreIds = new ArrayList<>();
+
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Integer id;
+
     @SerializedName("original_title")
     @Expose
     private String originalTitle;
+
     @SerializedName("original_language")
     @Expose
     private String originalLanguage;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("backdrop_path")
     @Expose
     private String backdropPath;
+
     @SerializedName("popularity")
     @Expose
     private Double popularity;
+
     @SerializedName("vote_count")
     @Expose
     private Integer voteCount;
+
     @SerializedName("video")
     @Expose
     private Boolean video;
+
     @SerializedName("vote_average")
     @Expose
     private Double voteAverage;
+
     public final static Parcelable.Creator<MovieItem> CREATOR = new Creator<MovieItem>() {
 
 
@@ -86,8 +109,7 @@ public class MovieItem implements Parcelable {
             return (new MovieItem[size]);
         }
 
-    }
-            ;
+    };
 
     public String getPosterPath() {
         return posterPath;

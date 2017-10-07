@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import de.aaronoe.cinematic.auth.AuthManager;
+import de.aaronoe.cinematic.migration.RealmMigrationService;
 import de.aaronoe.cinematic.ui.detailpage.ActorDetails.ActorDetailsActivity;
 import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.ui.detailpage.DetailPageInfoFragment;
@@ -46,5 +47,7 @@ public interface NetComponent {
     void inject(LoginActivity loginActivity);
     void inject(ShowDetailPresenterImpl presenter);
     void inject(MovieDetailPresenterImpl presenter);
+
+    void inject(RealmMigrationService realmMigrationService);
 
 }
