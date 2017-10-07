@@ -8,6 +8,7 @@ import de.aaronoe.cinematic.model.MultiSearch.MultiSearchResponse;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
 import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.oldAuth.RequestTokenOld;
 import de.aaronoe.cinematic.model.oldAuth.SessionId;
 import de.aaronoe.cinematic.model.user.User;
@@ -112,4 +113,8 @@ public interface ApiInterface {
     @GET("movie/{id}")
     Call<MovieItem> getMovieDetailsAsMovieItem( @Path("id") int movieId,
                                                 @Query("api_key") String apiKey);
+
+    @GET("tv/{id}")
+    Call<TvShow> getTvShowDetailsAsTvShow(@Path("id") int id,
+                                          @Query("api_key") String apiKey);
 }

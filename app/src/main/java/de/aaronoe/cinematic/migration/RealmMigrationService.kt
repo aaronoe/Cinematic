@@ -8,11 +8,7 @@ import de.aaronoe.cinematic.BuildConfig
 import de.aaronoe.cinematic.CinematicApp
 import de.aaronoe.cinematic.database.MoviesContract
 import de.aaronoe.cinematic.model.remote.ApiInterface
-import de.aaronoe.cinematic.movies.MovieItem
 import io.realm.Realm
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Inject
 
 class RealmMigrationService : IntentService("RealmMigrationService") {
@@ -24,18 +20,18 @@ class RealmMigrationService : IntentService("RealmMigrationService") {
         private val ACTION_MOVIES = "MIGRATE_MOVIES"
         private val ACTION_SHOWS = "MIGRATE_SHOWS"
         val MIGRATION_PREFS = "migration_prefs"
-        private val MOVIE_MIGRATION_DONE = "movie_migration"
-        private val SHOW_MIGRATION_DONE = "show_migration"
+        val MOVIE_MIGRATION_DONE = "movie_migration"
+        val SHOW_MIGRATION_DONE = "show_migration"
 
         fun migrateMovies(context: Context) {
-            val intent = Intent(context, RealmMigrationService::class.java).apply {
+            Intent(context, RealmMigrationService::class.java).apply {
                 action = ACTION_MOVIES
                 context.startService(this)
             }
         }
 
         fun migrateShows(context: Context) {
-            val intent = Intent(context, RealmMigrationService::class.java).apply {
+            Intent(context, RealmMigrationService::class.java).apply {
                 action = ACTION_SHOWS
                 context.startService(this)
             }
@@ -56,47 +52,35 @@ class RealmMigrationService : IntentService("RealmMigrationService") {
 
     private fun doMovieMigration() {
         (application as CinematicApp).netComponent.inject(this)
-        val cursor = contentResolver.query(MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null);
+        val cursor = contentResolver.query(MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null)
+        val realm = Realm.getDefaultInstance()
 
         var counter = 0
         val cursorSize = cursor.count
 
         while (cursor.moveToNext()) {
-            Log.e("MovieMigration", cursor.getString(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_TITLE)))
             val movieId = cursor.getInt(cursor.getColumnIndex(MoviesContract.MovieEntry.COLUMN_MOVIE_ID))
             val call = apiService.getMovieDetailsAsMovieItem(movieId, BuildConfig.MOVIE_DB_API_KEY)
-            call.enqueue(object : Callback<MovieItem> {
-                override fun onResponse(call: Call<MovieItem>?, response: Response<MovieItem>?) {
-                    if (response == null || !response.isSuccessful || response.body() == null) {
-                        return
-                    }
-                    val realm = Realm.getDefaultInstance()
-                    realm.executeTransaction {
-                        it.copyToRealmOrUpdate(response.body())
-                        counter++
-                    }
-                    realm.close()
 
-                }
-                override fun onFailure(call: Call<MovieItem>?, t: Throwable?) {
-                    Log.e("Realm Copy: ", "Failed Download")
-                }
-            })
+            val response = call.execute()
+
+            if (response == null || !response.isSuccessful || response.body() == null) {
+                return
+            }
+
+            realm.executeTransaction {
+                it.copyToRealmOrUpdate(response.body())
+                Log.e("RealmMigrationService", response.body().toString())
+                counter++
+            }
+
         }
         cursor.close()
 
-        val realm = Realm.getDefaultInstance()
 
-        realm.executeTransaction {
-            val list = it.where(MovieItem::class.java).findAll()
-            list.forEach {
-                Log.e("RealmResults : ", it.title)
-            }
-        }
+        Log.e("Realm Status", "Counter: $counter - CursorSize: $cursorSize")
 
         if (counter == cursorSize) {
-            Log.e("RealmResults : ", "Move Migration Done")
-
             getSharedPreferences(MIGRATION_PREFS, Context.MODE_PRIVATE)
                     .edit().putBoolean(MOVIE_MIGRATION_DONE, true)
                     .apply()
@@ -104,7 +88,41 @@ class RealmMigrationService : IntentService("RealmMigrationService") {
     }
 
     private fun doShowMigration() {
+        (application as CinematicApp).netComponent.inject(this)
+        val cursor = contentResolver.query(MoviesContract.ShowEntry.CONTENT_URI, null, null, null, null)
 
+        var counter = 0
+        val cursorSize = cursor.count
+
+        val realm = Realm.getDefaultInstance()
+
+        while (cursor.moveToNext()) {
+            val showId = cursor.getInt(cursor.getColumnIndex(MoviesContract.ShowEntry.COLUMN_ID))
+            val call = apiService.getTvShowDetailsAsTvShow(showId, BuildConfig.MOVIE_DB_API_KEY)
+
+            val response = call.execute()
+
+            if (response == null || !response.isSuccessful || response.body() == null) {
+                continue
+            }
+
+            realm.executeTransaction {
+                it.copyToRealmOrUpdate(response.body())
+                Log.e("RealmMigrationService", response.body().toString())
+                counter++
+            }
+
+        }
+
+        cursor.close()
+
+        Log.e("Realm Status", "Counter: $counter - CursorSize: $cursorSize")
+
+        if (counter == cursorSize) {
+            getSharedPreferences(MIGRATION_PREFS, Context.MODE_PRIVATE)
+                    .edit().putBoolean(SHOW_MIGRATION_DONE, true)
+                    .apply()
+        }
     }
 
 }

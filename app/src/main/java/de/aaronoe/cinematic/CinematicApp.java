@@ -1,6 +1,9 @@
 package de.aaronoe.cinematic;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import de.aaronoe.cinematic.auth.AuthManager;
 import de.aaronoe.cinematic.migration.RealmMigrationService;
 import de.aaronoe.cinematic.modules.AppModule;
@@ -45,7 +48,38 @@ public class CinematicApp extends Application {
 
         Realm.init(this);
 
-        RealmMigrationService.Companion.migrateMovies(this);
+        migrateDatabaseToRealm();
+
+        /*
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmResults<MovieItem> movieItems = realm.where(MovieItem.class).findAll();
+                for (MovieItem item : movieItems) {
+                    Log.e("RealmResults ", item.getTitle());
+                }
+                RealmResults<TvShow> showItems = realm.where(TvShow.class).findAll();
+                for (TvShow item : showItems) {
+                    Log.e("RealmResults ", item.getName());
+                }
+            }
+        }); */
+    }
+
+    private void migrateDatabaseToRealm() {
+        SharedPreferences sharedPreferences =
+                getSharedPreferences(RealmMigrationService.Companion.getMIGRATION_PREFS(), Context.MODE_PRIVATE);
+        boolean moviesMigrated = sharedPreferences.getBoolean(RealmMigrationService.Companion.getMOVIE_MIGRATION_DONE(), false);
+        boolean showsMigrated = sharedPreferences.getBoolean(RealmMigrationService.Companion.getSHOW_MIGRATION_DONE(), false);
+
+        if (!moviesMigrated) {
+            RealmMigrationService.Companion.migrateMovies(this);
+        }
+        if (!showsMigrated) {
+            RealmMigrationService.Companion.migrateShows(this);
+        }
     }
 
     public NetComponent getNetComponent() {

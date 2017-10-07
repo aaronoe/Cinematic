@@ -10,7 +10,11 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TvShow implements Parcelable
+import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
+
+public class TvShow extends RealmObject implements Parcelable
 {
 
     @SerializedName("poster_path")
@@ -21,6 +25,7 @@ public class TvShow implements Parcelable
     private Double popularity;
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Integer id;
     @SerializedName("backdrop_path")
     @Expose
@@ -36,9 +41,11 @@ public class TvShow implements Parcelable
     private String firstAirDate;
     @SerializedName("origin_country")
     @Expose
+    @Ignore
     private List<String> originCountry = new ArrayList<>();
     @SerializedName("genre_ids")
     @Expose
+    @Ignore
     private List<Integer> genreIds = new ArrayList<>();
     @SerializedName("original_language")
     @Expose

@@ -31,16 +31,15 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.aaronoe.cinematic.BuildConfig;
-import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.model.remote.ApiInterface;
+import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.model.EndlessRecyclerViewScrollListener;
 import de.aaronoe.cinematic.model.TvShow.ShowsResponse;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
+import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.ui.redesign.showdetail.ShowDetailActivity;
-import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
 import de.aaronoe.cinematic.util.Constants;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,7 +61,6 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
     @Inject SharedPreferences sharedPref;
     @Inject ApiInterface apiService;
-
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "tvshows.recycler.layout";
     private static final String BUNDLE_SCROLL_POSITION = "tvshows.scroll.position";
