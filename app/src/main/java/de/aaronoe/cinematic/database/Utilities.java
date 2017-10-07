@@ -306,22 +306,6 @@ public class Utilities {
 
     }
 
-    public static List<String> extractMovieGenres(RealmList<RealmInt> genres) {
-
-        List<String> resultList = new ArrayList<>(4);
-
-        if (genres == null || genres.size() == 0) return resultList;
-
-        for (RealmInt genre : genres) {
-            if (!movieGenres.containsKey(genre.value)) continue;
-            Log.d(TAG, "extractMovieGenres() called with: genres = [" + genres + "]");
-            resultList.add(movieGenres.get(genre.value));
-        }
-
-        Log.d(TAG, "extractGenreList() returned: " + resultList);
-        return resultList;
-
-    }
 
     public static String getRuntimeString(Context context, int runtime) {
 

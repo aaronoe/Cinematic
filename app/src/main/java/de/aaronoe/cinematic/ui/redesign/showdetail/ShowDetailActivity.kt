@@ -103,28 +103,40 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
         val pictureUrl = CinematicApp.PICTURE_URL_500 + enterShow.backdropPath
         Log.e("Test: ", showTransition.toString())
         Log.e("Test: ", pictureUrl)
-        if (showTransition) supportPostponeEnterTransition()
+        if (showTransition) {
 
-        Picasso.with(this)
-                .load(pictureUrl)
-                .into(object : Target {
-                    override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
-                        detailBackdropImageview.setImageBitmap(bitmap)
-                        AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
-                        if (showTransition) supportStartPostponedEnterTransition()
-                        AnimUtils.animShow(toolbar, 1000, 0f, 1f)
-                    }
+            supportPostponeEnterTransition()
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .into(object : Target {
+                        override fun onBitmapLoaded(bitmap: Bitmap, loadedFrom: Picasso.LoadedFrom) {
+                            detailBackdropImageview.setImageBitmap(bitmap)
+                            AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
+                            supportStartPostponedEnterTransition()
+                            AnimUtils.animShow(toolbar, 1000, 0f, 1f)
+                        }
 
-                    override fun onBitmapFailed(drawable: Drawable) {
-                        if (showTransition) supportStartPostponedEnterTransition()
-                        AnimUtils.animShow(toolbar, 1000, 0f, 1f)
-                    }
+                        override fun onBitmapFailed(drawable: Drawable) {
+                            supportStartPostponedEnterTransition()
+                            AnimUtils.animShow(toolbar, 1000, 0f, 1f)
+                        }
 
-                    override fun onPrepareLoad(drawable: Drawable?) {
+                        override fun onPrepareLoad(drawable: Drawable?) {
 
-                    }
-                })
+                        }
+                    })
+        } else {
 
+            // For some reason Picasso does not load the image without a transition
+
+            Picasso.with(this)
+                    .load(pictureUrl)
+                    .into(detailBackdropImageview)
+
+            AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
+            AnimUtils.animShow(toolbar, 1000, 0f, 1f)
+
+        }
 
 
         detailTitleTextview.text = enterShow.name
@@ -134,6 +146,11 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
         val genreList = Utilities.extractGenreList(enterShow.genreIds)
         when (genreList.size) {
+            0 -> {
+                categoryBubbleOne.visibility = View.INVISIBLE
+                categoryBubbleTwo.visibility = View.GONE
+                categoryBubbleThree.visibility = View.GONE
+            }
             1 -> {
                 categoryBubbleTwo.visibility = View.GONE
                 categoryBubbleThree.visibility = View.GONE
@@ -171,6 +188,34 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
         if (showFull?.backdropPath != enterShow.backdropPath) {
             val pictureUrl = CinematicApp.PICTURE_URL_500 + showFull?.backdropPath
             Picasso.with(this).load(pictureUrl).into(metaBackdropIv)
+        }
+
+        if (enterShow.genreIds == null || enterShow.genreIds.size == 0) {
+
+            showFull?.genres?.subList(0, showFull.genres.size)?.forEachWithIndex { i, genre ->
+                when (i) {
+                    0 -> {
+                        categoryBubbleOne.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleOne)
+                        }
+                    }
+                    1 -> {
+                        categoryBubbleTwo.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleTwo)
+                        }
+                    }
+                    2 -> {
+                        categoryBubbleThree.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleThree)
+                        }
+                    }
+                }
+            }
+
+
         }
 
         val genreList = showFull?.genres

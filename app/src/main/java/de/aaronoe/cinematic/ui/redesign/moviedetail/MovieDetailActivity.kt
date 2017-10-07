@@ -130,6 +130,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
                     .into(detailBackdropImageview)
 
             AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
+            AnimUtils.animShow(toolbar, 1000, 0f, 1f)
         }
 
 
@@ -141,6 +142,11 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
 
         val genreList = Utilities.extractMovieGenres(enterMovie.genreIds)
         when (genreList.size) {
+            0 -> {
+                categoryBubbleOne.visibility = View.INVISIBLE
+                categoryBubbleTwo.visibility = View.GONE
+                categoryBubbleThree.visibility = View.GONE
+            }
             1 -> {
                 categoryBubbleTwo.visibility = View.GONE
                 categoryBubbleThree.visibility = View.GONE
@@ -189,6 +195,34 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
         metaRevenue.text = NumberFormat.getCurrencyInstance().format(movie.revenue)
         metaStatus.text = movie.status
         metaTitleTv.text = movie.originalTitle
+
+        if (enterMovie.genreIds == null || enterMovie.genreIds.size == 0) {
+
+            movie.genres?.subList(0, movie.genres.size)?.forEachWithIndex { i, genre ->
+                when (i) {
+                    0 -> {
+                        categoryBubbleOne.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleOne)
+                        }
+                    }
+                    1 -> {
+                        categoryBubbleTwo.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleTwo)
+                        }
+                    }
+                    2 -> {
+                        categoryBubbleThree.apply {
+                            text = genre.name
+                            AnimUtils.animShow(categoryBubbleThree)
+                        }
+                    }
+                }
+            }
+
+
+        }
 
     }
 

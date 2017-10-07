@@ -1,45 +1,40 @@
 package de.aaronoe.cinematic.ui.favorites;
 
 import android.content.Intent;
-import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.aaronoe.cinematic.model.TvShow.TvShow;
-import de.aaronoe.cinematic.database.MoviesContract;
-import de.aaronoe.cinematic.database.Utilities;
 import de.aaronoe.cinematic.R;
-import de.aaronoe.cinematic.ui.showdetail.TvShowDetailActivity;
+import de.aaronoe.cinematic.database.Utilities;
+import de.aaronoe.cinematic.model.TvShow.TvShow;
+import de.aaronoe.cinematic.model.TvShow.TvShowAdapter;
+import de.aaronoe.cinematic.ui.redesign.showdetail.ShowDetailActivity;
+import de.aaronoe.cinematic.util.Constants;
+import io.realm.Realm;
 
 /**
  *
  * Created by aaron on 11.04.17.
  */
 
-public class FavoriteShowsFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, FavoriteTvShowsAdaper.TvShowAdapterOnClickHandler{
+public class FavoriteShowsFragment extends Fragment implements TvShowAdapter.TvShowAdapterOnClickHandler{
 
-    Cursor showCursor;
     GridLayoutManager favoriteGridLayout;
-    List<TvShow> tvShowList;
-    FavoriteTvShowsAdaper tvShowAdapter;
-    private static final int FAVORITE_SHOWS_LOADER_ID = 788;
+    TvShowAdapter tvShowAdapter;
 
     @BindView(R.id.rv_favorite_fragment)
     RecyclerView rvFavoriteFragment;
@@ -49,6 +44,7 @@ public class FavoriteShowsFragment extends Fragment implements
     ProgressBar favePbLoadingIndicator;
 
     Unbinder unbinder;
+    Realm realm;
 
     public FavoriteShowsFragment() {
     }
@@ -67,11 +63,22 @@ public class FavoriteShowsFragment extends Fragment implements
 
         favoriteGridLayout = new GridLayoutManager
                 (getActivity(), Utilities.calculateNoOfColumnsShow(getActivity()));
-        tvShowAdapter = new FavoriteTvShowsAdaper(getActivity(), this, showCursor);
+        tvShowAdapter = new TvShowAdapter(getActivity(), this);
         rvFavoriteFragment.setLayoutManager(favoriteGridLayout);
         rvFavoriteFragment.setAdapter(tvShowAdapter);
 
-        getActivity().getSupportLoaderManager().initLoader(FAVORITE_SHOWS_LOADER_ID, null, this);
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                tvShowAdapter.setVideoData(realm.where(TvShow.class).findAll());
+                if (tvShowAdapter.getItemCount() == 0) {
+                    showErrorMessage();
+                } else {
+                    showFavoriteMovieView();
+                }
+            }
+        });
 
         return rootView;
     }
@@ -80,43 +87,29 @@ public class FavoriteShowsFragment extends Fragment implements
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        realm.close();
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(
-                getActivity(),
-                MoviesContract.ShowEntry.CONTENT_URI,
-                null,
-                null,
-                null,
-                null);
-    }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onClick(TvShow tvshow, ImageView v) {
+        Intent intentToStartDetailActivity = new Intent(getContext(), ShowDetailActivity.class);
+        intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_TV_SHOW_ITEM), tvshow);
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER);
 
-        if (data == null || data.getCount() == 0) {
-            showErrorMessage();
-            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(), v, getString(R.string.transition_shared_key));
+            getActivity().startActivity(intentToStartDetailActivity, options.toBundle());
+        } else {
+            getActivity().startActivity(intentToStartDetailActivity);
         }
-
-        showCursor = data;
-        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
-        showFavoriteMovieView();
-        tvShowAdapter.setVideoData(showCursor);
-        tvShowAdapter.notifyDataSetChanged();
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        showCursor = null;
     }
 
     private void showFavoriteMovieView() {
         /* First, make sure the error is invisible */
         faveTvErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
         rvFavoriteFragment.setVisibility(View.VISIBLE);
     }
@@ -135,11 +128,4 @@ public class FavoriteShowsFragment extends Fragment implements
         }
     }
 
-
-    @Override
-    public void onClick(int movieId) {
-        Intent intentToStartDetailActivity = new Intent(getContext(), TvShowDetailActivity.class);
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_tv_show), movieId);
-        getActivity().startActivity(intentToStartDetailActivity);
-    }
 }

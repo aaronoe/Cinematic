@@ -2,40 +2,41 @@ package de.aaronoe.cinematic.ui.favorites;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import de.aaronoe.cinematic.database.MoviesContract;
-import de.aaronoe.cinematic.database.Utilities;
-import de.aaronoe.cinematic.ui.detailpage.DetailActivity;
 import de.aaronoe.cinematic.R;
+import de.aaronoe.cinematic.database.Utilities;
+import de.aaronoe.cinematic.model.MovieAdapter;
+import de.aaronoe.cinematic.movies.MovieItem;
+import de.aaronoe.cinematic.ui.redesign.moviedetail.MovieDetailActivity;
+import de.aaronoe.cinematic.util.Constants;
+import io.realm.Realm;
 
 /**
  *
  * Created by aaronoe on 11.04.17.
  */
 
-public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
-        implements LoaderManager.LoaderCallbacks<Cursor>,
-        FavoriteMoviesAdapter.MovieAdapterOnClickHandler {
+public class FavoriteMoviesFragment extends Fragment implements MovieAdapter.MovieAdapterOnClickHandler {
 
     StaggeredGridLayoutManager favoriteGridLayout;
-    FavoriteMoviesAdapter favoriteMoviesAdapter;
-    private static final int FAVORITE_MOVIES_LOADER_ID = 314;
-
+    MovieAdapter moviesAdapter;
 
     @BindView(R.id.rv_favorite_fragment)
     RecyclerView rvFavoriteFragment;
@@ -44,6 +45,7 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     @BindView(R.id.fave_pb_loading_indicator)
     ProgressBar favePbLoadingIndicator;
     Unbinder unbinder;
+    Realm realm;
 
     public FavoriteMoviesFragment() {}
 
@@ -59,12 +61,23 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
         unbinder = ButterKnife.bind(this, rootView);
 
         favoriteGridLayout = new StaggeredGridLayoutManager
-                (Utilities.calculateNoOfColumns(getActivity()), StaggeredGridLayoutManager.VERTICAL);
-        favoriteMoviesAdapter = new FavoriteMoviesAdapter(getActivity(), this);
-        rvFavoriteFragment.setAdapter(favoriteMoviesAdapter);
+                (Utilities.calculateNoOfColumnsShow(getActivity()), StaggeredGridLayoutManager.VERTICAL);
+        moviesAdapter = new MovieAdapter(this, getActivity());
+        rvFavoriteFragment.setAdapter(moviesAdapter);
         rvFavoriteFragment.setLayoutManager(favoriteGridLayout);
 
-        getActivity().getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER_ID, null, this);
+        realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                moviesAdapter.setMovieData(realm.where(MovieItem.class).findAll());
+                if (moviesAdapter.getItemCount() == 0) {
+                    showErrorMessage();
+                } else {
+                    showFavoriteMovieView();
+                }
+            }
+        });
 
         return rootView;
     }
@@ -73,6 +86,7 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     private void showFavoriteMovieView() {
         /* First, make sure the error is invisible */
         faveTvErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
         /* Then, make sure the weather data is visible */
         rvFavoriteFragment.setVisibility(View.VISIBLE);
     }
@@ -95,37 +109,22 @@ public class FavoriteMoviesFragment extends android.support.v4.app.Fragment
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        realm.close();
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader
-                (getActivity(), MoviesContract.MovieEntry.CONTENT_URI, null, null, null, null);
-    }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onClick(MovieItem movieItem, ImageView backdropImageView) {
+        Intent intentToStartDetailActivity = new Intent(getActivity(), MovieDetailActivity.class);
+        intentToStartDetailActivity.putExtra(getString(R.string.INTENT_KEY_MOVIE), movieItem);
+        intentToStartDetailActivity.putExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER);
 
-        if (data == null || data.getCount() == 0) {
-            showErrorMessage();
-            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(getActivity(), backdropImageView, getString(R.string.transition_shared_key));
+            getActivity().startActivity(intentToStartDetailActivity, options.toBundle());
+        } else {
+            getActivity().startActivity(intentToStartDetailActivity);
         }
-        favePbLoadingIndicator.setVisibility(View.INVISIBLE);
-        showFavoriteMovieView();
-        favoriteMoviesAdapter.changeCursor(data);
-        favoriteMoviesAdapter.notifyDataSetChanged();
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-    }
-
-    @Override
-    public void onClick(int movieId, String movieName) {
-        Intent intentToStartDetailActivity = new Intent(getActivity(), DetailActivity.class);
-        intentToStartDetailActivity.putExtra("MovieId", movieId);
-        intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieName);
-        startActivity(intentToStartDetailActivity);
     }
 }
