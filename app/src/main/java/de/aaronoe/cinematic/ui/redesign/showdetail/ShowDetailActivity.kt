@@ -5,14 +5,15 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
 import android.support.v4.app.ActivityOptionsCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.transition.Slide
+import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import butterknife.ButterKnife
@@ -33,6 +34,7 @@ import de.aaronoe.cinematic.ui.showdetail.SimilarShowsAdapter
 import de.aaronoe.cinematic.util.AnimUtils
 import de.aaronoe.cinematic.util.Constants
 import de.aaronoe.cinematic.util.bindView
+import io.realm.Realm
 import org.jetbrains.anko.collections.forEachWithIndex
 
 class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
@@ -61,15 +63,23 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
     val metaDurationTv: TextView by bindView(R.id.meta_duration_tv)
     val metaSeasonsTv: TextView by bindView(R.id.meta_seasons_tv)
     val detailSuggestionRv: RecyclerView by bindView(R.id.detail_suggestion_rv)
+    val toolbar : Toolbar by bindView(R.id.app_bar)
 
     var showTransition : Boolean = false
     lateinit var presenter : ShowDetailPresenterImpl
     lateinit var enterShow : TvShow
+    lateinit var realm : Realm
+    var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.redesign_detail_activity)
         ButterKnife.bind(this)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = ""
+
+        realm = Realm.getDefaultInstance()
 
         presenter = ShowDetailPresenterImpl(this)
 
@@ -86,6 +96,10 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
     private fun initViews() {
 
+        val shows = realm.where(TvShow::class.java).equalTo("id", enterShow.id).findAll()
+        isFavorite = !shows.isEmpty()
+        invalidateOptionsMenu()
+
         val pictureUrl = CinematicApp.PICTURE_URL_500 + enterShow.backdropPath
         Log.e("Test: ", showTransition.toString())
         Log.e("Test: ", pictureUrl)
@@ -98,10 +112,12 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
                         detailBackdropImageview.setImageBitmap(bitmap)
                         AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
                         if (showTransition) supportStartPostponedEnterTransition()
+                        AnimUtils.animShow(toolbar, 1000, 0f, 1f)
                     }
 
                     override fun onBitmapFailed(drawable: Drawable) {
                         if (showTransition) supportStartPostponedEnterTransition()
+                        AnimUtils.animShow(toolbar, 1000, 0f, 1f)
                     }
 
                     override fun onPrepareLoad(drawable: Drawable?) {
@@ -252,5 +268,69 @@ class ShowDetailActivity : AppCompatActivity(), ShowDetailContract.View {
 
     override fun showErrorSimilar() {
     }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_activity, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.favorite)?.apply {
+            isVisible = !isFavorite
+            isEnabled = !isFavorite
+        }
+
+        menu?.findItem(R.id.unfavorite)?.apply {
+            isVisible = isFavorite
+            isEnabled = isFavorite
+        }
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.favorite -> {
+                favoriteMovie()
+                return true
+            }
+            R.id.unfavorite -> {
+                unfavoriteMovie()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        realm.close()
+        super.onDestroy()
+    }
+
+    private fun favoriteMovie() {
+        realm.executeTransaction {
+            it.copyToRealmOrUpdate(enterShow)
+            isFavorite = true
+            invalidateOptionsMenu()
+        }
+    }
+
+    private fun unfavoriteMovie() {
+        val shows = realm.where(TvShow::class.java).equalTo("id", enterShow.id).findAll()
+
+        realm.executeTransaction {
+            shows.forEach {
+                it.deleteFromRealm()
+            }
+        }
+        isFavorite = false
+        invalidateOptionsMenu()
+    }
+
 
 }

@@ -20,6 +20,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cast_recycler_view"
+        android:nestedScrollingEnabled="false"
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

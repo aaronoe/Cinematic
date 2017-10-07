@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import butterknife.ButterKnife
@@ -23,6 +26,7 @@ import de.aaronoe.cinematic.movies.MovieItem
 import de.aaronoe.cinematic.util.AnimUtils
 import de.aaronoe.cinematic.util.Constants
 import de.aaronoe.cinematic.util.bindView
+import io.realm.Realm
 import org.jetbrains.anko.collections.forEachWithIndex
 import java.text.NumberFormat
 
@@ -54,16 +58,25 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
     val plotContainer: LinearLayout by bindView(R.id.plot_container)
     val castRecyclerView: RecyclerView by bindView(R.id.cast_recycler_view)
     val newCastSectionContainer: LinearLayout by bindView(R.id.new_cast_section_container)
-
+    val toolbar : Toolbar by bindView(R.id.app_bar)
 
     lateinit var enterMovie : MovieItem
     lateinit var presenter : MovieDetailPresenterImpl
+    lateinit var realm : Realm
     var showTransition = false
+    var isFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_detail)
         ButterKnife.bind(this)
+
+        realm = Realm.getDefaultInstance()
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = ""
+        }
 
         if (intent.hasExtra(getString(R.string.intent_transition_enter_mode))) {
             showTransition = (intent.getIntExtra(getString(R.string.intent_transition_enter_mode), Constants.BACKDROP_ENTER) != Constants.NONE)
@@ -79,6 +92,10 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
 
     private fun initViews() {
 
+        val movies = realm.where(MovieItem::class.java).equalTo("id", enterMovie.id).findAll()
+        isFavorite = !movies.isEmpty()
+        invalidateOptionsMenu()
+
         val pictureUrl = CinematicApp.PICTURE_URL_500 + enterMovie.backdropPath
 
         if (showTransition) {
@@ -92,6 +109,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
                             detailBackdropImageview.setImageBitmap(bitmap)
                             AnimUtils.animShow(backdropOverlayIv, 1000, 0f, 1f)
                             supportStartPostponedEnterTransition()
+                            AnimUtils.animShow(toolbar, 1000, 0f, 1f)
                         }
 
                         override fun onBitmapFailed(drawable: Drawable) {
@@ -198,4 +216,67 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailContract.View {
         detailSuggestionRv.layoutManager = layoutManager
         detailSuggestionRv.adapter = similarMoviesAdapter
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.detail_activity, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.favorite)?.apply {
+            isVisible = !isFavorite
+            isEnabled = !isFavorite
+        }
+
+        menu?.findItem(R.id.unfavorite)?.apply {
+            isVisible = isFavorite
+            isEnabled = isFavorite
+        }
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                return true
+            }
+            R.id.favorite -> {
+                favoriteMovie()
+                return true
+            }
+            R.id.unfavorite -> {
+                unfavoriteMovie()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        realm.close()
+        super.onDestroy()
+    }
+
+    private fun favoriteMovie() {
+        realm.executeTransaction {
+            it.copyToRealmOrUpdate(enterMovie)
+            isFavorite = true
+            invalidateOptionsMenu()
+        }
+    }
+
+    private fun unfavoriteMovie() {
+        val movies = realm.where(MovieItem::class.java).equalTo("id", enterMovie.id).findAll()
+
+        realm.executeTransaction {
+            movies.forEach {
+                it.deleteFromRealm()
+            }
+        }
+        isFavorite = false
+        invalidateOptionsMenu()
+    }
+
 }

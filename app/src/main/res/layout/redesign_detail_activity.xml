@@ -1,4 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimary">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="72dp"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            >
+
+            <ImageView
+                android:id="@+id/detail_backdrop_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax"
+                android:transitionName="@string/transition_shared_key"
+                tools:src="@drawable/walking_dead_backdro" />
+
+            <ImageView
+                android:id="@+id/backdrop_overlay_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_collapseMode="parallax"
+                android:src="@drawable/overlay_gradient"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="260dp">
+
+                <TextView
+                    android:id="@+id/detail_title_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:textColor="@color/justWhite"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toTopOf="@+id/category_bubble_one"
+                    app:layout_constraintLeft_toLeftOf="@+id/category_bubble_one"
+                    tools:text="The Walking Dead" />
+
+                <TextView
+                    android:id="@+id/detail_year_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/rounded_shape"
+                    android:textColor="@color/justWhite"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_title_textview"
+                    app:layout_constraintLeft_toLeftOf="@+id/category_bubble_one"
+                    tools:text="2014" />
+
+                <TextView
+                    android:id="@+id/detail_rating_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/circle_shape"
+                    android:textColor="@color/buttons"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/category_bubble_three"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:text="9.7" />
+
+                <TextView
+                    android:id="@+id/category_bubble_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/rounded_shape_neutral"
+                    android:textColor="@color/justWhite"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:text="Action" />
+
+                <TextView
+                    android:id="@+id/category_bubble_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/rounded_shape_neutral"
+                    android:textColor="@color/justWhite"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/category_bubble_one"
+                    app:layout_constraintLeft_toRightOf="@+id/category_bubble_one"
+                    app:layout_constraintTop_toTopOf="@+id/category_bubble_one"
+                    tools:text="Family" />
+
+                <TextView
+                    android:id="@+id/category_bubble_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/rounded_shape_neutral"
+                    android:textColor="@color/justWhite"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/category_bubble_one"
+                    app:layout_constraintLeft_toRightOf="@+id/category_bubble_two"
+                    app:layout_constraintTop_toTopOf="@+id/category_bubble_one"
+                    tools:text="Adventure" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/app_bar"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:contentInsetStart="72dp"
+                app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/arrow_left"
+                />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/plot_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/synopsis"
+                android:textAllCaps="true"
+                android:textColor="@color/justWhite"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/detail_overview_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="8"
+                android:textColor="@color/justWhite"
+                android:textSize="12sp"
+                tools:text="Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond." />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/new_cast_section" />
+
+                <include layout="@layout/show_new_meta_section" />
+
+                <include layout="@layout/seasons_pane" />
+
+                <include layout="@layout/new_suggestion_section" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/content_loading_pb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="40dp" />
+
+        </FrameLayout>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</android.support.design.widget.CoordinatorLayout>
+
+
+<!--
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -177,3 +394,4 @@
     </LinearLayout>
 
 </ScrollView>
+-->

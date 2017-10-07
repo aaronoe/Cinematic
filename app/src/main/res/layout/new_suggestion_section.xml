@@ -23,6 +23,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/detail_suggestion_rv"
         android:layout_marginTop="8dp"
+        android:nestedScrollingEnabled="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
