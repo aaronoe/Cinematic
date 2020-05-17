@@ -2,6 +2,8 @@ package de.aaronoe.cinematic;
 
 import android.app.Application;
 
+import com.squareup.picasso.Picasso;
+
 import de.aaronoe.cinematic.auth.AuthManager;
 import de.aaronoe.cinematic.modules.AppModule;
 import de.aaronoe.cinematic.modules.DaggerNetComponent;
@@ -31,7 +33,7 @@ public class CinematicApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        // Dagger%COMPONENT_NAME%
+//         Dagger%COMPONENT_NAME%
         mNetComponent = DaggerNetComponent.builder()
                 .appModule(new AppModule(this))
                 .netModule(new NetModule(BASE_URL, BASE_URL_V4))
@@ -40,6 +42,7 @@ public class CinematicApp extends Application {
         mAuthManager = new AuthManager(this);
 
         instance = this;
+
     }
 
     public NetComponent getNetComponent() {

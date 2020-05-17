@@ -52,6 +52,7 @@ import de.aaronoe.cinematic.model.TvShow.SeasonAdapter;
 import de.aaronoe.cinematic.model.TvShow.TvShow;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.ui.TvSeasonDetailActivity;
+import de.aaronoe.cinematic.util.BackStackManager;
 import de.aaronoe.cinematic.util.Constants;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -113,11 +114,15 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     @BindView(R.id.show_seasons_pane)
     LinearLayout showSeasonsPane;
 
-    @BindView(R.id.cast_section_container) LinearLayout castSectionContainer;
-    @BindView(R.id.cast_recycler_view) RecyclerView castRecyclerView;
+    @BindView(R.id.cast_section_container)
+    LinearLayout castSectionContainer;
+    @BindView(R.id.cast_recycler_view)
+    RecyclerView castRecyclerView;
 
-    @BindView(R.id.similar_shows_section_container) LinearLayout similarSectionContainer;
-    @BindView(R.id.similar_shows_recycler_view) RecyclerView similarRecyclerView;
+    @BindView(R.id.similar_shows_section_container)
+    LinearLayout similarSectionContainer;
+    @BindView(R.id.similar_shows_recycler_view)
+    RecyclerView similarRecyclerView;
 
 
     int showId;
@@ -129,11 +134,13 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     SeasonAdapter seasonAdapter;
     ShowDetailPresenterImpl presenter;
 
-    @Inject ApiInterface apiInterface;
+    @Inject
+    ApiInterface apiInterface;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        BackStackManager.getInstance().pushActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tv_show_details);
         ButterKnife.bind(this);
@@ -177,7 +184,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         supportPostponeEnterTransition();
 
         switch (enterMode) {
-            case Constants.BACKDROP_ENTER :
+            case Constants.BACKDROP_ENTER:
                 Picasso.with(this)
                         .load(pictureUrl)
                         .placeholder(R.drawable.poster_show_loading)
@@ -234,7 +241,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements
         }
 
 
-
         tvDetailTitle.setText(enterShow.getName());
         tvDetailYear.setText(Utilities.convertDateToYear(enterShow.getFirstAirDate()));
         tvDetailOverview.setText(enterShow.getOverview());
@@ -274,6 +280,7 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     protected void onDestroy() {
         super.onDestroy();
         presenter = null;
+        BackStackManager.getInstance().popActivity(this);
     }
 
     @Override
@@ -431,8 +438,6 @@ public class TvShowDetailActivity extends AppCompatActivity implements
     }
 
 
-
-
     // Todo: Get rid of this at some point
 
     @Override
@@ -512,23 +517,23 @@ public class TvShowDetailActivity extends AppCompatActivity implements
                 }
             };
 
-            private void addToFavorites() {
-                toggleFavoriteShowButton.setText(getString(R.string.button_on));
-                toggleFavoriteShowButton.setTextOn(getString(R.string.button_on));
-                toggleFavoriteShowButton.setChecked(true);
-                //Toast.makeText(mContext, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+    private void addToFavorites() {
+        toggleFavoriteShowButton.setText(getString(R.string.button_on));
+        toggleFavoriteShowButton.setTextOn(getString(R.string.button_on));
+        toggleFavoriteShowButton.setChecked(true);
+        //Toast.makeText(mContext, getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
 
-                MovieUpdateService.insertNewShow
-                        (mContext, Utilities.getContentValuesForShow(thisShow, mContext));
-            }
+        MovieUpdateService.insertNewShow
+                (mContext, Utilities.getContentValuesForShow(thisShow, mContext));
+    }
 
-            private void removeFromFavorites() {
-                toggleFavoriteShowButton.setText(getString(R.string.button_off));
-                toggleFavoriteShowButton.setTextOff(getString(R.string.button_off));
-                toggleFavoriteShowButton.setChecked(false);
-                //Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
+    private void removeFromFavorites() {
+        toggleFavoriteShowButton.setText(getString(R.string.button_off));
+        toggleFavoriteShowButton.setTextOff(getString(R.string.button_off));
+        toggleFavoriteShowButton.setChecked(false);
+        //Toast.makeText(mContext, R.string.removed_from_favorites, Toast.LENGTH_SHORT).show();
 
-                MovieUpdateService.deleteItem(mContext, Utilities.buildShowUri(thisShow.getId()));
-            }
+        MovieUpdateService.deleteItem(mContext, Utilities.buildShowUri(thisShow.getId()));
+    }
 
 }

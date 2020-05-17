@@ -37,6 +37,7 @@ import de.aaronoe.cinematic.model.TvShow.FullShow.TvShowFull;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.TvShow.EpisodeAdapter;
 import de.aaronoe.cinematic.model.TvShow.FullSeason.FullSeason;
+import de.aaronoe.cinematic.util.BackStackManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -80,7 +81,14 @@ public class TvSeasonDetailActivity extends AppCompatActivity {
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BackStackManager.getInstance().popActivity(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        BackStackManager.getInstance().pushActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tv_season_detail);
         ButterKnife.bind(this);

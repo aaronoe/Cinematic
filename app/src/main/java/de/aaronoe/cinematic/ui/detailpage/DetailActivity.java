@@ -25,6 +25,7 @@ import de.aaronoe.cinematic.CinematicApp;
 import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.FullMovie.FullMovie;
+import de.aaronoe.cinematic.util.BackStackManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,7 +58,14 @@ public class DetailActivity extends AppCompatActivity
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BackStackManager.getInstance().popActivity(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        BackStackManager.getInstance().pushActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_coord);
 
