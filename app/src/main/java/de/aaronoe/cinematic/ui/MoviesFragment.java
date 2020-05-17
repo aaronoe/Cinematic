@@ -76,12 +76,13 @@ public class MoviesFragment extends Fragment
     @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     public MoviesFragment() {}
-
+    // Bugfix
+    private ArrayList<Call> enqueuedCalls;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        enqueuedCalls = new ArrayList<Call>();
         ((CinematicApp) getActivity().getApplication()).getNetComponent().inject(this);
 
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
@@ -163,7 +164,7 @@ public class MoviesFragment extends Fragment
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-
+                enqueuedCalls.remove(call);
                 if (response == null || response.body() == null || response.body().getResults() == null) {
                     return;
                 }
@@ -180,7 +181,10 @@ public class MoviesFragment extends Fragment
 
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
-
+                if(!call.isCanceled()){
+                    showErrorMessage();
+                }
+                enqueuedCalls.remove(call);
             }
         });
 
@@ -229,11 +233,11 @@ public class MoviesFragment extends Fragment
         mLoadingIndicator.setVisibility(View.VISIBLE);
 
         Call<MovieResponse> call = apiService.getMovies(mCurrentSelection, API_KEY);
-
+        enqueuedCalls.add(call);
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
-
+                enqueuedCalls.remove(call);
                 if (response == null || response.body() == null || response.body().getResults() == null) {
                     return;
                 }
@@ -255,7 +259,10 @@ public class MoviesFragment extends Fragment
             @Override
             public void onFailure(Call<MovieResponse> call, Throwable t) {
                 mLoadingIndicator.setVisibility(View.INVISIBLE);
-                showErrorMessage();
+                if(!call.isCanceled()) {
+                    showErrorMessage();
+                }
+                enqueuedCalls.remove(call);
             }
         });
 
@@ -364,6 +371,15 @@ public class MoviesFragment extends Fragment
         downloadMovieData();
         saveSelection(SELECTION_UPCOMING);
         return true;
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.e("MoviesFragment", "On Destroy View");
+        for(int i = 0; i < enqueuedCalls.size(); i++){
+            enqueuedCalls.get(i).cancel();
+        }
+        super.onDestroyView();
     }
 
 }

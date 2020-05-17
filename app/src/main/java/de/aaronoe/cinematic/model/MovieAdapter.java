@@ -118,6 +118,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         String pictureUrl = "http://image.tmdb.org/t/p/w500/" + picturePath;
         // get a reference to this item's ImageView
         ImageView currentImageView = holder.backdropImageView;
+        Picasso.with(holder.itemView.getContext())
+                .setIndicatorsEnabled(true);
         // use picasso to load the image into the view
         Picasso.with(holder.itemView.getContext())
                 .load(pictureUrl)

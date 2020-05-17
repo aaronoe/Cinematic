@@ -201,6 +201,7 @@ public class Utilities {
      * @return true if user is connected to a network
      */
     public static boolean isOnline(Context context) {
+        Log.e("tag", "isOnline: context=" + context);
         ConnectivityManager cm =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();

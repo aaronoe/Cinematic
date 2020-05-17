@@ -46,7 +46,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- *
  * Created by aaron on 26.03.17.
  */
 
@@ -59,8 +58,10 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     private Parcelable mLayoutManagerSavedState;
     EndlessRecyclerViewScrollListener scrollListener;
 
-    @Inject SharedPreferences sharedPref;
-    @Inject ApiInterface apiService;
+    @Inject
+    SharedPreferences sharedPref;
+    @Inject
+    ApiInterface apiService;
 
 
     private static final String BUNDLE_RECYCLER_LAYOUT = "tvshows.recycler.layout";
@@ -89,12 +90,17 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
     FloatingActionMenu fabMenu;
 
 
-    public TvShowsFragment() {}
+    public TvShowsFragment() {
+    }
+
+    // Bugfix
+    private ArrayList<Call> enqueuedCalls;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        Log.e("TvShowsFragment", "onCreateView");
+        enqueuedCalls = new ArrayList<Call>();
         View rootView = inflater.inflate(R.layout.activity_shows_list, container, false);
 
         ButterKnife.bind(this, rootView);
@@ -125,7 +131,7 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         if (savedInstanceState != null) {
             tvShowList = savedInstanceState.getParcelableArrayList(BUNDLE_SHOW_LIST_KEY);
             restorePosition();
-            Log.d(TAG, "onCreateView:  restoring position" );
+            Log.d(TAG, "onCreateView:  restoring position");
         }
 
         rvMainMovieList.addOnScrollListener(scrollListener);
@@ -139,15 +145,15 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
 
     private void downloadShowData(int page) {
-
+        Log.e("TvShowsFragment", "downloadShowData page: " + page);
         pbLoadingIndicator.setVisibility(View.VISIBLE);
 
         Call<ShowsResponse> call = apiService.getTvShows(mCurrentSelection, API_KEY, page);
-
+        enqueuedCalls.add(call);
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
             public void onResponse(Call<ShowsResponse> call, Response<ShowsResponse> response) {
-
+                enqueuedCalls.remove(call);
                 if (response == null || response.body() == null || response.body().getTvShows() == null) {
                     return;
                 }
@@ -165,8 +171,11 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
             @Override
             public void onFailure(Call<ShowsResponse> call, Throwable t) {
+                enqueuedCalls.remove(call);
                 pbLoadingIndicator.setVisibility(View.INVISIBLE);
-                showErrorMessage();
+                if(!call.isCanceled()) {
+                    showErrorMessage();
+                }
             }
         });
     }
@@ -177,11 +186,11 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
         Call<ShowsResponse> call = apiService.getTvShows(mCurrentSelection, API_KEY, page);
 
         Log.e(TAG, "Downloading next page: " + (page));
-
+        enqueuedCalls.add(call);
         call.enqueue(new Callback<ShowsResponse>() {
             @Override
             public void onResponse(Call<ShowsResponse> call, Response<ShowsResponse> response) {
-
+                enqueuedCalls.remove(call);
                 if (response == null || response.body() == null || response.body().getTvShows() == null) {
                     return;
                 }
@@ -199,8 +208,11 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
             @Override
             public void onFailure(Call<ShowsResponse> call, Throwable t) {
+                enqueuedCalls.remove(call);
                 pbLoadingIndicator.setVisibility(View.INVISIBLE);
-                showErrorMessage();
+                if (!call.isCanceled()) {
+                    showErrorMessage();
+                }
             }
         });
     }
@@ -350,6 +362,10 @@ public class TvShowsFragment extends Fragment implements TvShowAdapter.TvShowAda
 
     @Override
     public void onDestroyView() {
+        Log.e("TvShowsFragment", "On Destroy View");
+        for(int i = 0; i < enqueuedCalls.size(); i++){
+            enqueuedCalls.get(i).cancel();
+        }
         super.onDestroyView();
     }
 }

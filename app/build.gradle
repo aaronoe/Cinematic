@@ -50,7 +50,7 @@ dependencies {
     compile "org.jetbrains.anko:anko:$anko_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.yarolegovich:discrete-scrollview:1.2.0'
-    compile 'com.google.firebase:firebase-perf:11.0.1'
+    compile 'com.google.firebase:firebase-perf:11.0.4'
     compile 'com.google.dagger:dagger:2.9'
     compile 'com.github.clans:fab:1.6.4'
     compile 'com.github.florent37:materialtextfield:1.0.7'
@@ -78,6 +78,8 @@ dependencies {
     compile 'com.google.firebase:firebase-core:11.0.1'
     compile 'com.google.firebase:firebase-messaging:11.0.1'
     compile 'com.google.firebase:firebase-crash:11.0.1'
+    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:recyclerview-v7:25.4.0'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.9'
@@ -86,5 +88,3 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
-
-apply plugin: 'com.google.gms.google-services'

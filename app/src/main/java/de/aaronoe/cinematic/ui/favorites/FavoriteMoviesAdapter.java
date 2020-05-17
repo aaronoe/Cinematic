@@ -67,6 +67,7 @@ class FavoriteMoviesAdapter extends RecyclerView.Adapter<FavoriteMoviesAdapter.F
         return movieCursor.getCount();
     }
 
+
     interface MovieAdapterOnClickHandler {
         void onClick(int movieId, String movieName);
     }

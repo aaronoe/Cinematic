@@ -1,10 +1,12 @@
 package de.aaronoe.cinematic.ui.detailpage.ActorDetails;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -29,6 +31,7 @@ import de.aaronoe.cinematic.R;
 import de.aaronoe.cinematic.model.ActorCredits.Actor;
 import de.aaronoe.cinematic.model.remote.ApiInterface;
 import de.aaronoe.cinematic.model.MovieAdapter;
+import de.aaronoe.cinematic.util.BackStackManager;
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,7 +65,14 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
 
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BackStackManager.getInstance().popActivity(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        BackStackManager.getInstance().pushActivity(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_details);
 
@@ -187,4 +197,5 @@ public class ActorDetailsActivity extends AppCompatActivity implements MovieAdap
         intentToStartDetailActivity.putExtra(getString(R.string.intent_key_movie_name), movieItem.getTitle());
         startActivity(intentToStartDetailActivity);
     }
+
 }
